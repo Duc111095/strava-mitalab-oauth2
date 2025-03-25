@@ -1,0 +1,196 @@
+package com.ducnh.oauth2_server.config;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
+import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.DefaultRefreshTokenTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.endpoint.OAuth2RefreshTokenGrantRequest;
+import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.endpoint.MapOAuth2AccessTokenResponseConverter;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
+import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.core.convert.converter.Converter;
+
+import org.springframework.http.converter.FormHttpMessageConverter;
+
+
+@Configuration
+@EnableWebSecurity
+@PropertySource("classpath:application.properties")
+public class SecurityConfig {
+	public static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+	
+	private static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
+	private static List<String> clients  = Arrays.asList("github", "strava");
+	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.authorizeRequests()
+		.antMatchers("/",
+				"/info",
+				"/error",
+                "/favicon.ico",
+                "/**/*.png",
+                "/**/*.gif",
+                "/**/*.svg",
+                "/**/*.jpg",
+                "/**/*.html",
+                "/**/*.css",
+                "/**/*.js")
+			.permitAll()
+		.antMatchers("/auth/**", "/oauth2/**")
+			.permitAll()
+		.anyRequest().authenticated()
+		.and()
+		.oauth2Login(oauth2Login ->
+			oauth2Login
+                .clientRegistrationRepository(clientRegistrationRepository())
+        		.authorizedClientService(authorizedClientService())
+        		.tokenEndpoint(c -> c.accessTokenResponseClient(accessTokenResponseClient()))
+        		.defaultSuccessUrl("/oauth_login"));
+		return http.build();
+	}
+	
+	@Autowired
+	private Environment env;
+	
+	@Bean
+	public ClientRegistrationRepository clientRegistrationRepository() {
+		List<ClientRegistration> registrations = clients.stream()
+				.map(c -> getRegistration(c))
+				.filter(registration -> registration != null)
+				.toList();
+		return new InMemoryClientRegistrationRepository(registrations);
+	}
+	
+	private ClientRegistration getRegistration(String client) {
+		logger.info(client);
+		String clientId = env.getProperty(CLIENT_PROPERTY_KEY + client + ".clientId");
+		if (clientId == null) {
+			return null;
+		}
+		logger.info("Client Id: " + clientId);
+
+		String clientSecret = env.getProperty(CLIENT_PROPERTY_KEY + client + ".clientSecret");
+		if (client.equals("github")) {
+			return CommonOAuth2Provider.GITHUB.getBuilder(client)
+					.clientId(clientId).clientSecret(clientSecret).build();
+		}
+		if (client.equals("strava")) {
+			return stravaClientRegistration(clientId, clientSecret);
+		}
+		logger.info("Client Secret: " + clientSecret);
+
+		return null;
+	}
+	
+	@Bean
+	public OAuth2AuthorizedClientService authorizedClientService() {
+		return new InMemoryOAuth2AuthorizedClientService(
+				clientRegistrationRepository());
+	}
+	
+	private ClientRegistration stravaClientRegistration(String clientId, String clientSecret) {
+        return ClientRegistration.withRegistrationId("strava")
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+            .scope("activity:read_all")
+            .authorizationUri("https://www.strava.com/oauth/authorize")
+            .tokenUri("https://www.strava.com/api/v3/oauth/token?client_id=152115&client_secret=27e1f519e4f98eac360feee381e74ace57c93df0")
+            .userInfoUri("https://www.strava.com/api/v3/athlete")
+            .userNameAttributeName("id")
+            .clientName("Strava")
+            .build();
+    }
+	
+	@Bean
+	public OAuth2AuthorizedClientManager authorizedClientManager(
+			ClientRegistrationRepository clientRegistrationRepository,
+			OAuth2AuthorizedClientRepository authorizedClientRepository) {
+		OAuth2AuthorizedClientProvider authorizedClientProvider = 
+				OAuth2AuthorizedClientProviderBuilder.builder()
+						.authorizationCode()
+						.refreshToken(configurer -> configurer.accessTokenResponseClient(refreshCustomResponseClient()))
+						.clientCredentials()
+						.password()
+						.build();
+		DefaultOAuth2AuthorizedClientManager authorizedClientManager = 
+				new DefaultOAuth2AuthorizedClientManager(
+						clientRegistrationRepository, authorizedClientRepository);
+		authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+		return authorizedClientManager;
+	}
+	
+	
+	
+	@Bean
+    public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient(){
+        DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient = 
+          new DefaultAuthorizationCodeTokenResponseClient(); 
+        accessTokenResponseClient.setRestOperations(customRestTemplate());
+        return accessTokenResponseClient;
+    }
+	
+	@Bean
+	public OAuth2AccessTokenResponseClient<OAuth2RefreshTokenGrantRequest> refreshCustomResponseClient() {
+		DefaultRefreshTokenTokenResponseClient refreshTokenResponseClient = 
+				new DefaultRefreshTokenTokenResponseClient();
+		refreshTokenResponseClient.setRestOperations(customRestTemplate());
+		return refreshTokenResponseClient;
+	}
+	
+	private static RestTemplate customRestTemplate() {
+		OAuth2AccessTokenResponseHttpMessageConverter tokenResponseHttpMessageConverter = 
+				new OAuth2AccessTokenResponseHttpMessageConverter();
+		tokenResponseHttpMessageConverter.setTokenResponseConverter(customResponseConverter());
+		RestTemplate restTemplate = new RestTemplate(Arrays.asList(
+				new FormHttpMessageConverter(), tokenResponseHttpMessageConverter));
+		restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
+		return restTemplate;
+	}
+	
+	private static Converter<Map<String, String>, OAuth2AccessTokenResponse> customResponseConverter(){
+	    MapOAuth2AccessTokenResponseConverter mapOAuth2AccessTokenResponseConverter = new MapOAuth2AccessTokenResponseConverter();
+	    return tokenResponseParameters -> {
+	    	OAuth2AccessTokenResponse original = mapOAuth2AccessTokenResponseConverter.convert(tokenResponseParameters);
+	    	logger.info("accessToken: " + tokenResponseParameters.getOrDefault("access_token", ""));
+	    	logger.info("athlete: " + tokenResponseParameters.getOrDefault("athlete", ""));
+	    	logger.info("token_type : " + tokenResponseParameters.getOrDefault("token_type", ""));
+	    	logger.info("refreshToken: " + tokenResponseParameters.getOrDefault("refresh_token", ""));
+	    	logger.info("expires in: " + tokenResponseParameters.getOrDefault("expires_in", ""));
+	    	logger.info("expires at: " + tokenResponseParameters.getOrDefault("expires_at", ""));
+	    	// Insert Database
+	    	
+	    	return original;
+	    };
+	}
+}

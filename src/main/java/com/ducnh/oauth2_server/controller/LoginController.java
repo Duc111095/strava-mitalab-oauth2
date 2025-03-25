@@ -1,4 +1,4 @@
-package com.ducnh.oauth2_server;
+package com.ducnh.oauth2_server.controller;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,13 +35,11 @@ public class LoginController {
 	@GetMapping("/oauth_login")
 	public String getLoginPage(Model model, OAuth2AuthenticationToken authentication) {
 		OAuth2User user = authentication.getPrincipal();
-		logger.info(user.toString());
 		OAuth2AuthorizedClient authorizedClient =
 				this.authorizedClientService.loadAuthorizedClient(
 					authentication.getAuthorizedClientRegistrationId(),
 					authentication.getName());
 		OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-		logger.info("access Token: " + accessToken.getTokenValue());
 		Iterable<ClientRegistration> clientRegistrations = null;
 		ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository).as(Iterable.class);
 		
@@ -53,7 +51,6 @@ public class LoginController {
 				oauth2AuthenticationUrls.put(registration.getClientName(), authorizationRequestBaseUri + "/" + registration.getRegistrationId()));
 		
 		model.addAttribute("urls", oauth2AuthenticationUrls);
-		logger.info("Logger: " + oauth2AuthenticationUrls.toString());
 		return accessToken.getTokenValue();
 	}
 }
