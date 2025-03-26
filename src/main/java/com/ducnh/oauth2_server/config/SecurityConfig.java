@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tomcat.util.json.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,14 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenRespon
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestTemplate;
+
+import com.ducnh.oauth2_server.model.AthleteUser;
+import com.ducnh.oauth2_server.model.StravaToken;
+import com.ducnh.oauth2_server.repository.TokenRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.oauth2.sdk.util.StringUtils;
+
 import org.springframework.core.convert.converter.Converter;
 
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -49,6 +58,9 @@ public class SecurityConfig {
 	
 	private static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
 	private static List<String> clients  = Arrays.asList("github", "strava");
+	
+	@Autowired
+	private TokenRepository tokenRepo;
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -168,7 +180,7 @@ public class SecurityConfig {
 		return refreshTokenResponseClient;
 	}
 	
-	private static RestTemplate customRestTemplate() {
+	private RestTemplate customRestTemplate() {
 		OAuth2AccessTokenResponseHttpMessageConverter tokenResponseHttpMessageConverter = 
 				new OAuth2AccessTokenResponseHttpMessageConverter();
 		tokenResponseHttpMessageConverter.setTokenResponseConverter(customResponseConverter());
@@ -178,10 +190,32 @@ public class SecurityConfig {
 		return restTemplate;
 	}
 	
-	private static Converter<Map<String, String>, OAuth2AccessTokenResponse> customResponseConverter(){
+	private Converter<Map<String, String>, OAuth2AccessTokenResponse> customResponseConverter(){
 	    MapOAuth2AccessTokenResponseConverter mapOAuth2AccessTokenResponseConverter = new MapOAuth2AccessTokenResponseConverter();
 	    return tokenResponseParameters -> {
 	    	OAuth2AccessTokenResponse original = mapOAuth2AccessTokenResponseConverter.convert(tokenResponseParameters);
+
+	    	String athlete = tokenResponseParameters.getOrDefault("athlete", "");
+	    	Long athleteId = Long.valueOf(athlete.substring(athlete.indexOf("=") + 1, athlete.indexOf(",")));
+	    
+	    	String accessToken = tokenResponseParameters.getOrDefault("access_token", "");
+	    	String refreshToken = tokenResponseParameters.getOrDefault("refresh_token", "");
+	    	String tokenType = tokenResponseParameters.getOrDefault("token_type", "");
+	    	Long expiresIn = Long.valueOf(tokenResponseParameters.getOrDefault("expires_in", "0"));
+	    	Long expiresAt = Long.valueOf(tokenResponseParameters.getOrDefault("expires_at", "0"));
+	    	
+	    	StravaToken token = new StravaToken.Builder(athleteId)
+	    			.setAccessToken(accessToken)
+	    			.setRefreshToken(refreshToken)
+	    			.withTokenType(tokenType)
+	    			.expiresIn(expiresIn)
+	    			.expiresAt(expiresAt)
+	    			.build();
+	    	
+	    	tokenRepo.save(token);
+	    	logger.info("athleteId: " + athleteId);
+
+	    	//StravaToken newToken = StravaToken.Builder(). 
 	    	logger.info("accessToken: " + tokenResponseParameters.getOrDefault("access_token", ""));
 	    	logger.info("athlete: " + tokenResponseParameters.getOrDefault("athlete", ""));
 	    	logger.info("token_type : " + tokenResponseParameters.getOrDefault("token_type", ""));
@@ -189,7 +223,7 @@ public class SecurityConfig {
 	    	logger.info("expires in: " + tokenResponseParameters.getOrDefault("expires_in", ""));
 	    	logger.info("expires at: " + tokenResponseParameters.getOrDefault("expires_at", ""));
 	    	// Insert Database
-	    	
+
 	    	return original;
 	    };
 	}

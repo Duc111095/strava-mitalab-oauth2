@@ -9,7 +9,7 @@ public enum MeasurementPreference {
 	public static MeasurementPreference create(String measurement) {
 		MeasurementPreference[] measures = MeasurementPreference.values();
 		for (MeasurementPreference measure : measures) {
-			if (measure.getId().equals(measurement)) {
+			if (measure.getMeasurment().equals(measurement)) {
 				return measure;
 			}
 		}
@@ -24,7 +24,7 @@ public enum MeasurementPreference {
 		return this.measurement;
 	}
 	
-	public String getId() {
+	public String getMeasurment() {
 		return this.measurement;
 	}
 }

@@ -4,17 +4,27 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity(name = "token_strava")
 public class StravaToken {
 	@Id
 	private Long atheleteId;
 	
 	@Column(nullable = false, length = 24)
+	@JsonProperty("token_type")
 	private String tokenType;
 	
+	@JsonProperty("access_token")
 	private String accessToken;
+	
+	@JsonProperty("refresh_token")
 	private String refreshToken;
+	
+	@JsonProperty("expires_at")
 	private Long expiresAt;
+	
+	@JsonProperty("expires_in")
 	private Long expiresIn;
 	
 	public StravaToken(Long atheleteId, String tokenType, String accessToken, String refreshToken, Long expiresAt, Long expiresIn) {
@@ -93,12 +103,12 @@ public class StravaToken {
 			return this;
 		}
 		
-		public Builder accessToken(String accessToken) {
+		public Builder setAccessToken(String accessToken) {
 			this.accessToken = accessToken;
 			return this;
 		}
 		
-		public Builder refreshToken(String refreshToken) {
+		public Builder setRefreshToken(String refreshToken) {
 			this.refreshToken = refreshToken;
 			return this;
 		}
@@ -123,6 +133,7 @@ public class StravaToken {
 			token.setTokenType(this.tokenType);
 			return token;
 		}
+
 	}
 }
 
