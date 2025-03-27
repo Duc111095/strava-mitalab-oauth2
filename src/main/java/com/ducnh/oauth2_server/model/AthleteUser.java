@@ -13,11 +13,7 @@ import com.ducnh.oauth2_server.model.constants.MeasurementPreference;
 import com.ducnh.oauth2_server.model.constants.ResourceState;
 import com.ducnh.oauth2_server.model.constants.StravaGender;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
