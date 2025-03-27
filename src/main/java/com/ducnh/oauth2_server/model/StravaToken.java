@@ -6,7 +6,7 @@ import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity(name = "token_strava")
+@Entity(name = "strava_token")
 public class StravaToken {
 	@Id
 	private Long atheleteId;

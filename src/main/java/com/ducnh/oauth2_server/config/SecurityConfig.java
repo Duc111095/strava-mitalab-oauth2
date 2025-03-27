@@ -109,7 +109,7 @@ public class SecurityConfig {
 			return null;
 		}
 		logger.info("Client Id: " + clientId);
-
+		
 		String clientSecret = env.getProperty(CLIENT_PROPERTY_KEY + client + ".clientSecret");
 		if (client.equals("github")) {
 			return CommonOAuth2Provider.GITHUB.getBuilder(client)

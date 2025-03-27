@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ResolvableType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -19,49 +20,54 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ducnh.oauth2_server.model.AthleteUser;
+import com.ducnh.oauth2_server.service.AthleteUserService;
 import com.ducnh.oauth2_server.service.TokenService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class LoginController {
 
 	public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-	private static String authorizationRequestBaseUri = "oauth2/authorization";
-	
-	Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
-
-	@Autowired
-	private OAuth2AuthorizedClientService authorizedClientService;
 	
 	@Autowired
-	private ClientRegistrationRepository clientRegistrationRepository;
+	private ObjectMapper mapper;
 	
 	@Autowired
 	private TokenService tokenService;
+	
+	@Autowired
+	private AthleteUserService athleteService;
+	
+	@Value("${strava.url.athlete.activities}")
+	private String activitiesUrl;
+	
+	@Value("${strava.url.athlete.userinfo}")
+	private String userInfoUrl;
+	
+	Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
 
 	@GetMapping("/oauth_login")
 	public String getLoginPage(Model model, OAuth2AuthenticationToken authentication) {
 		OAuth2User user = authentication.getPrincipal();
-		OAuth2AuthorizedClient authorizedClient =
-				this.authorizedClientService.loadAuthorizedClient(
-					authentication.getAuthorizedClientRegistrationId(),
-					authentication.getName());
-		OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-		Iterable<ClientRegistration> clientRegistrations = null;
-		ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository).as(Iterable.class);
-		
-		if (type != ResolvableType.NONE &&
-				ClientRegistration.class.isAssignableFrom(type.resolveGenerics()[0])) {
-			clientRegistrations = (Iterable<ClientRegistration>) clientRegistrationRepository;
-		}
 		String accessTokenDb = tokenService.getAccessToken(Long.valueOf(user.getName()));
-		String urls = "https://www.strava.com/api/v3/athlete";
-		ResponseEntity<String> result = tokenService.sendGetRequest(accessTokenDb, urls);
-		logger.info(result.getBody());
+		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(accessTokenDb, activitiesUrl);
+		logger.info(resultActivites.getBody());
+		ResponseEntity<String> userInfo = tokenService.sendGetRequest(accessTokenDb, userInfoUrl);
+		logger.info(userInfo.getBody());
 		
-		clientRegistrations.forEach(registration -> 
-				oauth2AuthenticationUrls.put(registration.getClientName(), authorizationRequestBaseUri + "/" + registration.getRegistrationId()));
+		try {
+			JsonNode treeNodeRoot = mapper.readTree(userInfo.getBody());
+			AthleteUser user1 = AthleteUser.createFromJsonString(treeNodeRoot);
+			athleteService.save(user1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
-		model.addAttribute("urls", oauth2AuthenticationUrls);
-		return accessToken.getTokenValue();
+		model.addAttribute("accessTokenDb", accessTokenDb);
+		return accessTokenDb;
 	}
 }

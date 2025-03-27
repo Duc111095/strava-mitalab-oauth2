@@ -1,7 +1,9 @@
 package com.ducnh.oauth2_server.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,6 +13,11 @@ import com.ducnh.oauth2_server.model.constants.MeasurementPreference;
 import com.ducnh.oauth2_server.model.constants.ResourceState;
 import com.ducnh.oauth2_server.model.constants.StravaGender;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +31,8 @@ import lombok.NoArgsConstructor;
 @Entity(name = "strava_user")
 public class AthleteUser {
 	
+	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	
 	@Id
 	@JsonProperty("id")
 	private Long id;
@@ -34,6 +43,7 @@ public class AthleteUser {
 	@JsonProperty("resource_state")
     @Enumerated(EnumType.STRING)
 	private ResourceState resourceState;
+	
 	@JsonProperty("firstname")
 	private String firstName;
 	
@@ -50,9 +60,11 @@ public class AthleteUser {
 	private String country;
 	
 	@JsonProperty("sex")
+    @Enumerated(EnumType.STRING)
 	private StravaGender sex;
 	
 	@JsonProperty("premium")
+	@Column(nullable=true)
 	private boolean premium;
 	
 	@JsonProperty("created_at")
@@ -87,7 +99,7 @@ public class AthleteUser {
 	private Integer ftp;
 	
 	@JsonProperty("weight")
-	private Float weight;
+	private Long weight;
 	
 	private StravaClub[] clubs;
 	private StravaBike[] bikes;
@@ -96,5 +108,227 @@ public class AthleteUser {
 	@Override
 	public String toString() {
 		return "ID: " + String.valueOf(this.id) + " - " + this.firstName + " " + this.lastName;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	public Long getId() {
+		return this.id;
+	}
+	
+	public String getFirstName() {
+		return this.firstName;
+	}
+	
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	
+	public String getLastName() {
+		return this.lastName;
+	}
+	
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	
+	public String getUsername() {
+		return this.username;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public ResourceState getResourceState() {
+		return this.resourceState;
+	}
+	
+	public void setResourceState(Integer id) {
+		this.resourceState = ResourceState.create(id);
+	}
+	
+	public String getCity() {
+		return this.city;
+	}
+	
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return this.state;
+	}
+	
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	public String getCountry() {
+		return this.country;
+	}
+	
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	
+	public StravaGender getSex() {
+		return this.sex;
+	}
+	
+	public void setSex(String gender) {
+		this.sex = StravaGender.create(gender);
+	}
+	
+	public boolean getPremium() {
+		return this.premium;
+	}
+	
+	public void setPremium(boolean premium) {
+		this.premium = premium;
+	}
+	
+	public LocalDateTime getCreatedAt() {
+		return this.createdAt;
+	}
+	
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = LocalDateTime.parse(createdAt, formatter);
+	}
+	
+	public LocalDateTime getUpdatedAt() {
+		return this.updatedAt;
+	}
+	
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = LocalDateTime.parse(updatedAt, formatter);
+	}
+	
+	public Integer getBadgeTypeId() {
+		return this.badgeTypeId;
+	}
+	
+	public void setBadgeTypeId(Integer badgeTypeId) {
+		this.badgeTypeId = badgeTypeId;
+	}
+	
+	public String getProfileMedium() {
+		return this.profileMedium;
+	}
+	
+	public void setProfileMedium(String profileMedium) {
+		this.profileMedium = profileMedium;
+	}
+
+	public String getProfile() {
+		return this.profile;
+	}
+	
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
+	
+	public String getFriend() {
+		return this.friend;
+	}
+	
+	public void setFriend(String friend) {
+		this.friend = friend;
+	}
+	
+	public String getFollower() {
+		return this.follower;
+	}
+	
+	public void setFollower(String follower) {
+		this.follower = follower;
+	}
+	
+	public Integer getFriendCount() {
+		return this.friendCount;
+	}
+	
+	public void setFriendCount(Integer friendCount) {
+		this.friendCount = friendCount;
+	}
+	
+	public Integer getMutualFriendCount() {
+		return this.mutualFriendCount;
+	}
+	
+	public void setMutualFriendCount(Integer mutualFriendCount) {
+		this.mutualFriendCount = mutualFriendCount;
+	}
+	
+	public Integer getAthleteType() {
+		return this.athleteType;
+	}
+	
+	public void setAthleteType(Integer athleteType) {
+		this.athleteType = athleteType;
+	}
+	public String getDatePreference() {
+		return this.datePreference;
+	}
+
+	public void setDatePreference(String datePreference) {
+		this.datePreference = datePreference;
+	}
+	
+	public Integer getFollowerCount() {
+		return followerCount;
+	}
+
+	public void setFollowerCount(Integer followerCount) {
+		this.followerCount = followerCount;
+	}
+	
+	public MeasurementPreference getMeasurementPreference() {
+		return this.measurementPreference;
+	}
+	
+	public void setMeasurementPreference(String measurementPreference) {
+		this.measurementPreference = MeasurementPreference.create(measurementPreference);
+	}
+	
+	public Integer getFtp() {
+		return this.ftp;
+	}
+	
+	public void setFtp(Integer ftp) {
+		this.ftp = ftp;
+	}
+	
+	public Long getWeight() {
+		return this.weight;
+	}
+	
+	public void setWeight(Long weight) {
+		this.weight = weight;
+	}
+	
+	public static AthleteUser createFromJsonString(JsonNode root) throws Exception{
+		AthleteUser user = new AthleteUser();
+		user.setId(root.get("id").asLong());
+		user.setUsername(root.get("username").asText());
+		user.setResourceState(root.get("resource_state").asInt());
+		user.setFirstName(root.get("firstname").asText());
+		user.setLastName(root.get("lastname").asText());
+		user.setCity(root.get("city").asText());
+		user.setState(root.get("state").asText());
+		user.setCountry(root.get("country").asText());
+		user.setSex(root.get("sex").asText());
+		user.setPremium(root.get("premium").asBoolean());
+		user.setCreatedAt(root.get("created_at").asText());
+		user.setUpdatedAt(root.get("updated_at").asText());
+		user.setBadgeTypeId(root.get("badge_type_id").asInt());
+		user.setWeight(root.get("weight").asLong());
+		user.setProfileMedium(root.get("profile_medium").asText());
+		user.setProfile(root.get("profile").asText());
+		user.setFriend(root.get("friend").asText());
+		user.setFollower(root.get("follower").asText());
+		return user;
 	}
 }
