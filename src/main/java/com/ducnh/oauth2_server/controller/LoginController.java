@@ -56,10 +56,10 @@ public class LoginController {
 	@GetMapping("/oauth_login")
 	public String getLoginPage(Model model, OAuth2AuthenticationToken authentication) {
 		OAuth2User user = authentication.getPrincipal();
-		String accessTokenDb = tokenService.getAccessToken(Long.valueOf(user.getName()));
-		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(accessTokenDb, activitiesUrl);
+		Long athleteId = Long.valueOf(user.getName());
+		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, activitiesUrl);
 		logger.info(resultActivites.getBody());
-		ResponseEntity<String> userInfo = tokenService.sendGetRequest(accessTokenDb, userInfoUrl);
+		ResponseEntity<String> userInfo = tokenService.sendGetRequest(athleteId, userInfoUrl);
 		logger.info(userInfo.getBody());
 		
 		try {
@@ -71,8 +71,8 @@ public class LoginController {
 			if (treeActivityRoot.isArray() && treeActivityRoot.size() > 0) {
 				for (JsonNode root : treeActivityRoot) {
 					 PolylineMap map = new PolylineMap();
-					 map.setId(root.get("map").get("id")== null ? null :root.get("map").get("id").asText());
-					 map.setSummaryPolyline(root.get("map").get("summary_polyline")== null ? null :root.get("map").get("summary_polyline").asText());
+					 map.setId(root.get("map").get("id")== null ? null : root.get("map").get("id").asText());
+					 map.setSummaryPolyline(root.get("map").get("summary_polyline")== null ? null : root.get("map").get("summary_polyline").asText());
 					 mapRepo.save(map);
 					 activity = StravaActivity.createActivityFromResponse(root);
 					 activityService.save(activity);

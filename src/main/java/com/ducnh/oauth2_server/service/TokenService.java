@@ -9,9 +9,11 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ducnh.oauth2_server.model.StravaToken;
 import com.ducnh.oauth2_server.repository.TokenRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Service
@@ -29,6 +33,12 @@ public class TokenService {
 	
 	@Autowired
 	private TokenRepository tokenRepo;
+	
+	@Value("${strava.url.athlete.accessToken}")
+	private String urlPostRefreshToken;
+	
+	@Autowired
+	private ObjectMapper mapper;
 	
 	public StravaToken save(StravaToken token) {
 		return tokenRepo.save(token);
@@ -58,9 +68,9 @@ public class TokenService {
 		try {
 			StravaToken token = tokenRepo.findById(athleteId).get();
 			if (token.getExpiresAt() < Instant.now().getEpochSecond()) {
-				// TODO
-				//getAccessTokenFromRefresh();
-				return "abc";
+				ResponseEntity<String> refreshTokenResponse = getAccessTokenFromRefresh(urlPostRefreshToken, token.getRefreshToken());
+				JsonNode root = mapper.readTree(refreshTokenResponse.getBody());
+				return root.get("access_token").asText();
 			} 
 			return token.getAccessToken();
 		} catch (Exception ex) {
@@ -100,4 +110,17 @@ public class TokenService {
 		HttpEntity<String> httpEntity = new HttpEntity<String>("parameters", headers);
 		return restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
 	}
+	
+	public ResponseEntity<String> sendGetRequest(Long athleteId, String url) {
+		try {
+			String accessToken = tokenRepo.findById(athleteId).get().getAccessToken();
+			return sendGetRequest(accessToken, url); 
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return new ResponseEntity<String>("ERROR!", HttpStatus.BAD_REQUEST);
+		}
+		
+	}
+	
 }
