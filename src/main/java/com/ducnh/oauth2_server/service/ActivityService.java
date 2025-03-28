@@ -15,4 +15,8 @@ public class ActivityService {
 	public void save(StravaActivity activity) {
 		activityRepo.save(activity);
 	}
+	
+	public Iterable<StravaActivity> findAll() {
+		return activityRepo.findAll();
+	}
 }

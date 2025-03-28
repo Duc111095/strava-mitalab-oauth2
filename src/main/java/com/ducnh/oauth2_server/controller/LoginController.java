@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-@RestController
+@Controller
 public class LoginController {
 
 	public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -82,7 +83,7 @@ public class LoginController {
 			e.printStackTrace();
 		}
 		
-		model.addAttribute("accessTokenDb", accessTokenDb);
-		return accessTokenDb;
+		model.addAttribute("activity", resultActivites.getBody());
+		return "oauth_login";
 	}
 }

@@ -3,6 +3,7 @@ package com.ducnh.oauth2_server.config;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.tomcat.util.json.Token;
 import org.slf4j.Logger;
@@ -61,9 +62,9 @@ public class SecurityConfig {
 	
 	@Autowired
 	private TokenRepository tokenRepo;
-	
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 		.antMatchers("/",
 				"/info",
@@ -92,13 +93,13 @@ public class SecurityConfig {
 	
 	@Autowired
 	private Environment env;
-	
-	@Bean
-	public ClientRegistrationRepository clientRegistrationRepository() {
+
+    @Bean
+    ClientRegistrationRepository clientRegistrationRepository() {
 		List<ClientRegistration> registrations = clients.stream()
 				.map(c -> getRegistration(c))
 				.filter(registration -> registration != null)
-				.toList();
+				.collect(Collectors.toList());
 		return new InMemoryClientRegistrationRepository(registrations);
 	}
 	
@@ -122,9 +123,9 @@ public class SecurityConfig {
 
 		return null;
 	}
-	
-	@Bean
-	public OAuth2AuthorizedClientService authorizedClientService() {
+
+    @Bean
+    OAuth2AuthorizedClientService authorizedClientService() {
 		return new InMemoryOAuth2AuthorizedClientService(
 				clientRegistrationRepository());
 	}
@@ -143,11 +144,11 @@ public class SecurityConfig {
             .clientName("Strava")
             .build();
     }
-	
-	@Bean
-	public OAuth2AuthorizedClientManager authorizedClientManager(
-			ClientRegistrationRepository clientRegistrationRepository,
-			OAuth2AuthorizedClientRepository authorizedClientRepository) {
+
+    @Bean
+    OAuth2AuthorizedClientManager authorizedClientManager(
+            ClientRegistrationRepository clientRegistrationRepository,
+            OAuth2AuthorizedClientRepository authorizedClientRepository) {
 		OAuth2AuthorizedClientProvider authorizedClientProvider = 
 				OAuth2AuthorizedClientProviderBuilder.builder()
 						.authorizationCode()
@@ -161,19 +162,18 @@ public class SecurityConfig {
 		authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
 		return authorizedClientManager;
 	}
-	
-	
-	
-	@Bean
-    public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient(){
+
+
+    @Bean
+    OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient(){
         DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient = 
           new DefaultAuthorizationCodeTokenResponseClient(); 
         accessTokenResponseClient.setRestOperations(customRestTemplate());
         return accessTokenResponseClient;
     }
-	
-	@Bean
-	public OAuth2AccessTokenResponseClient<OAuth2RefreshTokenGrantRequest> refreshCustomResponseClient() {
+
+    @Bean
+    OAuth2AccessTokenResponseClient<OAuth2RefreshTokenGrantRequest> refreshCustomResponseClient() {
 		DefaultRefreshTokenTokenResponseClient refreshTokenResponseClient = 
 				new DefaultRefreshTokenTokenResponseClient();
 		refreshTokenResponseClient.setRestOperations(customRestTemplate());
