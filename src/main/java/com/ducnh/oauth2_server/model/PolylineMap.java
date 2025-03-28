@@ -38,7 +38,7 @@ public class PolylineMap {
 		return this.polyline;
 	}
 	
-	public void setSummaryPolyline(String summmaryPolyline) {
+	public void setSummaryPolyline(String summaryPolyline) {
 		this.summaryPolyline = summaryPolyline;
 	}
 	

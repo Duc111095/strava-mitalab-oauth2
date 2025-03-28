@@ -443,39 +443,35 @@ public class StravaActivity {
 		PolylineMap map = new PolylineMap();
 		map.setId(root.get("map").get("id")== null ? null :root.get("map").get("id").asText());
 		map.setSummaryPolyline(root.get("map").get("summary_polyline")== null ? null :root.get("map").get("summary_polyline").asText());
-		//activity.setMap(map);
+		activity.setMap(map);
 		activity.setGearId(root.get("gear_id")== null ? null :root.get("gear_id").asText());
 		activity.setUploadIdStr(root.get("upload_id_str")== null ? null :root.get("upload_id_str").asText());
 		activity.setExternalId(root.get("external_id")== null ? null :root.get("external_id").asText());
-
 		activity.setTrainer(root.get("trainer")== null ? null :root.get("trainer").asBoolean());
 		activity.setCommute(root.get("commute")== null ? null :root.get("commute").asBoolean());
 		activity.setManual(root.get("manual")== null ? null :root.get("manual").asBoolean());
 		activity.setPrivate(root.get("private")== null ? null :root.get("private").asBoolean());
 		activity.setFlagged(root.get("flagged")== null ? null :root.get("flagged").asBoolean());
-		/*activity.setDistance(root.get("distance") == null ? null :root.get("distance").asDouble());
 		activity.setTotalElevationGain(root.get("total_elevation_gain")== null ? null :root.get("elapsed_time").asInt());
-		activity.setWorkoutType(root.get("workout_type")== null ? null :root.get("workout_type").asInt());
 		activity.setAchievementCount(root.get("achievement_count")== null ? null :root.get("achievement_count").asInt());
+		activity.setWorkoutType(root.get("workout_type")== null ? null :root.get("workout_type").asInt());
 		activity.setKudosCount(root.get("kudos_count")== null ? null :root.get("kudos_count").asInt());
 		activity.setCommentCount(root.get("comment_count")== null ? null :root.get("comment_count").asInt());
 		activity.setAthleteCount(root.get("athlete_count")== null ? null :root.get("athlete_count").asInt());
 		activity.setPhotoCount(root.get("photo_count")== null ? null :root.get("photo_count").asInt());
-
-		activity.setAverageSpeed(root.get("average_speed")== null ? null :root.get("average_speed").asDouble());
-		activity.setMaxSpeed(root.get("max_speed")== null ? null :root.get("max_speed").asDouble());
-		activity.setAverageWatts(root.get("average_watts")== null ? null :root.get("average_watts").asDouble());
 		activity.setMaxWatts(root.get("max_watts")== null ? null :root.get("max_watts").asInt());
 		activity.setWeightedAverageWatts(root.get("weighted_average_watts")== null ? null :root.get("weighted_average_watts").asInt());
 		activity.setDeviceWatts(root.get("device_watts")== null ? null :root.get("device_watts").asBoolean());
-		activity.setKilojoules(root.get("kilojoules")== null ? null :root.get("kilojoules").asDouble());
-		activity.setElevHigh(root.get("elev_high")== null ? null :root.get("elev_high").asDouble());
-		activity.setElevLow(root.get("elve_low")== null ? null :root.get("elve_low").asDouble());
 		activity.setUploadId(root.get("upload_id")== null ? null :root.get("upload_id").asLong());
-	
 		activity.setTotalPhotoCount(root.get("total_photo_count")== null ? null :root.get("total_photo_count").asInt());
 		activity.setHasKudoed(root.get("has_kudoed")== null ? null :root.get("has_kudoed").asBoolean());
-		*/
+		activity.setDistance(root.get("distance") == null ? null :root.get("distance").asDouble());
+		activity.setAverageSpeed(root.get("average_speed")== null ? null :root.get("average_speed").asDouble());
+		activity.setMaxSpeed(root.get("max_speed")== null ? null :root.get("max_speed").asDouble());
+		activity.setAverageWatts(root.get("average_watts")== null ? null :root.get("average_watts").asDouble());
+		activity.setKilojoules(root.get("kilojoules")== null ? null :root.get("kilojoules").asDouble());
+		activity.setElevHigh(root.get("elev_high")== null ? null : root.get("elev_high").asDouble());
+		activity.setElevLow(root.get("elev_low")== null ? null : root.get("elev_low").asDouble());
 		return activity;
 	}
 }
