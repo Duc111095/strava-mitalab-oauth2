@@ -1,5 +1,7 @@
 package com.ducnh.oauth2_server.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +16,9 @@ public class AthleteUserService {
 
 	public void save(AthleteUser user) {
 		athleteRepo.save(user);
+	}
+	
+	public Optional<AthleteUser> findById(Long id) {
+		return athleteRepo.findById(id);
 	}
 }

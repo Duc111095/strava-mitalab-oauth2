@@ -1,10 +1,8 @@
 package com.ducnh.oauth2_server.service;
 
-import java.security.Principal;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +37,12 @@ public class TokenService {
 	
 	@Autowired
 	private ObjectMapper mapper;
+	
+	@Value("${spring.security.oauth2.client.registration.strava.clientId}")
+	private String clientId;
+	
+	@Value("${spring.security.oauth2.client.registration.strava.clientSecret}")
+	private String clientSecret;
 	
 	public StravaToken save(StravaToken token) {
 		return tokenRepo.save(token);
@@ -95,8 +99,8 @@ public class TokenService {
 				.toString();
 		
 		Map<String, String> params = new HashMap<>();
-		params.put("client_id", "152115");
-		params.put("client_secret", "27e1f519e4f98eac360feee381e74ace57c93df0");
+		params.put("client_id", this.clientId);
+		params.put("client_secret", this.clientSecret);
 		params.put("grant_type", "refresh_token");
 		params.put("refresh_token", refreshToken);
 		
