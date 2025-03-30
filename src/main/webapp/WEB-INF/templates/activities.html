@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+	<head>
+		<title>Mitalab Strava Runner Activities</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<link rel="stylesheet" type="text/css" media="all" href="../../css/stsm.css" th:href="@{/css/stsm.css}"/>
+	</head>
+	<body>
+		<div>
+			<img src="../../images/stsmlogo.png" alt="STSM logo" title="STSM logo"
+				 th:src="@{/images/stsmlogo.png}" th:alt-title="#{title.application}"/>
+		</div>
+		<div class="activitylist" th:unless="${#lists.isEmpty(allActivities)}">
+			<h2 th:text="#{title.list}">List of Activity's Mitalab Runner</h2>
+		
+			<table>
+				<thead>
+					<tr>
+						<th th:text="#{activity.athleteId}">Athlete Id</th>
+						<th th:text="#{activity.name}">Name</th>
+						<th th:text="#{activity.distance}">Distance</th>
+						<th th:text="#{activity.time_elapsed}">Time Elapsed</th>
+						<th th:text="#{activity.start_date}">Start Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="at : ${allActivities}"> 
+						<td th:text="${at.getAthleteId()}">1234</td>
+						<td th:text="${at.getName()}">Run</td>
+						<td th:text="${at.getDistance()}">12</td>
+						<td th:text="${at.getElapsedTime()}">1234</td>
+						<td th:text="${at.getFormatedDateFromStartDateLocal()}">12/01/2025</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

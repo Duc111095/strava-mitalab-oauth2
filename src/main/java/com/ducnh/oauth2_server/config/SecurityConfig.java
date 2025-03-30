@@ -58,7 +58,7 @@ public class SecurityConfig {
 	public static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 	
 	private static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
-	private static List<String> clients  = Arrays.asList("github", "strava");
+	private static List<String> clients  = Arrays.asList("strava");
 	
 	@Autowired
 	private TokenRepository tokenRepo;

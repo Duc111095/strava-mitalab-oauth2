@@ -54,6 +54,11 @@ public class LoginController {
 	
 	Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
 
+	@GetMapping("/")
+	public String index() {
+		return "index";
+	}
+	
 	@GetMapping("/oauth_login")
 	public String getLoginPage(Model model, OAuth2AuthenticationToken authentication) {
 		OAuth2User user = authentication.getPrincipal();

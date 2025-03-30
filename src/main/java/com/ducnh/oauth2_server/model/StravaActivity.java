@@ -428,6 +428,10 @@ public class StravaActivity {
 		this.weightedAverageWatts = weightedAverageWatts;
 	}
 	
+	public String getFormatedDateFromStartDateLocal() {
+		return this.startDateLocal.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
+	}
+	
 	public static StravaActivity createActivityFromResponse(JsonNode root) {
 		StravaActivity activity = new StravaActivity();
 		activity.setResourceState(root.get("resource_state") == null ? null : root.get("resource_state").asInt());
