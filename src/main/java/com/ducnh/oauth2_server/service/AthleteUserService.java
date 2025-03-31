@@ -21,4 +21,9 @@ public class AthleteUserService {
 	public Optional<AthleteUser> findById(Long id) {
 		return athleteRepo.findById(id);
 	}
+	
+	public Iterable<AthleteUser> findAll() {
+		return athleteRepo.findAll();
+	}
+
 }

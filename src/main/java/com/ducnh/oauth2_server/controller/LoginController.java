@@ -63,10 +63,9 @@ public class LoginController {
 	public String getLoginPage(Model model, OAuth2AuthenticationToken authentication) {
 		OAuth2User user = authentication.getPrincipal();
 		Long athleteId = Long.valueOf(user.getName());
+		
 		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, activitiesUrl);
-		logger.info(resultActivites.getBody());
 		ResponseEntity<String> userInfo = tokenService.sendGetRequest(athleteId, userInfoUrl);
-		logger.info(userInfo.getBody());
 		
 		try {
 			JsonNode treeUserRoot = mapper.readTree(userInfo.getBody());

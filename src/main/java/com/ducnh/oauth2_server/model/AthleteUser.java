@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity(name = "strava_user")
 public class AthleteUser {
 	
@@ -307,24 +306,24 @@ public class AthleteUser {
 	
 	public static AthleteUser createFromJsonString(JsonNode root) throws Exception{
 		AthleteUser user = new AthleteUser();
-		user.setId(root.get("id").asLong());
-		user.setUsername(root.get("username").asText());
-		user.setResourceState(root.get("resource_state").asInt());
-		user.setFirstName(root.get("firstname").asText());
-		user.setLastName(root.get("lastname").asText());
-		user.setCity(root.get("city").asText());
-		user.setState(root.get("state").asText());
-		user.setCountry(root.get("country").asText());
-		user.setSex(root.get("sex").asText());
-		user.setPremium(root.get("premium").asBoolean());
-		user.setCreatedAt(root.get("created_at").asText());
-		user.setUpdatedAt(root.get("updated_at").asText());
-		user.setBadgeTypeId(root.get("badge_type_id").asInt());
-		user.setWeight(root.get("weight").asLong());
-		user.setProfileMedium(root.get("profile_medium").asText());
-		user.setProfile(root.get("profile").asText());
-		user.setFriend(root.get("friend").asText());
-		user.setFollower(root.get("follower").asText());
+		user.setId(root.get("id") == null ? null : root.get("id").asLong());
+		user.setUsername(root.get("username")== null ? null : root.get("username").asText());
+		user.setResourceState(root.get("resource_state")== null ? null : root.get("resource_state").asInt());
+		user.setFirstName(root.get("firstname")== null ? null : root.get("firstname").asText());
+		user.setLastName(root.get("lastname")== null ? null : root.get("lastname").asText());
+		user.setCity(root.get("city")== null ? null : root.get("city").asText());
+		user.setState(root.get("state")== null ? null : root.get("state").asText());
+		user.setCountry(root.get("country")== null ? null : root.get("country").asText());
+		user.setSex(root.get("sex")== null ? null : root.get("sex").asText());
+		user.setPremium(root.get("premium")== null ? null : root.get("premium").asBoolean());
+		user.setCreatedAt(root.get("created_at")== null ? null :root.get("created_at").asText());
+		user.setUpdatedAt(root.get("updated_at")== null ? null :root.get("updated_at").asText());
+		user.setBadgeTypeId(root.get("badge_type_id")== null ? null :root.get("badge_type_id").asInt());
+		user.setWeight(root.get("weight")== null ? null :root.get("weight").asLong());
+		user.setProfileMedium(root.get("profile_medium")== null ? null :root.get("profile_medium").asText());
+		user.setProfile(root.get("profile")== null ? null :root.get("profile").asText());
+		user.setFriend(root.get("friend")== null ? null :root.get("friend").asText());
+		user.setFollower(root.get("follower")== null ? null :root.get("follower").asText());
 		return user;
 	}
 }

@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ducnh.oauth2_server.model.constants.ResourceState;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -20,11 +23,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity(name = "strava_activity")
 public class StravaActivity {
 	
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	public static final Logger logger = LoggerFactory.getLogger(StravaActivity.class);
 
 	@Id
 	private Long id;
@@ -432,6 +435,10 @@ public class StravaActivity {
 		return this.startDateLocal.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
 	}
 	
+	public String formatTimeElapsed() {
+		return "" +(this.elapsedTime/60) + "m" + ("0" + (this.elapsedTime % 60)).substring(1) + "s";
+	}
+	
 	public static StravaActivity createActivityFromResponse(JsonNode root) {
 		StravaActivity activity = new StravaActivity();
 		activity.setResourceState(root.get("resource_state") == null ? null : root.get("resource_state").asInt());
@@ -476,6 +483,7 @@ public class StravaActivity {
 		activity.setKilojoules(root.get("kilojoules")== null ? null :root.get("kilojoules").asDouble());
 		activity.setElevHigh(root.get("elev_high")== null ? null : root.get("elev_high").asDouble());
 		activity.setElevLow(root.get("elev_low")== null ? null : root.get("elev_low").asDouble());
+		logger.info(activity.toString());
 		return activity;
 	}
 }

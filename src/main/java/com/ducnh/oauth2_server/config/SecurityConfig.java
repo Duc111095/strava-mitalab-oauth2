@@ -87,7 +87,7 @@ public class SecurityConfig {
                 .clientRegistrationRepository(clientRegistrationRepository())
         		.authorizedClientService(authorizedClientService())
         		.tokenEndpoint(c -> c.accessTokenResponseClient(accessTokenResponseClient()))
-        		.defaultSuccessUrl("/oauth_login"));
+        		.defaultSuccessUrl("/activities"));
 		return http.build();
 	}
 	
@@ -138,7 +138,7 @@ public class SecurityConfig {
             .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
             .scope("activity:read_all")
             .authorizationUri("https://www.strava.com/oauth/authorize")
-            .tokenUri("https://www.strava.com/api/v3/oauth/token?client_id=152115&client_secret=27e1f519e4f98eac360feee381e74ace57c93df0")
+            .tokenUri("https://www.strava.com/api/v3/oauth/token?client_id=153933&client_secret=006001ccfa088e829a11f55d30285f7743adfbbe")
             .userInfoUri("https://www.strava.com/api/v3/athlete")
             .userNameAttributeName("id")
             .clientName("Strava")

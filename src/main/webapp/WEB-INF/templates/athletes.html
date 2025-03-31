@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Danh sách hoạt động</title>
+    <title>Hệ thống quản lý Strava</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -83,22 +83,21 @@
         </ul>
     </div>
     
-    <div class="content">
-        <h1>Danh sách hoạt động</h1>
+        <h1>Danh sách người dùng</h1>
         <table>
             <tr>
-                <th>Tên người dùng</th>
-                <th>Activity Name</th>
-                <th>Quãng đường (km)</th>
-                <th>Tổng thời gian hoạt động</th>
-                <th>Ngày hoạt động</th>
+                <th>ID</th>
+                <th>Họ</th>
+                <th>Tên</th>
+                <th>Thành phố</th>
+                <th>Ngày tạo</th>
             </tr>
-            <tr th:each="activity : ${allActivities}">
-                <td th:text="${activity.getAthleteId()}"></td>
-                <td th:text="${activity.getName()}"></td>
-                <td th:text="${activity.getDistance()}"></td>
-                <td th:text="${activity.formatTimeElapsed()}"></td>
-                <td th:text="${activity.getFormatedDateFromStartDateLocal()}"></td>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.firstname}"></td>
+                <td th:text="${user.lastname}"></td>
+                <td th:text="${user.city}"></td>
+                <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
             </tr>
         </table>
     </div>
