@@ -8,6 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +20,6 @@ import com.ducnh.oauth2_server.model.constants.ResourceState;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +27,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "strava_activity")
+@NamedStoredProcedureQueries({
+@NamedStoredProcedureQuery(name = "summary_activities", procedureName = "summary_activities", 
+		parameters = {@StoredProcedureParameter(mode = ParameterMode.IN,name = "start_date",type=LocalDateTime.class), 
+				@StoredProcedureParameter(mode = ParameterMode.IN,name = "end_date",type=LocalDateTime.class),
+				@StoredProcedureParameter(mode = ParameterMode.IN,name = "type_summary",type=String.class)}
+)})
 public class StravaActivity {
 	
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");

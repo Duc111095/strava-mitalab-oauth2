@@ -7,5 +7,4 @@ import com.ducnh.oauth2_server.model.StravaActivity;
 
 @Repository
 public interface ActivityRepository extends CrudRepository<StravaActivity, Long>{
-
 }

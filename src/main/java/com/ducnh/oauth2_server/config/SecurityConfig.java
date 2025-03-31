@@ -87,7 +87,7 @@ public class SecurityConfig {
                 .clientRegistrationRepository(clientRegistrationRepository())
         		.authorizedClientService(authorizedClientService())
         		.tokenEndpoint(c -> c.accessTokenResponseClient(accessTokenResponseClient()))
-        		.defaultSuccessUrl("/activities"));
+        		.defaultSuccessUrl("/oauth_login"));
 		return http.build();
 	}
 	

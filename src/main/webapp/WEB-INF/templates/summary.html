@@ -84,22 +84,29 @@
         </ul>
     </div>
     
-    <div class="content" th:unless="${#lists.isEmpty(allActivities)}">
-        <h1>Danh sách hoạt động</h1>
-        <table>
+    <div class="content">
+        <h1>Tong ket hoạt động</h1>
+            <form th:action="@{/summary}" th:object="${periodForm}" method="post">
+                <label for="startDate">Ngày bắt đầu:</label>
+                <input type="datetime-local" id="startDate" name="startDate" required>
+                <label for="endDate">Ngày kết thúc:</label>
+                <input type="datetime-local" id="endDate" name="endDate" required>
+                <button type="submit">Tong hop</button>
+            </form>
+        <table class="summary" th:unless="${#lists.isEmpty(allActivitiesSummary)}">
             <tr>
-                <th>Tên người dùng</th>
-                <th>Activity Name</th>
-                <th>Quãng đường (km)</th>
+                <th>ID người dùng</th>
+                <th>Ten nguoi dung</th>
+                <th>Tong quang duong (km)</th>
                 <th>Tổng thời gian hoạt động</th>
-                <th>Ngày hoạt động</th>
+                <th>Average Pace</th>
             </tr>
-            <tr th:each="activity : ${allActivities}">
-                <td th:text="${activity.getAthleteId()}"></td>
-                <td th:text="${activity.getName()}"></td>
-                <td th:text="${activity.getDistance()}"></td>
-                <td th:text="${activity.formatTimeElapsed()}"></td>
-                <td th:text="${activity.getFormatedDateFromStartDateLocal()}"></td>
+            <tr th:each="ac : ${allActivitiesSummary}">
+                <td th:text="${ac.getAthleteId()}"></td>
+                <td th:text="${ac.getAthleteName()}"></td>
+                <td th:text="${ac.getTotalDistance()}"></td>
+                <td th:text="${ac.getFormattedMovingTime()}"></td>
+                <td th:text="${ac.getFormattedPaced()}"></td>
             </tr>
         </table>
     </div>
