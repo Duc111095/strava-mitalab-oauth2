@@ -64,7 +64,13 @@ public class ActivitySummary {
 	}
 	
 	public String getFormattedMovingTime() {
-		return "" + (this.totalMovingTime / 60) + "m" + ("0" +(this.totalMovingTime % 60)).substring(1) + "s"; 
+		if (this.totalMovingTime < 3600) {
+			return "" + (this.totalMovingTime / 60) + "m" + ("0" +(this.totalMovingTime % 60)).substring(1) + "s"; 
+		}
+		int hour = this.totalMovingTime / 3600;
+		int minutes = (this.totalMovingTime % 3600) / 60;
+		int second = this.totalMovingTime - hour * 3600 - 60 * minutes;
+		return  "" + hour + "h" + minutes + "m" + second + "s"; 
 	}
 	
 	public void setPaced(double paced) {
@@ -76,6 +82,6 @@ public class ActivitySummary {
 	}
 	
 	public String getFormattedPaced() {
-		return String.format("%.2f m", this.paced);
+		return String.format("%dm%ds", (int)(this.paced/60), Math.round(this.paced) % 60);
 	}
 }

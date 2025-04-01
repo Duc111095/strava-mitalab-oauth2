@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ducnh.oauth2_server.model.AthleteUser;
 import com.ducnh.oauth2_server.model.PolylineMap;
@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Controller
+@RequestMapping("/strava-oauth")
 public class LoginController {
 
 	public static final Logger logger = LoggerFactory.getLogger(LoginController.class);

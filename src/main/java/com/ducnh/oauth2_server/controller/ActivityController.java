@@ -10,6 +10,7 @@ import com.ducnh.oauth2_server.model.StravaActivity;
 import com.ducnh.oauth2_server.service.ActivityService;
 
 @Controller
+@RequestMapping("/strava-oauth")
 public class ActivityController {
 	
 	@Autowired

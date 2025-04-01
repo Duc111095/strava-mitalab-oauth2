@@ -9,12 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ducnh.oauth2_server.form.PeriodForm;
 import com.ducnh.oauth2_server.model.ActivitySummary;
 import com.ducnh.oauth2_server.service.ActivityService;
 
 @Controller
+@RequestMapping("/strava-oauth")
 public class SummaryController {
 	
 	@Autowired

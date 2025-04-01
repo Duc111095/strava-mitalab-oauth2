@@ -104,12 +104,10 @@ public class SecurityConfig {
 	}
 	
 	private ClientRegistration getRegistration(String client) {
-		logger.info(client);
 		String clientId = env.getProperty(CLIENT_PROPERTY_KEY + client + ".clientId");
 		if (clientId == null) {
 			return null;
 		}
-		logger.info("Client Id: " + clientId);
 		
 		String clientSecret = env.getProperty(CLIENT_PROPERTY_KEY + client + ".clientSecret");
 		if (client.equals("github")) {
@@ -119,7 +117,6 @@ public class SecurityConfig {
 		if (client.equals("strava")) {
 			return stravaClientRegistration(clientId, clientSecret);
 		}
-		logger.info("Client Secret: " + clientSecret);
 
 		return null;
 	}
@@ -213,17 +210,7 @@ public class SecurityConfig {
 	    			.build();
 	    	
 	    	tokenRepo.save(token);
-	    	logger.info("athleteId: " + athleteId);
-
-	    	//StravaToken newToken = StravaToken.Builder(). 
-	    	logger.info("accessToken: " + tokenResponseParameters.getOrDefault("access_token", ""));
-	    	logger.info("athlete: " + tokenResponseParameters.getOrDefault("athlete", ""));
-	    	logger.info("token_type : " + tokenResponseParameters.getOrDefault("token_type", ""));
-	    	logger.info("refreshToken: " + tokenResponseParameters.getOrDefault("refresh_token", ""));
-	    	logger.info("expires in: " + tokenResponseParameters.getOrDefault("expires_in", ""));
-	    	logger.info("expires at: " + tokenResponseParameters.getOrDefault("expires_at", ""));
-	    	// Insert Database
-
+	    	logger.info("Saved token: " + token.getAccessToken());
 	    	return original;
 	    };
 	}

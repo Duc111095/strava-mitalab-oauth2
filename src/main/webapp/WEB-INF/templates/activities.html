@@ -90,9 +90,9 @@
 </head>
 <body>
     <div class="sidebar">
-        <a href="/events">Event</a>
-        <a href="/activities">Danh sách hoạt động</a>
-        <a href="/users">Danh sách vận động viên</a>
+        <a href="/events">Sự kiện</a>
+        <a href="#">Danh sách hoạt động</a>
+        <a href="/athletes">Danh sách vận động viên</a>
         <a href="/summary">Tổng hợp</a>
     </div>
     <div class="main-content"  th:unless="${#lists.isEmpty(allActivities)}">
@@ -114,7 +114,8 @@
 				                <td th:text="${activity.getDistance()}"></td>
 				                <td th:text="${activity.formatTimeElapsed()}"></td>
 				                <td th:text="${activity.getFormatedDateFromStartDateLocal()}"></td>
-				            </tr>
+				            	<td><a th:href="@{https://www.strava.com/activities/{id}(id=${activity.getId()})}" target="blank">View On Strava</a></td>
+				        </tr>
             </table>
         </div>
         <div class="footer">Powered by ERP</div>
