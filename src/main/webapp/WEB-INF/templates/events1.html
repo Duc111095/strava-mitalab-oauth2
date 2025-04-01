@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sự kiện</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            display: flex;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #00509e;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+        }
+        .sidebar h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar ul li a:hover {
+            background-color: #003f7f;
+            border-radius: 5px;
+        }
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+            width: calc(100% - 270px);
+        }
+        h1 {
+            color: #00509e;
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+            background: #ffffff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #00509e;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #e6f2ff;
+        }
+        tr:hover {
+            background-color: #cce7ff;
+        }
+        .button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 10;
+        }
+        .popup input, .popup textarea, .popup button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .popup button {
+            background-color: #00509e;
+            color: white;
+            cursor: pointer;
+        }
+        .popup button:hover {
+            background-color: #003f7f;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+    </style>
+    <script>
+        function openPopup() {
+            document.getElementById("popup").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        }
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+    </script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Quản lý</h2>
+        <ul>
+            <li><a href="/events">Sự Kiện</a></li>
+            <li><a href="/users">Danh sách người dùng</a></li>
+            <li><a href="/activities">Danh sách hoạt động</a></li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <h1>Danh sách sự kiện</h1>
+        
+        <div class="button-container">
+            <button onclick="openPopup()">Tạo sự kiện mới</button>
+        </div>
+        
+        <div class="overlay" id="overlay" onclick="closePopup()"></div>
+        <div class="popup" id="popup">
+            <h2>Tạo sự kiện mới</h2>
+            <form th:action="@{/events/create}" th:object="${personForm}" method="post">
+                <input type="text" name="eventName" placeholder="Tên sự kiện" required>
+                <input type="number" name="teamCount" placeholder="Số đội">
+                <label for="startDate">Ngày bắt đầu:</label>
+                <input type="datetime-local" id="startDate" name="startDate" required>
+                <label for="endDate">Ngày kết thúc:</label>
+                <input type="datetime-local" id="endDate" name="endDate" required>
+                <label for="description">Mô tả sự kiện:</label>
+                <textarea id="description" name="description" placeholder="Nhập mô tả sự kiện..."></textarea>
+                <button type="submit">Tạo sự kiện</button>
+                <button type="button" onclick="closePopup()">Hủy</button>
+            </form>
+        </div>
+        
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Tên sự kiện</th>
+                <th>Số đội</th>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
+                <th>Mô tả</th>
+            </tr>
+            <tr th:each="event : ${events}">
+                <td th:text="${event.getId()}"></td>
+                <td th:text="${event.getEventName()}"></td>
+                <td th:text="${event.getTeamCount()}"></td>
+                <td th:text="${event.getStartDate()}"></td>
+                <td th:text="${event.getEndDate()}"></td>
+                <td th:text="${event.getDescription()}"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

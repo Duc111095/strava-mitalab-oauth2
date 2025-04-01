@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Danh Sách Vận Động Viên</title>
+    <title>Danh Sách Sự Kiện</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -83,6 +83,11 @@
         tr:nth-child(even) {
             background-color: #2A2A2A;
         }
+        tr:hover {
+            background-color: white;
+            color: #121212;
+            transition: all 0.3s ease-in-out;
+        }
         .footer {
             padding: 10px;
             text-align: center;
@@ -101,24 +106,26 @@
     </div>
     <div class="main-content">
         <div class="container">
-            <h1>Danh Sách Vận Động Viên</h1>
+            <h1>Danh Sách Sự Kiện</h1>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Họ</th>
-                        <th>Tên</th>
-                        <th>Thành phố</th>
-                        <th>Ngày tạo</th>
+                        <th>Tên sự kiện</th>
+                        <th>Số đội</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Mô tả</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="user : ${users}">
-                        <td th:text="${user.getId()}"></td>
-			            <td th:text="${user.getFirstName()}"></td>
-			            <td th:text="${user.getLastName()}"></td>
-			            <td th:text="${user.getCity()}"></td>
-                        <td th:text="${user.getCreatedAt()}"></td>
+                    <tr th:each="event : ${events}">
+                     	<td th:text="${event.getId()}"></td>
+		                <td th:text="${event.getEventName()}"></td>
+		                <td th:text="${event.getTeamCount()}"></td>
+                        <td th:text="${event.getStartDate()}"></td>
+                        <td th:text="${event.getEndDate()}"></td>
+                        <td th:text="${event.getDescription()}"></td>
                     </tr>
                 </tbody>
             </table>

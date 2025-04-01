@@ -2,78 +2,93 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Danh sách sự kiện</title>
+    <title>Danh Sách Sự Kiện</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
+            text-align: center;
+            background-color: #121212;
+            color: #E0E0E0;
             margin: 0;
+            padding: 0;
             display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .sidebar {
-            width: 250px;
-            background-color: #00509e;
-            color: white;
+            width: 220px;
+            background-color: #1E1E1E;
             padding: 20px;
             height: 100vh;
+            text-align: left;
             position: fixed;
+            top: 0;
+            left: 0;
         }
-        .sidebar h2 {
-            margin-top: 0;
-            text-align: center;
-        }
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .sidebar ul li {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .sidebar ul li a {
-            color: white;
-            text-decoration: none;
+        .sidebar a {
             display: block;
-        }
-        .sidebar ul li a:hover {
-            background-color: #003f7f;
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 10px;
             border-radius: 5px;
+            background-color: #2A2A2A;
+            transition: all 0.3s ease-in-out;
         }
-        .content {
-            margin-left: 270px;
+        .sidebar a:hover {
+            background-color: #ff8c00;
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+        .main-content {
+            margin-left: 240px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .container {
+            margin: 50px auto;
             padding: 20px;
-            width: calc(100% - 270px);
+            max-width: 900px;
+            background-color: #1E1E1E;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+            flex-grow: 1;
         }
-        h1 {
-            color: #00509e;
-            text-align: center;
+        h1, th {
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         table {
-            width: 80%;
-            margin: auto;
+            width: 100%;
             border-collapse: collapse;
-            background: #ffffff;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
         th, td {
             padding: 12px;
-            border: 1px solid #ddd;
             text-align: left;
         }
         th {
-            background-color: #00509e;
-            color: white;
+            background-color: #333;
         }
         tr:nth-child(even) {
-            background-color: #e6f2ff;
+            background-color: #2A2A2A;
         }
         tr:hover {
-            background-color: #cce7ff;
+            background-color: white;
+            color: #121212;
+            transition: all 0.3s ease-in-out;
         }
-        .button-container {
+        .footer {
+            padding: 10px;
             text-align: center;
-            margin-bottom: 20px;
+            font-size: 14px;
+            background-color: #1E1E1E;
+            width: 100%;
         }
         .popup {
             display: none;
@@ -81,101 +96,177 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: white;
+            background-color: #1E1E1E;
             padding: 20px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            z-index: 10;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+            width: 400px;
         }
-        .popup input, .popup textarea, .popup button {
+        .popup input, .popup textarea {
             width: 100%;
             padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background-color: #333;
+            color: #E0E0E0;
         }
         .popup button {
-            background-color: #00509e;
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            border: none;
+            padding: 10px;
             color: white;
             cursor: pointer;
-        }
-        .popup button:hover {
-            background-color: #003f7f;
-        }
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 5;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .popup .cancel-button {
+            background-color: #444;
+            border: none;
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+            color: #E0E0E0;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .form-actions button {
+            flex: 1;
         }
     </style>
-    <script>
-        function openPopup() {
-            document.getElementById("popup").style.display = "block";
-            document.getElementById("overlay").style.display = "block";
-        }
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
-            document.getElementById("overlay").style.display = "none";
-        }
-    </script>
 </head>
 <body>
     <div class="sidebar">
-        <h2>Quản lý</h2>
-        <ul>
-            <li><a href="/events">Sự Kiện</a></li>
-            <li><a href="/users">Danh sách người dùng</a></li>
-            <li><a href="/activities">Danh sách hoạt động</a></li>
-        </ul>
+        <a th:href="@{/events}">Sự Kiện</a>
+        <a th:href="@{/activities}">Hoạt động</a>
+        <a th:href="@{/athletes}">Danh sách vận động viên</a>
+        <a th:href="@{/summary}">Tổng hợp</a>
     </div>
-    
-    <div class="content">
-        <h1>Danh sách sự kiện</h1>
-        
-        <div class="button-container">
-            <button onclick="openPopup()">Tạo sự kiện mới</button>
+    <div class="main-content">
+        <div class="container">
+            <h1>Danh Sách Sự Kiện</h1>
+            
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+            
+            <button onclick="document.getElementById('popup').style.display='block'">Tạo Sự Kiện</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên Sự Kiện</th>
+                        <th>Số Đội</th>
+                        <th>Ngày Bắt Đầu</th>
+                        <th>Ngày Kết Thúc</th>
+                        <th>High Pace</th>
+                        <th>Low Pace</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="event : ${events}">
+                        <td th:text="${event.getId()}"></td>
+                        <td th:text="${event.getEventName()}"></td>
+                        <td th:text="${event.getTeamCount()}"></td>
+                        <td th:text="${event.getStartDate()}"></td>
+                        <td th:text="${event.getEndDate()}"></td>
+                        <td th:text="${event.getHighPace()}"></td>
+                        <td th:text="${event.getLowPace()}"></td>
+                        <td>
+                            <a th:href="@{/events/{id}/edit(id=${event.getId()})}" style="color: #ff8c00;">Sửa</a> | 
+                            <a th:href="@{/events/{id}/delete(id=${event.getId()})}" 
+                               onclick="return confirm('Bạn có chắc chắn muốn xóa sự kiện này?');" 
+                               style="color: #ff0000;">Xóa</a>
+                        </td>
+                    </tr>
+                    <!-- Hiển thị thông báo nếu không có sự kiện nào -->
+                    <tr th:if="${#lists.isEmpty(events)}">
+                        <td colspan="8" style="text-align: center;">Không có sự kiện nào</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup">
-            <h2>Tạo sự kiện mới</h2>
-            <form th:action="@{/events/create}" th:object="${personForm}" method="post">
-                <input type="text" name="eventName" placeholder="Tên sự kiện" required>
-                <input type="number" name="teamCount" placeholder="Số đội">
-                <label for="startDate">Ngày bắt đầu:</label>
-                <input type="datetime-local" id="startDate" name="startDate" required>
-                <label for="endDate">Ngày kết thúc:</label>
-                <input type="datetime-local" id="endDate" name="endDate" required>
-                <label for="description">Mô tả sự kiện:</label>
-                <textarea id="description" name="description" placeholder="Nhập mô tả sự kiện..."></textarea>
-                <button type="submit">Tạo sự kiện</button>
-                <button type="button" onclick="closePopup()">Hủy</button>
+        <div id="popup" class="popup">
+            <h2>Tạo Sự Kiện</h2>
+            <form th:action="@{/events/create}" method="post" th:object="${newEvent}">
+                <div class="form-group">
+                    <label for="name">Tên Sự Kiện</label>
+                    <input type="text" id="name" th:field="*{eventName}" placeholder="Tên Sự Kiện" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="numberOfTeams">Số Đội</label>
+                    <input type="number" id="teamCount" th:field="*{teamCount}" placeholder="Số Đội" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="startDate">Ngày Bắt Đầu</label>
+                    <input type="datetime-local" id="startDate" th:field="*{startDate}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endDate">Ngày Kết Thúc</label>
+                    <input type="datetime-local" id="endDate" th:field="*{endDate}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="highPace">High Pace</label>
+                    <input type="number" id="highPace" th:field="*{highPace}" placeholder="High Pace" step="0.1" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="lowPace">Low Pace</label>
+                    <input type="number" id="lowPace" th:field="*{lowPace}" placeholder="Low Pace" step="0.1" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Mô Tả</label>
+                    <textarea id="description" th:field="*{description}" placeholder="Mô Tả"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit">Lưu</button>
+                    <a th:href="@{/events}" class="cancel-button" style="display: block; text-align: center; text-decoration: none; color: white; padding: 10px;">Hủy</a>
+                </div>
             </form>
         </div>
         
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Tên sự kiện</th>
-                <th>Số đội</th>
-                <th>Ngày bắt đầu</th>
-                <th>Ngày kết thúc</th>
-                <th>Mô tả</th>
-            </tr>
-            <tr th:each="event : ${events}">
-                <td th:text="${event.getId()}"></td>
-                <td th:text="${event.getEventName()}"></td>
-                <td th:text="${event.getTeamCount()}"></td>
-                <td th:text="${event.getStartDate()}"></td>
-                <td th:text="${event.getEndDate()}"></td>
-                <td th:text="${event.getDescription()}"></td>
-            </tr>
-        </table>
+        <div class="footer" th:text="${footerText ?: 'Powered by ERP'}"></div>
     </div>
+    
+    <!-- Script để hiển thị popup nếu có lỗi khi tạo sự kiện -->
+    <script th:if="${showPopup}">
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('popup').style.display = 'block';
+        });
+    </script>
 </body>
 </html>

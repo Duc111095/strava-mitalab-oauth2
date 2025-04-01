@@ -1,6 +1,7 @@
 package com.ducnh.oauth2_server.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -9,6 +10,8 @@ import javax.persistence.Id;
 
 @Entity(name = "strava_event")
 public class StravaEvent {
+	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
 	@Id
 	private String id;
 	
@@ -25,17 +28,26 @@ public class StravaEvent {
 	private LocalDateTime endDate;
 	
 	@Column(nullable = true)
+	private Double lowPace;
+	
+	@Column(nullable = true)
+	private Double highPace;
+	
+	@Column(nullable = true)
 	private String description;
 	
 	public StravaEvent() {}
 	
-	public StravaEvent(String eventName, int teamCount, LocalDateTime startDate, LocalDateTime endDate, String description) {
+	public StravaEvent(String eventName, int teamCount, LocalDateTime startDate, LocalDateTime endDate, String description, double lowPace, double highPace) {
 		this.id = UUID.randomUUID().toString();
 		this.eventName = eventName;
 		this.teamCount = teamCount;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.description = description;
+		this.lowPace = lowPace;
+		this.highPace = highPace;
+		
 	}
 	
 	public void setId(String id) {
@@ -44,6 +56,22 @@ public class StravaEvent {
 	
 	public String getId() {
 		return this.id;
+	}
+	
+	public void setLowPace(double lowPace) {
+		this.lowPace = lowPace;
+	}
+	
+	public Double getLowPace() {
+		return this.lowPace;
+	}
+	
+	public void setHighPace(double highPace) { 
+		this.highPace = highPace;
+	}
+	
+	public Double getHighPace() {
+		return this.highPace;
 	}
 	
 	public void setEventName(String eventName) {
@@ -58,16 +86,16 @@ public class StravaEvent {
 		this.startDate = startDate;
 	}
 	
-	public LocalDateTime getStartDate() {
-		return this.startDate;
+	public String getStartDate() {
+		return this.startDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
 	}
 	
 	public void setEndDate(LocalDateTime endDate) {
 		this.endDate = endDate;
 	}
 	
-	public LocalDateTime getEndDate() {
-		return this.endDate;
+	public String getEndDate() {
+		return this.endDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
 	}
 	
 	public void setTeamCount(int teamCount) {

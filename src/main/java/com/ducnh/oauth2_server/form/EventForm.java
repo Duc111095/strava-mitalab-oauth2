@@ -12,6 +12,8 @@ public class EventForm {
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
 	private String description;
+	private Double lowPace;
+	private Double highPace;
 
 	public void setEventName(String eventName) {
 		this.eventName = eventName;
@@ -46,6 +48,22 @@ public class EventForm {
 		return this.teamCount;
 	}
 
+	public void setHighPace(Double highPace) {
+		this.highPace = highPace;
+	}
+	
+	public Double getHighPace() {
+		return this.highPace;
+	}
+	
+	public void setLowPace(Double lowPace) {
+		this.lowPace = lowPace;
+	} 
+	
+	public Double getLowPace() {
+		return this.lowPace;
+	}
+	
 	public String getDescription() {
 		return this.description;
 	}

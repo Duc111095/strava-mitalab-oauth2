@@ -1,5 +1,7 @@
 package com.ducnh.oauth2_server.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +20,13 @@ public class EventService {
 	
 	public Iterable<StravaEvent> findAll() {
 		return eventRepository.findAll();
+	}
+	
+	public void delete(String id) {
+		eventRepository.deleteById(id);
+	}
+	
+	public Optional<StravaEvent> findById(String id) {
+		return eventRepository.findById(id);
 	}
 }
