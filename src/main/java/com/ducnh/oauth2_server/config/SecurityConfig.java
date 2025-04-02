@@ -58,29 +58,28 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-		.antMatchers("/",
-				"/info",
-				"/error",
-                "/favicon.ico",
-                "/**/*.png",
-                "/**/*.gif",
-                "/**/*.svg",
-                "/**/*.jpg",
-                "/**/*.html",
-                "/**/*.css",
-                "/**/*.js")
-			.permitAll()
-		.antMatchers("/auth/**", "/oauth2/**")
-			.permitAll()
-		.anyRequest().authenticated()
-		.and()
-		.oauth2Login(oauth2Login ->
-			oauth2Login
-                .clientRegistrationRepository(clientRegistrationRepository())
-        		.authorizedClientService(authorizedClientService())
-        		.tokenEndpoint(c -> c.accessTokenResponseClient(accessTokenResponseClient()))
-        		.defaultSuccessUrl("/oauth_login"));
+        http.authorizeRequests(requests -> requests
+                .antMatchers("/",
+                        "/info",
+                        "/error",
+                        "/favicon.ico",
+                        "/**/*.png",
+                        "/**/*.gif",
+                        "/**/*.svg",
+                        "/**/*.jpg",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js")
+                .permitAll()
+                .antMatchers("/auth/**", "/oauth2/**")
+                .permitAll()
+                .anyRequest().authenticated())
+                .oauth2Login(oauth2Login ->
+                        oauth2Login
+                                .clientRegistrationRepository(clientRegistrationRepository())
+                                .authorizedClientService(authorizedClientService())
+                                .tokenEndpoint(c -> c.accessTokenResponseClient(accessTokenResponseClient()))
+                                .defaultSuccessUrl("/register"));
 		return http.build();
 	}
 	

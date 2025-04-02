@@ -20,7 +20,6 @@ public class RegisterIdentity implements Serializable{
 	}
 	
 	public RegisterIdentity() {
-		//TODO Auto-generated constructor stub
 	}
 
 	public String getEventId() {
@@ -52,5 +51,10 @@ public class RegisterIdentity implements Serializable{
 		int result = this.athleteId.hashCode();
 		result = 31 * result + this.eventId.hashCode();
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "RegisterIdentity [eventId=" + eventId + ", athleteId=" + athleteId + "]";
 	}
 }

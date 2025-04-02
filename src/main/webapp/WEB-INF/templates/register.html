@@ -4,24 +4,156 @@
     <title>Team Registration</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .form-group label{
+            margin-bottom: 5px;
+            text-align: left;
+            color: #E0E0E0;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container">
+    <div class="sidebar">
+        <a th:href="@{/events}">Sự kiện</a>
+        <a th:href="@{#}">Đăng ký</a>
+        <a th:href="@{/activities}">Danh sách hoạt động</a>
+        <a th:href="@{/athletes}">Danh sách vận động viên</a>
+        <a th:href="@{/summary}">Tổng hợp</a>
+    </div>
+    <div class="main-container">
         <h2 class="page-title">Team Registration</h2>
-        <div class="form-container">
+        <div class="registration-form" id="registration-form">
             <form th:action="@{/register}" th:object="${registerForm}" method="post">
                 <div class="form-group">
                     <label for="eventId">Event ID:</label>
-                    <input type="text" id="eventId" th:field="*{eventId}" class="form-control" required>
+                    <select id="eventId" th:field="*{eventId}" class="form-control" required>
+                        <option th:each="event : ${events}" th:value="${event.getId()}" th:text="${event.getEventName()}" th:attr="data-max=${event.getTeamCount()}"></option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="teamId">Team ID:</label>
-                    <input type="number" id="teamId" th:field="*{teamId}" class="form-control" required>
+                    <select id="teamId" th:field="*{teamId}" class="form-control" required>
+                        <option value="0" disabled selected>Select a team</option>
+                    </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" onclick="disableForm()" class="btn btn-primary">Register</button>
             </form>
         </div>
     </div>
-</body>
+    <div class="main-content">
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID nguoi dung</th>
+                        <th>Tên người dùng</th>
+                        <th>Ten su kien</th>
+                        <th>Ten doi</th>
+                        <th>Thoi gian cap nhat</th>
+                    </tr>
+                </thead>
+				 <tbody  id="athleteTableBody"></tbody>
+            </table>
+        </div>
+    <div class="footer-left">
+        <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
+            <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
+        </a>
+    </div>
+        <div class="footer-right">Developed by ERP</div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const eventSelect = document.getElementById("eventId");
+            const teamIdInput = document.getElementById("teamId");
+
+            // Set the default value for teamIdInput
+            const selectedEvent = eventSelect.options[eventSelect.selectedIndex];
+            if (selectedEvent) {
+                const maxTeams = selectedEvent.getAttribute("data-max");
+                if (maxTeams == 1) {
+                    teamIdInput.hidden = true;
+                    teamIdInput.value = 1;
+                }
+                else {
+                    for (let i = 1; i <= maxTeams; i++) {
+                        const option = document.createElement("option");
+                        option.value = i;
+                        option.textContent = "Team " + i;
+                        teamIdInput.appendChild(option);
+                    }
+                }
+            }
+           
+            // Add event listener to update teamIdInput based on selected event
+            eventSelect.addEventListener("change", function() {
+                const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+                const maxTeams = selectedOption.getAttribute("data-max");
+                console.log("Max teams: " + maxTeams);
+                if (maxTeams == 1) {
+                    teamIdInput.hidden = true;
+                    teamIdInput.value = 1;
+                }
+                else {
+                    teamIdInput.innerHTML = "";
+                    for (let i = 1; i <= maxTeams; i++) {
+                        const option = document.createElement("option");
+                        option.value = i;
+                        option.textContent = "Team " + i;
+                        teamIdInput.appendChild(option);
+                    }
+                }
+            });
+
+            function fetchRegisteredAthletes(eventId) {
+                fetch("registered-athletes", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ eventId: eventId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const athleteTableBody = document.getElementById("athleteTableBody");
+                    athleteTableBody.innerHTML = "";
+
+                    // Populate the table with the response data
+                    data.forEach(athlete => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${athlete.getAthleteId()}</td>
+                            <td>${athlete.getAthleteName()}</td>
+                            <td>${athlete.getEventName()}</td>
+                            <td>${athlete.getTeamId()}</td>
+                            <td>${athlete.getRegisteredAt()}</td>
+                        `;
+                        athleteTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error fetching registered athletes:", error));
+            }
+
+            // Fetch athletes when the event changes
+            eventSelect.addEventListener("change", function () {
+                const selectedEventId = eventSelect.value;
+                if (selectedEventId) {
+                    fetchRegisteredAthletes(selectedEventId);
+                }
+            });
+
+            // Initial fetch for the default selected event
+            if (eventSelect.value) {
+                fetchRegisteredAthletes(eventSelect.value);
+            }
+        });
+            function disableForm() {
+                const form = document.getElementById("registration-form");
+                form.hidden = true;
+            }
+            
+        </script>
+    </body>
 </html>

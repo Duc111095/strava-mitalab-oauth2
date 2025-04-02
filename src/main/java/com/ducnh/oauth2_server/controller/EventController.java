@@ -17,7 +17,6 @@ import com.ducnh.oauth2_server.service.EventService;
 
 @Controller
 @RequestMapping("")
-
 public class EventController {
 
 	@Autowired

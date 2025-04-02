@@ -25,4 +25,9 @@ public class RegisterForm {
 	public int getTeamId() {
 		return this.teamId;	
 	}
+
+	@Override
+	public String toString() {
+		return "RegisterForm [eventId=" + eventId + ", teamId=" + teamId + "]";
+	}
 } 

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -46,7 +47,7 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 	}
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 	
@@ -87,7 +88,7 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 	}
 	
 	@Override
-	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+	public void addResourceHandlers(final @NonNull ResourceHandlerRegistry registry) {
 		WebMvcConfigurer.super.addResourceHandlers(registry);
 		registry.addResourceHandler("/images/**").addResourceLocations("/WEB-INF/images/");
 		registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/css/");

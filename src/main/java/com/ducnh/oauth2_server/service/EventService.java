@@ -29,4 +29,12 @@ public class EventService {
 	public Optional<StravaEvent> findById(String id) {
 		return eventRepository.findById(id);
 	}
+
+	public boolean existsById(String id) {
+		return eventRepository.existsById(id);
+	}
+	
+	public Iterable<StravaEvent> findCurrentEvent() {
+		return eventRepository.findCurrentEvent();
+	}
 }

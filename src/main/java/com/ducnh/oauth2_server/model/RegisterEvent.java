@@ -79,4 +79,10 @@ public class RegisterEvent {
 	public void onPreUpdate() {
 		this.setUpdatedAt(LocalDateTime.now());
 	}
+
+	@Override
+	public String toString() {
+		return "RegisterEvent [registerId=" + registerId + ", teamId=" + teamId + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + "]";
+	}
  }

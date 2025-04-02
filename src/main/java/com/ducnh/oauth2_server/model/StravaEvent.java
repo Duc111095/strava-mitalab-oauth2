@@ -19,7 +19,7 @@ public class StravaEvent {
 	private String eventName;
 	
 	@Column(nullable = true)
-	private int teamCount;
+	private Integer teamCount;
 	
 	@Column(nullable = true)
 	private LocalDateTime startDate;
@@ -98,11 +98,11 @@ public class StravaEvent {
 		return this.endDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
 	}
 	
-	public void setTeamCount(int teamCount) {
+	public void setTeamCount(Integer teamCount) {
 		this.teamCount = teamCount;
 	}
 	
-	public int getTeamCount() {
+	public Integer getTeamCount() {
 		return this.teamCount;
 	}
 
@@ -112,5 +112,12 @@ public class StravaEvent {
 	
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	@Override
+	public String toString() {
+		return "StravaEvent [id=" + id + ", eventName=" + eventName + ", teamCount=" + teamCount + ", startDate="
+				+ startDate + ", endDate=" + endDate + ", lowPace=" + lowPace + ", highPace=" + highPace
+				+ ", description=" + description + "]";
 	}
 }

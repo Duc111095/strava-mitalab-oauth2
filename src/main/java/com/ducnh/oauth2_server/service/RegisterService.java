@@ -1,7 +1,11 @@
 package com.ducnh.oauth2_server.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.ducnh.oauth2_server.model.RegisterEvent;
 import com.ducnh.oauth2_server.model.keys.RegisterIdentity;
 import com.ducnh.oauth2_server.repository.RegisterRepository;
@@ -34,5 +38,9 @@ public class RegisterService {
 
     public Iterable<RegisterEvent> findAllByEventId(String eventId) {
         return registerRepository.findAllByEventId(eventId);
+    }
+
+    public List<Map<String, Object>> findRegisteredAthlete(String eventId){
+        return registerRepository.findRegisteredAthlete(eventId);
     }
 }
