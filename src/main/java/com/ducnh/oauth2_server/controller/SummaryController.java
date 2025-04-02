@@ -16,7 +16,7 @@ import com.ducnh.oauth2_server.model.ActivitySummary;
 import com.ducnh.oauth2_server.service.ActivityService;
 
 @Controller
-@RequestMapping("/strava-oauth")
+@RequestMapping("")
 public class SummaryController {
 	
 	@Autowired

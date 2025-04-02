@@ -14,7 +14,7 @@ import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.service.EventService;
 
 @Controller
-@RequestMapping("/strava-oauth")
+@RequestMapping("")
 
 public class EventController {
 

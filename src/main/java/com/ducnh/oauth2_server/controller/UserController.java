@@ -11,7 +11,7 @@ import com.ducnh.oauth2_server.model.AthleteUser;
 import com.ducnh.oauth2_server.service.AthleteUserService;
 
 @Controller
-@RequestMapping("/strava-oauth")
+@RequestMapping("")
 public class UserController {
 
 	@Autowired

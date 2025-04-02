@@ -50,7 +50,6 @@ import org.springframework.core.convert.converter.Converter;
 
 import org.springframework.http.converter.FormHttpMessageConverter;
 
-
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:application.properties")
