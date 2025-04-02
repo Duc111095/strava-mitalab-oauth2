@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Strava OAuth</title>
+    <title>Login with Strava</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,39 +18,59 @@
             background-color: white;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
-        .connect-button {
-            background-color: #fc4c02;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 18px;
-            display: inline-block;
-            margin-top: 20px;
-        }
-        .connect-button:hover {
-            background-color: #d84315;
-        }
-        .footer {
-            position: fixed;
-            bottom: 10px;
+        .logo-container {
             width: 100%;
             text-align: center;
-            font-size: 14px;
-            color: #005f73;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            width: 100%;
+            text-align: center;
+            clear: both;
         }
         .logo {
             width: 300px;
             margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .footer-left {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            font-size: 14px;
+            color: #005f73;
+            display: flex;
+            align-items: center;
+        }
+        .footer-right {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 14px;
+            color: #1E1E1E;
+        }
+        .strava-logo {
+            height: 20px;
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="../images/MRC.jpg" th:src="@{images/MRC.jpg}" alt="Mitalab Running" class="logo"/>
-        <h1>Kết nối với Strava</h1>
-        <a href="oauth2/authorization/strava" class="connect-button">Connect with Strava</a>
+        <div class="logo-container">
+            <img th:src="@{/images/MRC.jpg}" alt="Mitalab Running" class="logo">
+        </div>
+        <div>
+            <a th:href="@{/oauth2/authorization/strava}" class="connect-button"><img th:src="@{/images/btn_strava_connect_with.png}"/></a>
+        </div>
     </div>
-    <div class="footer">Powered by ERP</div>
+    <div class="footer-left">
+        <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
+            <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_orange.png}" width=50% height=50%/>
+        </a>
+    </div>
+        <div class="footer-right">Developed by ERP</div>
 </body>
 </html>
