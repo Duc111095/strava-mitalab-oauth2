@@ -1,0 +1,38 @@
+package com.ducnh.oauth2_server.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.ducnh.oauth2_server.model.RegisterEvent;
+import com.ducnh.oauth2_server.model.keys.RegisterIdentity;
+import com.ducnh.oauth2_server.repository.RegisterRepository;
+
+@Service
+public class RegisterService {
+    
+    @Autowired
+    private RegisterRepository registerRepository;
+    
+    public void save(RegisterEvent registerEvent) {
+        registerRepository.save(registerEvent); 
+    }
+
+    public RegisterEvent findById(String eventId, Long athleteId) {
+        return registerRepository.findById(new RegisterIdentity(eventId, athleteId)).orElse(null);
+    }
+
+    public void deleteById(String eventId, Long athleteId) {
+        registerRepository.deleteById(new RegisterIdentity(eventId, athleteId));
+    }
+
+    public boolean existsById(String eventId, Long athleteId) {
+        return registerRepository.existsById(new RegisterIdentity(eventId, athleteId));
+    }
+
+    public Iterable<RegisterEvent> findAll() {
+        return registerRepository.findAll();
+    }
+
+    public Iterable<RegisterEvent> findAllByEventId(String eventId) {
+        return registerRepository.findAllByEventId(eventId);
+    }
+}
