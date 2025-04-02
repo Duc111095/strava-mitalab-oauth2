@@ -9,6 +9,7 @@ import org.apache.tomcat.util.json.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -134,7 +135,7 @@ public class SecurityConfig {
             .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
             .scope("activity:read_all")
             .authorizationUri("https://www.strava.com/oauth/authorize")
-            .tokenUri("https://www.strava.com/api/v3/oauth/token?client_id=153933&client_secret=006001ccfa088e829a11f55d30285f7743adfbbe")
+            .tokenUri("https://www.strava.com/api/v3/oauth/token?client_id="+ clientId + "&client_secret=" + clientSecret)
             .userInfoUri("https://www.strava.com/api/v3/athlete")
             .userNameAttributeName("id")
             .clientName("Strava")
