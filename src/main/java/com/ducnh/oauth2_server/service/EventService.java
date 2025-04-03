@@ -1,5 +1,7 @@
 package com.ducnh.oauth2_server.service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.repository.EventRepository;
+
 
 @Service
 public class EventService {
@@ -36,5 +39,9 @@ public class EventService {
 	
 	public Iterable<StravaEvent> findCurrentEvent() {
 		return eventRepository.findCurrentEvent();
+	}
+
+	public List<Map<String, Object>> findCurrentEventByAthlete(Long athleteId) {
+		return eventRepository.findCurrentEventByAthlete(athleteId);
 	}
 }

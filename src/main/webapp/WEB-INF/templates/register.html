@@ -7,7 +7,8 @@
     <style>
         .form-group label{
             margin-bottom: 5px;
-            text-align: left;
+            text-align: center;
+            size: 20px;
             color: #E0E0E0;
         }
         body {
@@ -34,7 +35,7 @@
         .sidebar a {
             display: block;
             background: linear-gradient(90deg, #ff0000, #ff8c00);
-            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
             padding: 10px;
@@ -66,7 +67,6 @@
         }
         h1, th {
             background: linear-gradient(90deg, #ff0000, #ff8c00);
-            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         table {
@@ -132,6 +132,9 @@
             height: 20px;
             margin-left: 5px;
         }
+        .team-tr {
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -146,7 +149,7 @@
     <div class="main-container">
         <h2 class="page-title">Team Registration</h2>
         <div class="registration-form" id="registration-form">
-            <form th:action="@{/register}" th:object="${registerForm}" method="post" onsubmit="handleFormSubmit(event)">
+            <form th:action="@{/register}" th:object="${registerForm}" method="post">
                 <div class="form-group">
                     <label for="eventId">Chọn sự kiện</label>
                     <select id="eventId" th:field="*{eventId}" class="form-control" required>
@@ -168,14 +171,14 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID VĐV</th>
+                        <th>VĐV</th>
                         <th>Tên VĐV</th>
                         <th>Tên sự kiện</th>
                         <th>Tên đội</th>
                         <th>Thời gian đăng ký</th>
                     </tr>
                 </thead>
-				 <tbody  id="athleteTableBody"></tbody>
+				<tbody id="athleteTableBody"></tbody>
             </table>
         </div>
     <div class="footer-left">
@@ -199,6 +202,7 @@
                     teamIdInput.value = 1;
                 }
                 else {
+                    teamIdInput.innerHTML = "";
                     for (let i = 1; i <= maxTeams; i++) {
                         const option = document.createElement("option");
                         option.value = i;
@@ -228,52 +232,61 @@
                 fetchRegisteredAthletes(eventSelect.value);
             });
 
-            // Fetch athletes when the event changes
-            eventSelect.addEventListener("change", function () {
-                const selectedEventId = eventSelect.value;
-                if (selectedEventId) {
-                    fetchRegisteredAthletes(selectedEventId);
-                }
-            });
-
             // Initial fetch for the default selected event
-            if (eventSelect.value != "") {
-                fetchRegisteredAthletes(eventSelect.value);
-            }
+            fetchRegisteredAthletes(eventSelect.value);
+            
+            // Fetch initial values
+            fetchInitValue();
         });
         function fetchRegisteredAthletes(eventId) {
-                fetch("/strava-oauth/registered-athletes", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ eventId: eventId })
-                })
+            fetch("/registered-athletes", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ eventId: eventId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const athleteTableBody = document.getElementById("athleteTableBody");
+                athleteTableBody.innerHTML = "";
+
+                // Populate the table with the response data
+                data.forEach(athlete => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${athlete.athleteId}</td>
+                        <td>${athlete.athleteName}</td>
+                        <td>${athlete.eventName}</td>
+                        <td id="team-tr">Đội ${athlete.teamId}</td>
+                        <td>${athlete.formatedDateFromStartDateLocal}</td>
+                    `;
+                    athleteTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error fetching registered athletes:", error));
+        }
+
+        function fetchInitValue() {
+            fetch("/register/init")
                 .then(response => response.json())
                 .then(data => {
-                    const athleteTableBody = document.getElementById("athleteTableBody");
-                    athleteTableBody.innerHTML = "";
-
-                    // Populate the table with the response data
-                    data.forEach(athlete => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                            <td>${athlete.athleteId}</td>
-                            <td>${athlete.athleteName}</td>
-                            <td>${athlete.eventName}</td>
-                            <td>Đội ${athlete.teamId}</td>
-                            <td>${athlete.formatedDateFromStartDateLocal}</td>
-                        `;
-                        athleteTableBody.appendChild(row);
-                    });
+                    if (data && data.length > 0) {
+                        const eventSelect = document.getElementById("eventId");
+                        const teamIdInput = document.getElementById("teamId");
+                        const submitButton = document.getElementById("form-actions");
+                        event = data[0];
+                        eventSelect.value = event.eventId;
+                        eventSelect.setAttribute("data-max", event.teamId);
+                        teamIdInput.value = event.teamId;
+                        submitButton.innerText = "Update";
+                    }
                 })
-                .catch(error => console.error("Error fetching registered athletes:", error));
-            }
-            function handleFormSubmit(event) {
-                const eventSelect = document.getElementById("eventId");
-                const form = document.getElementById("registration-form");
-                form.hidden = true;
-            }
+                .catch(error => console.error("Error fetching initial values:", error));
+            fetch("/oauth_login")
+                .then(response => console.log("Get activities successfully"))
+                .catch(error => console.error("Error get Activities: ", error));
+        }
         </script>
     </body>
 </html>

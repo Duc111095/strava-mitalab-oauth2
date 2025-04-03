@@ -80,7 +80,7 @@ public class SecurityConfig {
                                 .clientRegistrationRepository(clientRegistrationRepository())
                                 .authorizedClientService(authorizedClientService())
                                 .tokenEndpoint(c -> c.accessTokenResponseClient(accessTokenResponseClient()))
-                                .defaultSuccessUrl("/oauth_login"));
+                                .defaultSuccessUrl("/register"));
 		return http.build();
 	}
 	
@@ -203,7 +203,6 @@ public class SecurityConfig {
 	    			.build();
 	    	
 	    	tokenRepo.save(token);
-	    	logger.info("Saved token: " + token.getAccessToken());
 	    	return original;
 	    };
 	}

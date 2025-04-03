@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ducnh.oauth2_server.model.AthleteUser;
 import com.ducnh.oauth2_server.model.PolylineMap;
@@ -61,10 +62,11 @@ public class LoginController {
 	}
 	
 	@GetMapping("/oauth_login")
-	public String getLoginPage(Model model, OAuth2AuthenticationToken authentication) {
+	@ResponseBody
+	public String getActivitiesFromStrava(Model model, OAuth2AuthenticationToken authentication) {
 		OAuth2User user = authentication.getPrincipal();
 		Long athleteId = Long.valueOf(user.getName());
-		
+		System.out.println("Getting activities for athlete ID: " + athleteId);
 		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, activitiesUrl);
 		ResponseEntity<String> userInfo = tokenService.sendGetRequest(athleteId, userInfoUrl);
 		
@@ -89,6 +91,6 @@ public class LoginController {
 		}
 		
 		model.addAttribute("activity", resultActivites.getBody());
-		return "oauth_login";
+		return "success";
 	}
 }

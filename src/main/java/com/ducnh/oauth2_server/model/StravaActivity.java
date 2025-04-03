@@ -12,7 +12,6 @@ import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
-import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -510,12 +509,12 @@ public class StravaActivity {
 		activity.setKudosCount(root.get("kudos_count")== null ? null :root.get("kudos_count").asInt());
 		activity.setCommentCount(root.get("comment_count")== null ? null :root.get("comment_count").asInt());
 		activity.setAthleteCount(root.get("athlete_count")== null ? null :root.get("athlete_count").asInt());
-		activity.setPhotoCount(root.get("photo_count")== null ? null :root.get("photo_count").asInt());
-		activity.setMaxWatts(root.get("max_watts")== null ? null :root.get("max_watts").asInt());
+		//activity.setPhotoCount(root.get("photo_count")== null ? null :root.get("photo_count").asInt());
+		//activity.setMaxWatts(root.get("max_watts")== null ? null :root.get("max_watts").asInt());
 		activity.setWeightedAverageWatts(root.get("weighted_average_watts")== null ? null :root.get("weighted_average_watts").asInt());
-		activity.setDeviceWatts(root.get("device_watts")== null ? null :root.get("device_watts").asBoolean());
-		activity.setUploadId(root.get("upload_id")== null ? null :root.get("upload_id").asLong());
-		activity.setTotalPhotoCount(root.get("total_photo_count")== null ? null :root.get("total_photo_count").asInt());
+		//activity.setDeviceWatts(root.get("device_watts")== null ? null :root.get("device_watts").asBoolean());
+		//activity.setUploadId(root.get("upload_id")== null ? null :root.get("upload_id").asLong());
+		//activity.setTotalPhotoCount(root.get("total_photo_count")== null ? null :root.get("total_photo_count").asInt());
 		activity.setHasKudoed(root.get("has_kudoed")== null ? null :root.get("has_kudoed").asBoolean());
 		activity.setDistance(root.get("distance") == null ? null :root.get("distance").asDouble());
 		//activity.setAverageSpeed(root.get("average_speed")== null ? null :root.get("average_speed").asDouble());

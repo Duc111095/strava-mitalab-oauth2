@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -74,6 +76,14 @@ public class TokenService {
 			if (token.getExpiresAt() < Instant.now().getEpochSecond()) {
 				ResponseEntity<String> refreshTokenResponse = getAccessTokenFromRefresh(urlPostRefreshToken, token.getRefreshToken());
 				JsonNode root = mapper.readTree(refreshTokenResponse.getBody());
+				token.setAccessToken(root.get("access_token").asText());
+				token.setExpiresAt(root.get("expires_at").asLong());
+				token.setExpiresIn(root.get("expires_in").asLong());
+				token.setRefreshToken(root.get("refresh_token").asText());
+				token.setTokenType(root.get("token_type").asText());
+				token.setAtheleteId(athleteId);
+				// Save the updated token to the database
+				tokenRepo.save(token);
 				return root.get("access_token").asText();
 			} 
 			return token.getAccessToken();
@@ -87,24 +97,21 @@ public class TokenService {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		
-		HttpEntity<?> entity = new HttpEntity<>(headers);
-		
-		String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
-				.queryParam("client_id", "{client_id}")
-				.queryParam("client_secret", "{client_secret}")
-				.queryParam("grant_type", "{grant_type}")
-				.queryParam("refresh_token", "{refresh_token}")
-				.encode()
-				.toString();
-		
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+
 		Map<String, String> params = new HashMap<>();
 		params.put("client_id", this.clientId);
 		params.put("client_secret", this.clientSecret);
 		params.put("grant_type", "refresh_token");
 		params.put("refresh_token", refreshToken);
+
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+		formData.setAll(params);
+
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(formData, headers);
 		
-		return restTemplate.exchange(urlTemplate, HttpMethod.POST, entity, String.class, params);
+		return restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 	}
 	
 	public ResponseEntity<String> sendGetRequest(String accessToken, String url) {

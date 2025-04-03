@@ -7,5 +7,4 @@ import com.ducnh.oauth2_server.model.AthleteUser;
 
 @Repository
 public interface AthleteUserRepository extends CrudRepository<AthleteUser, Long>{
-
 }
