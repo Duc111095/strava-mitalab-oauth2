@@ -72,11 +72,6 @@ body {
         tr:nth-child(even) {
             background-color: #2A2A2A;
         }
-        tr:hover {
-            background-color: white;
-            color: #121212;
-            transition: all 0.3s ease-in-out;
-        }
         .footer {
             padding: 10px;
             text-align: center;

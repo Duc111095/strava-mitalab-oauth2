@@ -77,8 +77,8 @@ public class LoginController {
 			if (treeActivityRoot.isArray() && treeActivityRoot.size() > 0) {
 				for (JsonNode root : treeActivityRoot) {
 					 PolylineMap map = new PolylineMap();
-					 map.setId(root.get("map").get("id")== null ? null : root.get("map").get("id").asText());
-					 map.setSummaryPolyline(root.get("map").get("summary_polyline")== null ? null : root.get("map").get("summary_polyline").asText());
+					 map.setId(root.get("map").get("id") == null ? null : root.get("map").get("id").asText());
+					 map.setSummaryPolyline(root.get("map").get("summary_polyline") == null ? null : root.get("map").get("summary_polyline").asText());
 					 mapRepo.save(map);
 					 activity = StravaActivity.createActivityFromResponse(root);
 					 activityService.save(activity);

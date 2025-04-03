@@ -3,6 +3,7 @@ package com.ducnh.oauth2_server.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -51,4 +52,11 @@ public class ActivityService {
 		return result;
 	}
 
+    public Object findAllByAthleteId(Long athleteId) {
+		return activityRepo.findByAthleteId(athleteId);   
+	}
+
+	public List<Map<String, Object>> listExtendedActivities(Long athleteId) {
+		return activityRepo.listExtendedActivities(athleteId);
+	}
 }

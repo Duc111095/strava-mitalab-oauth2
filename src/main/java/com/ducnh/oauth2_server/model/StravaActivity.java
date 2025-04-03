@@ -12,6 +12,7 @@ import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,16 +51,16 @@ public class StravaActivity {
 	@Column(nullable = true)
 	private String name;
 	@Column(nullable = true)
-	private double distance;
-	private int movingTime;
-	private int elapsedTime;
+	private Double distance;
+	private Integer movingTime;
+	private Integer elapsedTime;
 	
 	@Column(nullable = true)
-	private double totalElevationGain;
+	private Double totalElevationGain;
 	@Column(nullable = true)
-	private double elevHigh;
+	private Double elevHigh;
 	@Column(nullable = true)
-	private double elevLow;
+	private Double elevLow;
 	@Column(nullable = true)
 	private String sportType;
 	
@@ -70,55 +71,55 @@ public class StravaActivity {
 	@Column(nullable = true)
 	private String timezone;
 	@Column(nullable = true)
-	private int achievementCount;
+	private Integer achievementCount;
 	@Column(nullable = true)
-	private int kudosCount;
+	private Integer kudosCount;
 	@Column(nullable = true)
-	private int commentCount;
+	private Integer commentCount;
 	@Column(nullable = true)
-	private int athleteCount;
+	private Integer athleteCount;
 	@Column(nullable = true)
-	private int photoCount;
+	private Integer photoCount;
 	@Column(nullable = true)
-	private int totalPhotoCount;
+	private Integer totalPhotoCount;
 	
 	@ManyToOne
 	@JoinColumn(name="map_id")
 	private PolylineMap map; 
 	@Column(nullable = true)
-	private boolean isTrainer;
+	private Boolean isTrainer;
 	@Column(nullable = true)
-	private boolean isCommute;
+	private Boolean isCommute;
 	@Column(nullable = true)
-	private boolean isManual;
+	private Boolean isManual;
 	@Column(nullable = true)
-	private boolean isPrivate;
+	private Boolean isPrivate;
 	@Column(nullable = true)
-	private boolean flagged;
+	private Boolean flagged;
 	@Column(nullable = true)
-	private int workoutType;
+	private Integer workoutType;
 	@Column(nullable = true)
 	private String uploadIdStr;
 	@Column(nullable = true)
-	private double averageSpeed;
+	private Double averageSpeed;
 	@Column(nullable = true)
-	private double maxSpeed;
+	private Double maxSpeed;
 	@Column(nullable = true)
-	private boolean hasKudoed;
+	private Boolean hasKudoed;
 	@Column(nullable = true)
-	private boolean hideFromHome;
+	private Boolean hideFromHome;
 	@Column(nullable = true)
 	private String gearId;
 	@Column(nullable = true)
-	private double kilojoules;
+	private Double kilojoules;
 	@Column(nullable = true)
-	private double averageWatts;
+	private Double averageWatts;
 	@Column(nullable = true)
 	private boolean deviceWatts;
 	@Column(nullable = true)
-	private int maxWatts;
+	private Integer maxWatts;
 	@Column(nullable = true)
-	private int weightedAverageWatts;
+	private Integer weightedAverageWatts;
 	
 	public Long getId() {
 		return this.id;
@@ -168,51 +169,51 @@ public class StravaActivity {
 		this.name = name;
 	}
 	
-	public double getDistance() {
+	public Double getDistance() {
 		return this.distance;
 	}
 	
-	public void setDistance(double distance) {
+	public void setDistance(Double distance) {
 		this.distance = distance;
 	}
 	
-	public int getMovingTime() {
+	public Integer getMovingTime() {
 		return this.movingTime;
 	}
 	
-	public void setMovingTime(int movingTime) {
+	public void setMovingTime(Integer movingTime) {
 		this.movingTime = movingTime;
 	}
 	
-	public int getElapsedTime() {
+	public Integer getElapsedTime() {
 		return this.elapsedTime;
 	}
 	
-	public void setElapsedTime(int elapsedTime) {
+	public void setElapsedTime(Integer elapsedTime) {
 		this.elapsedTime = elapsedTime;
 	}
 	
-	public double getToTalElevationGain() {
+	public Double getToTalElevationGain() {
 		return this.totalElevationGain;
 	}
 	
-	public void setTotalElevationGain(double totalElevationGain) {
+	public void setTotalElevationGain(Double totalElevationGain) {
 		this.totalElevationGain = totalElevationGain;
 	}
 	
-	public double getElevHigh() {
+	public Double getElevHigh() {
 		return this.elevHigh;
 	}
 	
-	public void setElevHigh(double elevHigh) {
+	public void setElevHigh(Double elevHigh) {
 		this.elevHigh = elevHigh;
 	}
 
-	public double getElevLow() {
+	public Double getElevLow() {
 		return this.elevLow;
 	}
 	
-	public void setElevLow(double elevLow) {
+	public void setElevLow(Double elevLow) {
 		this.elevLow = elevLow;
 	}
 	
@@ -248,51 +249,51 @@ public class StravaActivity {
 		this.timezone = timezone;
 	}
 	
-	public int getAchievementCount() {
+	public Integer getAchievementCount() {
 		return this.achievementCount;
 	}
 	
-	public void setAchievementCount(int achievementCount) {
+	public void setAchievementCount(Integer achievementCount) {
 		this.achievementCount = achievementCount;
 	}
 	
-	public int getKudosCount() {
+	public Integer getKudosCount() {
 		return this.kudosCount;
 	}
 	
-	public void setKudosCount(int kudosCount) {
+	public void setKudosCount(Integer kudosCount) {
 		this.kudosCount = kudosCount;
 	}
 	
-	public int getCommentCount() {
+	public Integer getCommentCount() {
 		return this.commentCount;
 	}
 	
-	public void setCommentCount(int commentCount) {
+	public void setCommentCount(Integer commentCount) {
 		this.commentCount = commentCount;
 	}
 	
-	public int getAthleteCount() {
+	public Integer getAthleteCount() {
 		return this.athleteCount;
 	}
 	
-	public void setAthleteCount(int athleteCount) {
+	public void setAthleteCount(Integer athleteCount) {
 		this.athleteCount = athleteCount;
 	}
 	
-	public int getPhotoCount() {
+	public Integer getPhotoCount() {
 		return this.photoCount;
 	}
 	
-	public void setPhotoCount(int photoCount) {
+	public void setPhotoCount(Integer photoCount) {
 		this.photoCount = photoCount;
 	}
 	
-	public int getTotalPhotoCount() {
+	public Integer getTotalPhotoCount() {
 		return this.totalPhotoCount;
 	}
 	
-	public void setTotalPhotoCount(int totalPhotoCount) {
+	public void setTotalPhotoCount(Integer totalPhotoCount) {
 		this.totalPhotoCount = totalPhotoCount;
 	}
 	
@@ -304,51 +305,51 @@ public class StravaActivity {
 		this.map = map;
 	}
 	
-	public boolean isTrainer() {
+	public Boolean isTrainer() {
 		return this.isTrainer;
 	}
 	
-	public void setTrainer(boolean isTrainer) {
+	public void setTrainer(Boolean isTrainer) {
 		this.isTrainer = isTrainer;
 	}
 	
-	public boolean getCommute() {
+	public Boolean getCommute() {
 		return this.isCommute;
 	}
 	
-	public void setCommute(boolean isCommute) {
+	public void setCommute(Boolean isCommute) {
 		this.isCommute = isCommute;
 	}
 	
-	public boolean getManual() {
+	public Boolean getManual() {
 		return this.isManual;
 	}
 	
-	public void setManual(boolean isManual) {
+	public void setManual(Boolean isManual) {
 		this.isManual = isManual;
 	}
 	
-	public boolean isPrivate() {
+	public Boolean isPrivate() {
 		return this.isPrivate;
 	}
 	
-	public void setPrivate(boolean isPrivate) {
+	public void setPrivate(Boolean isPrivate) {
 		this.isPrivate = isPrivate;
 	}
 	
-	public boolean isFlagged() {
+	public Boolean isFlagged() {
 		return this.flagged;
 	}
 	
-	public void setFlagged(boolean flagged) {
+	public void setFlagged(Boolean flagged) {
 		this.flagged = flagged;
 	}
 	
-	public int getWorkoutType() {
+	public Integer getWorkoutType() {
 		return this.workoutType;
 	}
 	
-	public void setWorkoutType(int workoutType) {
+	public void setWorkoutType(Integer workoutType) {
 		this.workoutType = workoutType;
 	}
 	
@@ -360,35 +361,35 @@ public class StravaActivity {
 		this.uploadIdStr = uploadIdStr;
 	}
 	
-	public double getAverageSpeed() {
+	public Double getAverageSpeed() {
 		return this.averageSpeed;
 	}
 	
-	public void setAverageSpeed(double averageSpeed) {
+	public void setAverageSpeed(Double averageSpeed) {
 		this.averageSpeed = averageSpeed;
 	}
 	
-	public double getMaxSpeed() {
+	public Double getMaxSpeed() {
 		return this.maxSpeed;
 	}
 	
-	public void setMaxSpeed(double maxSpeed) {
+	public void setMaxSpeed(Double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
 	
-	public boolean hasKudoed() {
+	public Boolean hasKudoed() {
 		return hasKudoed;
 	}
 	
-	public void setHasKudoed(boolean hasKudoed) {
+	public void setHasKudoed(Boolean hasKudoed) {
 		this.hasKudoed = hasKudoed;
 	}
 	
-	public boolean hideFromHome() {
+	public Boolean hideFromHome() {
 		return this.hideFromHome;
 	}
 	
-	public void setHideFromHome(boolean hideFromHome) {
+	public void setHideFromHome(Boolean hideFromHome) {
 		this.hideFromHome = hideFromHome;
 	}
 	
@@ -400,43 +401,43 @@ public class StravaActivity {
 		this.gearId = gearId;
 	}
 
-	public double getKilojoules() {
+	public Double getKilojoules() {
 		return this.kilojoules;
 	}
 	
-	public void setKilojoules(double kilojoules) {
+	public void setKilojoules(Double kilojoules) {
 		this.kilojoules = kilojoules;
 	}
 	
-	public double getAverageWatts() {
+	public Double getAverageWatts() {
 		return this.averageWatts;
 	}
 	
-	public void setAverageWatts(double averageWatts) {
+	public void setAverageWatts(Double averageWatts) {
 		this.averageWatts = averageWatts;
 	}
 	
-	public boolean isDeviceWatts() {
+	public Boolean isDeviceWatts() {
 		return this.deviceWatts;
 	}
 	
-	public void setDeviceWatts(boolean deviceWatts) {
+	public void setDeviceWatts(Boolean deviceWatts) {
 		this.deviceWatts = deviceWatts;
 	}
 
-	public int getMaxWatts() {
+	public Integer getMaxWatts() {
 		return this.maxWatts;
 	}
 	
-	public void setMaxWatts(int maxWatts) {
+	public void setMaxWatts(Integer maxWatts) {
 		this.maxWatts = maxWatts;
 	}
 	
-	public int getWeightedAverageWatts() {
+	public Integer getWeightedAverageWatts() {
 		return this.weightedAverageWatts;
 	}
 	
-	public void setWeightedAverageWatts(int weightedAverageWatts) {
+	public void setWeightedAverageWatts(Integer weightedAverageWatts) {
 		this.weightedAverageWatts = weightedAverageWatts;
 	}
 	
@@ -446,6 +447,37 @@ public class StravaActivity {
 	
 	public String formatTimeElapsed() {
 		return "" +(this.elapsedTime/60) + "m" + ("0" + (this.elapsedTime % 60)).substring(1) + "s";
+	}
+
+	public String formatDistance() {
+		return String.format("%.2f", this.distance / 1000) + " km";
+	}
+
+	public String formatMovingTime() {
+		if (this.movingTime < 3600) {
+			return "" + (this.movingTime / 60) + "m" + ("0" +(this.movingTime % 60)).substring(1) + "s"; 
+		}
+		int hour = this.movingTime / 3600;
+		int minutes = (this.movingTime % 3600) / 60;
+		int second = this.movingTime - hour * 3600 - 60 * minutes;
+		return  "" + hour + "h" + minutes + "m" + second + "s"; 
+	}
+
+	public String getPaced() {
+
+		if (this.movingTime == 0) {
+			return "0:00 /km";
+		}
+		int pace = (int)(this.movingTime / this.distance * 1000);
+		int minute = pace / 60;
+		int second = pace - minute * 60;
+		return String.format("%d:%02d/km",minute, second);
+	}
+	
+
+	@Override
+	public String toString() {
+		return this.getName() + this.getAthleteId() + " : " +  this.movingTime + "s" + this.getDistance() + "m" + this.getStartDateLocal() + this.getAverageSpeed() + this.getMaxSpeed() + this.getAverageWatts() + this.getMaxWatts() + this.getWeightedAverageWatts() + this.getKilojoules();
 	}
 	
 	public static StravaActivity createActivityFromResponse(JsonNode root) {
@@ -458,7 +490,7 @@ public class StravaActivity {
 		activity.setMovingTime(root.get("moving_time")== null ? null :root.get("moving_time").asInt());
 		activity.setStartDateLocal(root.get("start_date_local")== null ? null :root.get("start_date_local").asText());
 		activity.setStartDate(root.get("start_date")== null ? null :root.get("start_date").asText());
-		activity.setSportType(root.get("sport_type")== null ? null :root.get("sport_type").asText());
+		//activity.setSportType(root.get("sport_type")== null ? null :root.get("sport_type").asText());
 		activity.setTimezone(root.get("timezone")== null ? null :root.get("timezone").asText());
 		PolylineMap map = new PolylineMap();
 		map.setId(root.get("map").get("id")== null ? null :root.get("map").get("id").asText());
@@ -472,7 +504,7 @@ public class StravaActivity {
 		activity.setManual(root.get("manual")== null ? null :root.get("manual").asBoolean());
 		activity.setPrivate(root.get("private")== null ? null :root.get("private").asBoolean());
 		activity.setFlagged(root.get("flagged")== null ? null :root.get("flagged").asBoolean());
-		activity.setTotalElevationGain(root.get("total_elevation_gain")== null ? null :root.get("elapsed_time").asInt());
+		activity.setTotalElevationGain(root.get("total_elevation_gain")== null ? null :root.get("elapsed_time").asDouble());
 		activity.setAchievementCount(root.get("achievement_count")== null ? null :root.get("achievement_count").asInt());
 		activity.setWorkoutType(root.get("workout_type")== null ? null :root.get("workout_type").asInt());
 		activity.setKudosCount(root.get("kudos_count")== null ? null :root.get("kudos_count").asInt());
@@ -486,13 +518,12 @@ public class StravaActivity {
 		activity.setTotalPhotoCount(root.get("total_photo_count")== null ? null :root.get("total_photo_count").asInt());
 		activity.setHasKudoed(root.get("has_kudoed")== null ? null :root.get("has_kudoed").asBoolean());
 		activity.setDistance(root.get("distance") == null ? null :root.get("distance").asDouble());
-		activity.setAverageSpeed(root.get("average_speed")== null ? null :root.get("average_speed").asDouble());
-		activity.setMaxSpeed(root.get("max_speed")== null ? null :root.get("max_speed").asDouble());
-		activity.setAverageWatts(root.get("average_watts")== null ? null :root.get("average_watts").asDouble());
-		activity.setKilojoules(root.get("kilojoules")== null ? null :root.get("kilojoules").asDouble());
-		activity.setElevHigh(root.get("elev_high")== null ? null : root.get("elev_high").asDouble());
-		activity.setElevLow(root.get("elev_low")== null ? null : root.get("elev_low").asDouble());
-		logger.info(activity.toString());
+		//activity.setAverageSpeed(root.get("average_speed")== null ? null :root.get("average_speed").asDouble());
+		//activity.setMaxSpeed(root.get("max_speed")== null ? null :root.get("max_speed").asDouble());
+		//activity.setAverageWatts(root.get("average_watts")== null ? null :root.get("average_watts").asDouble());
+		//activity.setKilojoules(root.get("kilojoules")== null ? null :root.get("kilojoules").asDouble());
+		//activity.setElevHigh(root.get("elev_high")== null ? null : root.get("elev_high").asDouble());
+		//activity.setElevLow(root.get("elev_low")== null ? null : root.get("elev_low").asDouble());
 		return activity;
 	}
 }

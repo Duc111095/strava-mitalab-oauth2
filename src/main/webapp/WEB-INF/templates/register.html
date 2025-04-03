@@ -4,12 +4,133 @@
     <title>Team Registration</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         .form-group label{
             margin-bottom: 5px;
             text-align: left;
             color: #E0E0E0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #121212;
+            color: #E0E0E0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 220px;
+            background-color: #1E1E1E;
+            padding: 20px;
+            height: 100vh;
+            text-align: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .sidebar a {
+            display: block;
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #2A2A2A;
+            transition: all 0.3s ease-in-out;
+        }
+        .sidebar a:hover {
+            background-color: #ff8c00;
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+        .main-content {
+            margin-left: 240px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .container {
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 900px;
+            background-color: #1E1E1E;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+            flex-grow: 1;
+        }
+        h1, th {
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #2A2A2A;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: center;
+            color: #E0E0E0;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .form-actions button {
+            flex: 1;
+        }
+        .footer-left {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            font-size: 14px;
+            color: #005f73;
+            display: flex;
+            align-items: center;
+        }
+        .footer-right {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 14px;
+        }
+        .strava-logo {
+            height: 20px;
+            margin-left: 5px;
         }
     </style>
 </head>
@@ -27,18 +148,18 @@
         <div class="registration-form" id="registration-form">
             <form th:action="@{/register}" th:object="${registerForm}" method="post">
                 <div class="form-group">
-                    <label for="eventId">Event ID:</label>
+                    <label for="eventId">Chọn sự kiện</label>
                     <select id="eventId" th:field="*{eventId}" class="form-control" required>
                         <option th:each="event : ${events}" th:value="${event.getId()}" th:text="${event.getEventName()}" th:attr="data-max=${event.getTeamCount()}"></option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="teamId">Team ID:</label>
+                    <label for="teamId">Chọn đội</label>
                     <select id="teamId" th:field="*{teamId}" class="form-control" required>
                         <option value="0" disabled selected>Select a team</option>
                     </select>
                 </div>
-                <button type="submit" onclick="disableForm()" class="btn btn-primary">Register</button>
+                <button type="submit" onclick="disableForm()" class="btn btn-primary" id="form-actions">Register</button>
             </form>
         </div>
     </div>
@@ -47,11 +168,11 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID nguoi dung</th>
-                        <th>Tên người dùng</th>
-                        <th>Ten su kien</th>
-                        <th>Ten doi</th>
-                        <th>Thoi gian cap nhat</th>
+                        <th>ID VĐV</th>
+                        <th>Tên VĐV</th>
+                        <th>Tên sự kiện</th>
+                        <th>Tên đội</th>
+                        <th>Thời gian đăng ký</th>
                     </tr>
                 </thead>
 				 <tbody  id="athleteTableBody"></tbody>
@@ -86,12 +207,12 @@
                     }
                 }
             }
-           
+
+            fetchRegisteredAthletes(eventSelect.value);
             // Add event listener to update teamIdInput based on selected event
             eventSelect.addEventListener("change", function() {
                 const selectedOption = eventSelect.options[eventSelect.selectedIndex];
                 const maxTeams = selectedOption.getAttribute("data-max");
-                console.log("Max teams: " + maxTeams);
                 if (maxTeams == 1) {
                     teamIdInput.hidden = true;
                     teamIdInput.value = 1;
@@ -105,36 +226,8 @@
                         teamIdInput.appendChild(option);
                     }
                 }
+                fetchRegisteredAthletes(eventSelect.value);
             });
-
-            function fetchRegisteredAthletes(eventId) {
-                fetch("registered-athletes", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ eventId: eventId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const athleteTableBody = document.getElementById("athleteTableBody");
-                    athleteTableBody.innerHTML = "";
-
-                    // Populate the table with the response data
-                    data.forEach(athlete => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                            <td>${athlete.getAthleteId()}</td>
-                            <td>${athlete.getAthleteName()}</td>
-                            <td>${athlete.getEventName()}</td>
-                            <td>${athlete.getTeamId()}</td>
-                            <td>${athlete.getRegisteredAt()}</td>
-                        `;
-                        athleteTableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error("Error fetching registered athletes:", error));
-            }
 
             // Fetch athletes when the event changes
             eventSelect.addEventListener("change", function () {
@@ -149,9 +242,39 @@
                 fetchRegisteredAthletes(eventSelect.value);
             }
         });
+        function fetchRegisteredAthletes(eventId) {
+                fetch("/strava-oauth/registered-athletes", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ eventId: eventId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Registered athletes:", data);
+                    const athleteTableBody = document.getElementById("athleteTableBody");
+                    athleteTableBody.innerHTML = "";
+
+                    // Populate the table with the response data
+                    data.forEach(athlete => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${athlete.athleteId}</td>
+                            <td>${athlete.athleteName}</td>
+                            <td>${athlete.eventName}</td>
+                            <td>${athlete.teamId}</td>
+                            <td>${athlete.formatedDateFromStartDateLocal}</td>
+                        `;
+                        athleteTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error fetching registered athletes:", error));
+            }
             function disableForm() {
                 const form = document.getElementById("registration-form");
                 form.hidden = true;
+                fetchRegisteredAthletes
             }
             
         </script>

@@ -58,7 +58,8 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(requests -> requests
+        http.csrf(c -> c.disable())
+			.authorizeRequests(requests -> requests
                 .antMatchers("/",
                         "/info",
                         "/error",
@@ -79,7 +80,7 @@ public class SecurityConfig {
                                 .clientRegistrationRepository(clientRegistrationRepository())
                                 .authorizedClientService(authorizedClientService())
                                 .tokenEndpoint(c -> c.accessTokenResponseClient(accessTokenResponseClient()))
-                                .defaultSuccessUrl("/register"));
+                                .defaultSuccessUrl("/oauth_login"));
 		return http.build();
 	}
 	

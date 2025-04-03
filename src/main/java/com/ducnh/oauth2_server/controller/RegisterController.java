@@ -8,6 +8,7 @@ import com.ducnh.oauth2_server.model.keys.RegisterIdentity;
 import com.ducnh.oauth2_server.service.EventService;
 import com.ducnh.oauth2_server.service.RegisterService;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -63,12 +64,13 @@ public class RegisterController {
         return registerEvents.stream().map(item -> {
             RegisteredAthleteDTO registeredAthleteDTO = new RegisteredAthleteDTO();
             registeredAthleteDTO.setAthleteId(Long.parseLong(String.valueOf(item.get("athlete_id"))));
+            registeredAthleteDTO.setAthleteName(item.get("athlete_name") == null ? "" : (String) item.get("athlete_name"));
             registeredAthleteDTO.setEventId((String) item.get("event_id"));
             registeredAthleteDTO.setTeamId(String.valueOf(item.get("team_id")));
             registeredAthleteDTO.setEventName((String) item.get("event_name"));
-            registeredAthleteDTO.setRegisteredAt((LocalDateTime) item.get("registered_at"));
+            Timestamp timestamp = (Timestamp) item.get("registered_at");
+            registeredAthleteDTO.setRegisteredAt(timestamp == null ? null : timestamp.toLocalDateTime());
             return registeredAthleteDTO;
         }).collect(Collectors.toList());
     }
-    
 }

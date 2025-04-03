@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.NonNull;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -70,11 +71,18 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 		templateResolver.setCacheable(true);
 		return templateResolver;
 	}
+
+	@Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/strava-oauth/registered-athlete")
+                .allowedOrigins("**") // Adjust to match your frontend origin
+                .allowedMethods("POST");
+    }
 	
 	@Bean
 	public SpringTemplateEngine templateEngine() {
 		SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-		templateEngine.setEnableSpringELCompiler(true); // Compiled SpringEL should speed up executions
+		templateEngine.setEnableSpringELCompiler(true);
 		templateEngine.setTemplateResolver(templateResolver());
 		templateEngine.addDialect(new SpringSecurityDialect());
 		return templateEngine;
@@ -93,5 +101,6 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 		registry.addResourceHandler("/images/**").addResourceLocations("/WEB-INF/images/");
 		registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/css/");
 		registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
+		registry.addResourceHandler("/favicon/**").addResourceLocations("/WEB-INF/favicons/");
 	}
 }

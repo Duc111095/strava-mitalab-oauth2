@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Activity List</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -19,20 +20,22 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Tên người dùng</th>
-                        <th>Activity Name</th>
+                        <th>VĐV</th>
+                        <th>Hoạt động</th>
                         <th>Quãng đường</th>
                         <th>Tổng thời gian</th>
+                        <th>Pace</th>
                         <th>Ngày hoạt động</th>
                     </tr>
                 </thead>
 				 <tr th:each="activity : ${allActivities}">
-				                <td th:text="${activity.getAthleteId()}"></td>
-				                <td th:text="${activity.getName()}"></td>
-				                <td th:text="${activity.getDistance()}"></td>
-				                <td th:text="${activity.formatTimeElapsed()}"></td>
-				                <td th:text="${activity.getFormatedDateFromStartDateLocal()}"></td>
-				            	<td><a th:href="@{https://www.strava.com/activities/{id}(id=${activity.getId()})}" target="blank">View On Strava</a></td>
+				                <td th:text="${activity.getAthleteName()}"></td>
+				                <td th:text="${activity.getActivityName()}"></td>
+				                <td th:text="${activity.formatDistance()}"></td>
+				                <td th:text="${activity.formatMovingTime()}"></td>
+                                <td th:text="${activity.getPaced()}"></td>
+				                <td th:text="${activity.formatStartDate()}"></td>
+				            	<td><a th:href="@{https://www.strava.com/activities/{id}(id=${activity.getActivityID()})}" target="blank">View On Strava</a></td>
 				        </tr>
             </table>
         </div>

@@ -107,7 +107,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<jvmArguments>-Xdebug -Dfile.encoding=UTF-8</jvmArguments>
+					<wait>500</wait>
+					<maxAttempts>240</maxAttempts>
+				</configuration>
 			</plugin>
+			
 		</plugins>
 	</build>
 
