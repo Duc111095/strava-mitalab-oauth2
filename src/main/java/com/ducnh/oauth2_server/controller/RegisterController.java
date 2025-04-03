@@ -8,8 +8,8 @@ import com.ducnh.oauth2_server.model.keys.RegisterIdentity;
 import com.ducnh.oauth2_server.service.EventService;
 import com.ducnh.oauth2_server.service.RegisterService;
 
+import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +52,22 @@ public class RegisterController {
 		registerEvent.setRegisterId(registerIdentity);
         registerEvent.setTeamId(registerForm.getTeamId());
         registerService.save(registerEvent);
+        List<Map<String, Object>> registerEvents = registerService.findRegisteredAthlete(registerForm.getEventId());
+
+        List<RegisteredAthleteDTO> athleteRegistered = registerEvents.stream().map(item -> {
+            RegisteredAthleteDTO registeredAthleteDTO = new RegisteredAthleteDTO();
+            registeredAthleteDTO.setAthleteId(Long.parseLong(String.valueOf(item.get("athlete_id"))));
+            registeredAthleteDTO.setAthleteName(item.get("athlete_name") == null ? "" : (String) item.get("athlete_name"));
+            registeredAthleteDTO.setEventId((String) item.get("event_id"));
+            registeredAthleteDTO.setTeamId(String.valueOf(item.get("team_id")));
+            registeredAthleteDTO.setEventName((String) item.get("event_name"));
+            Timestamp registered_at = (Timestamp) item.get("registered_at");
+            Timestamp updated_at = (Timestamp) item.get("updated_at");
+            registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
+            registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
+            return registeredAthleteDTO;
+        }).collect(Collectors.toList());
+        model.addAttribute("athleteRegistered", athleteRegistered);
         return "register";
     }
 
@@ -68,8 +84,10 @@ public class RegisterController {
             registeredAthleteDTO.setEventId((String) item.get("event_id"));
             registeredAthleteDTO.setTeamId(String.valueOf(item.get("team_id")));
             registeredAthleteDTO.setEventName((String) item.get("event_name"));
-            Timestamp timestamp = (Timestamp) item.get("registered_at");
-            registeredAthleteDTO.setRegisteredAt(timestamp == null ? null : timestamp.toLocalDateTime());
+            Timestamp registered_at = (Timestamp) item.get("registered_at");
+            Timestamp updated_at = (Timestamp) item.get("updated_at");
+            registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
+            registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
             return registeredAthleteDTO;
         }).collect(Collectors.toList());
     }

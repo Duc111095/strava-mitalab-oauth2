@@ -24,19 +24,17 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Tên Sự Kiện</th>
                         <th>Số Đội</th>
                         <th>Ngày Bắt Đầu</th>
                         <th>Ngày Kết Thúc</th>
                         <th>High Pace</th>
                         <th>Low Pace</th>
-                        <th>Hành Động</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="event : ${events}">
-                        <td th:text="${event.getId()}"></td>
                         <td th:text="${event.getEventName()}"></td>
                         <td th:text="${event.getTeamCount()}"></td>
                         <td th:text="${event.getStartDate()}"></td>
@@ -44,7 +42,6 @@
                         <td th:text="${event.getHighPace()}"></td>
                         <td th:text="${event.getLowPace()}"></td>
                         <td>
-                            <a th:href="@{/events/{id}/edit(id=${event.getId()})}" style="color: #ff8c00;">Sửa</a> | 
                             <a th:href="@{/events/{id}/delete(id=${event.getId()})}" 
                                onclick="return confirm('Bạn có chắc chắn muốn xóa sự kiện này?');" 
                                style="color: #ff0000;">Xóa</a>

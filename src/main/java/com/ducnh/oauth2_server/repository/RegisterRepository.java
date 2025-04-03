@@ -13,7 +13,7 @@ public interface RegisterRepository extends CrudRepository<RegisterEvent, Regist
     @Query(value = "select * from strava_register r where r.event_id = ?1", nativeQuery = true)
     Iterable<RegisterEvent> findAllByEventId(String eventId);
 
-    @Query(value = "select r.athlete_id, concat(a.first_name, \' \', a.last_name) as athlete_name, r.event_id, e.event_name, r.team_id, r.created_at as registered_at from strava_register r left join strava_user a on r.athlete_id = a.id "
+    @Query(value = "select r.athlete_id, concat(a.first_name, \' \', a.last_name) as athlete_name, r.event_id, e.event_name, r.team_id, r.created_at as registered_at, r.updated_at from strava_register r left join strava_user a on r.athlete_id = a.id "
             + " left join strava_event e on r.event_id = e.id"
             + " where r.event_id = ?1", nativeQuery = true)
     List<Map<String, Object>> findRegisteredAthlete(String eventId);

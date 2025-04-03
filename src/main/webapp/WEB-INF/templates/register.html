@@ -146,7 +146,7 @@
     <div class="main-container">
         <h2 class="page-title">Team Registration</h2>
         <div class="registration-form" id="registration-form">
-            <form th:action="@{/register}" th:object="${registerForm}" method="post">
+            <form th:action="@{/register}" th:object="${registerForm}" method="post" onsubmit="handleFormSubmit(event)">
                 <div class="form-group">
                     <label for="eventId">Chọn sự kiện</label>
                     <select id="eventId" th:field="*{eventId}" class="form-control" required>
@@ -159,7 +159,7 @@
                         <option value="0" disabled selected>Select a team</option>
                     </select>
                 </div>
-                <button type="submit" onclick="disableForm()" class="btn btn-primary" id="form-actions">Register</button>
+                <button type="submit" class="btn btn-primary" id="form-actions">Register</button>
             </form>
         </div>
     </div>
@@ -202,13 +202,12 @@
                     for (let i = 1; i <= maxTeams; i++) {
                         const option = document.createElement("option");
                         option.value = i;
-                        option.textContent = "Team " + i;
+                        option.textContent = "Đội " + i;
                         teamIdInput.appendChild(option);
                     }
                 }
             }
 
-            fetchRegisteredAthletes(eventSelect.value);
             // Add event listener to update teamIdInput based on selected event
             eventSelect.addEventListener("change", function() {
                 const selectedOption = eventSelect.options[eventSelect.selectedIndex];
@@ -222,7 +221,7 @@
                     for (let i = 1; i <= maxTeams; i++) {
                         const option = document.createElement("option");
                         option.value = i;
-                        option.textContent = "Team " + i;
+                        option.textContent = "Đội " + i;
                         teamIdInput.appendChild(option);
                     }
                 }
@@ -238,7 +237,7 @@
             });
 
             // Initial fetch for the default selected event
-            if (eventSelect.value) {
+            if (eventSelect.value != "") {
                 fetchRegisteredAthletes(eventSelect.value);
             }
         });
@@ -252,7 +251,6 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Registered athletes:", data);
                     const athleteTableBody = document.getElementById("athleteTableBody");
                     athleteTableBody.innerHTML = "";
 
@@ -263,7 +261,7 @@
                             <td>${athlete.athleteId}</td>
                             <td>${athlete.athleteName}</td>
                             <td>${athlete.eventName}</td>
-                            <td>${athlete.teamId}</td>
+                            <td>Đội ${athlete.teamId}</td>
                             <td>${athlete.formatedDateFromStartDateLocal}</td>
                         `;
                         athleteTableBody.appendChild(row);
@@ -271,12 +269,11 @@
                 })
                 .catch(error => console.error("Error fetching registered athletes:", error));
             }
-            function disableForm() {
+            function handleFormSubmit(event) {
+                const eventSelect = document.getElementById("eventId");
                 const form = document.getElementById("registration-form");
                 form.hidden = true;
-                fetchRegisteredAthletes
             }
-            
         </script>
     </body>
 </html>

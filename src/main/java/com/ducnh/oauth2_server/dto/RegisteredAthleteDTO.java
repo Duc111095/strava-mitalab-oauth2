@@ -11,6 +11,7 @@ public class RegisteredAthleteDTO {
     private String eventName;
     private String teamId;
     private LocalDateTime registeredAt;
+    private LocalDateTime updatedAt;
 
     public RegisteredAthleteDTO() {}
 
@@ -22,6 +23,7 @@ public class RegisteredAthleteDTO {
         this.eventName = eventName;
         this.teamId = teamId;
         this.registeredAt = registeredAt;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void setAthleteId(Long athleteId) {
@@ -72,8 +74,16 @@ public class RegisteredAthleteDTO {
         return registeredAt;
     }
 
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }   
+    
     public String getFormatedDateFromStartDateLocal(){
-        return this.registeredAt == null ? "" : this.registeredAt.format(DateTimeFormatter.ofPattern("dd/MM/yy HH:mm"));
+        return this.updatedAt == null ? "" : this.updatedAt.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
     }
 
     @Override
