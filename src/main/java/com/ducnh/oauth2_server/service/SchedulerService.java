@@ -1,8 +1,5 @@
 package com.ducnh.oauth2_server.service;
 
-import java.time.Instant;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -63,7 +60,6 @@ public class SchedulerService {
             return "Error fetching athlete users.";
         }
         
-
         return "Data activity fetched successfully!!!!!";
     }
 }

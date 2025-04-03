@@ -21,9 +21,6 @@ public class ActivityService {
 
 	@Autowired
 	private ActivityRepository activityRepo;
-
-	@Autowired
-	private TokenService tokenService;
 	
 	@Autowired
 	@PersistenceContext
@@ -62,6 +59,4 @@ public class ActivityService {
 	public List<Map<String, Object>> listExtendedActivities(Long athleteId) {
 		return activityRepo.listExtendedActivities(athleteId);
 	}
-
-
 }
