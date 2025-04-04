@@ -147,8 +147,8 @@ public class StravaLap {
         StravaLap stravaLap = new StravaLap();
 
         stravaLap.setId(jsonNode.get("id") == null ? null : jsonNode.get("id").asLong());
-        stravaLap.setAthleteId(jsonNode.get("athlete_id") == null ? null : jsonNode.get("athlete_id").asLong());
-        stravaLap.setActivityId(jsonNode.get("activity_id") == null ? null : jsonNode.get("activity_id").asLong());
+        stravaLap.setAthleteId(jsonNode.get("athlete") == null ? null : jsonNode.get("athlete").get("id").asLong());
+        stravaLap.setActivityId(jsonNode.get("activity") == null ? null : jsonNode.get("activity").get("id").asLong());
         stravaLap.setDistance(jsonNode.get("distance") == null ? null : jsonNode.get("distance").asDouble());
         stravaLap.setElapsedTime(jsonNode.get("elapsed_time") == null ? null : jsonNode.get("elapsed_time").asInt());
         stravaLap.setStartIndex(jsonNode.get("start_index") == null ? null : jsonNode.get("start_index").asInt());

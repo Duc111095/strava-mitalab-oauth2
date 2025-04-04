@@ -53,6 +53,9 @@ public class LoginController {
 	
 	@Value("${strava.url.athlete.userinfo}")
 	private String userInfoUrl;
+
+	@Value("${strava.url.activities.lap}")
+	private String lapUrl;
 	
 	Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
 
@@ -67,6 +70,7 @@ public class LoginController {
 		OAuth2User user = authentication.getPrincipal();
 		Long athleteId = Long.valueOf(user.getName());
 		System.out.println("Getting activities for athlete ID: " + athleteId);
+
 		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, activitiesUrl);
 		ResponseEntity<String> userInfo = tokenService.sendGetRequest(athleteId, userInfoUrl);
 		
@@ -78,12 +82,15 @@ public class LoginController {
 			StravaActivity activity = new StravaActivity();
 			if (treeActivityRoot.isArray() && treeActivityRoot.size() > 0) {
 				for (JsonNode root : treeActivityRoot) {
-					 PolylineMap map = new PolylineMap();
-					 map.setId(root.get("map").get("id") == null ? null : root.get("map").get("id").asText());
-					 map.setSummaryPolyline(root.get("map").get("summary_polyline") == null ? null : root.get("map").get("summary_polyline").asText());
-					 mapRepo.save(map);
-					 activity = StravaActivity.createActivityFromResponse(root);
-					 activityService.save(activity);
+					PolylineMap map = new PolylineMap();
+					map.setId(root.get("map").get("id") == null ? null : root.get("map").get("id").asText());
+					map.setSummaryPolyline(root.get("map").get("summary_polyline") == null ? null : root.get("map").get("summary_polyline").asText());
+					mapRepo.save(map);
+					String activityId = root.get("id").asText();
+					System.out.println("Activity ID: " + activityId);
+
+					activity = StravaActivity.createActivityFromResponse(root);
+					activityService.save(activity);
 				}	
 			}
 		} catch (Exception e) {
