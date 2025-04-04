@@ -5,12 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        .form-group label{
-            margin-bottom: 5px;
-            text-align: center;
-            size: 20px;
-            color: #E0E0E0;
-        }
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -35,7 +29,7 @@
         .sidebar a {
             display: block;
             background: linear-gradient(90deg, #ff0000, #ff8c00);
-            background-clip: text;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
             padding: 10px;
@@ -49,12 +43,33 @@
             color: white;
             -webkit-text-fill-color: white;
         }
+
+        .form-group label{
+            margin-bottom: 10px;
+            text-align: center;
+            size: 16px;
+            color: #E0E0E0;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .form-actions button {
+            flex: 1;
+        }
         .main-content {
             margin-left: 240px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+        .main-content #teamIdFilter {
+            margin: 30px auto;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #e9d4d4;
+            align-items: flex-end;
         }
         .container {
             margin: 50px auto;
@@ -67,6 +82,7 @@
         }
         h1, th {
             background: linear-gradient(90deg, #ff0000, #ff8c00);
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         table {
@@ -97,22 +113,7 @@
             background-color: rgba(220, 53, 69, 0.2);
             color: #dc3545;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            text-align: center;
-            color: #E0E0E0;
-        }
-        .form-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .form-actions button {
-            flex: 1;
-        }
+        
         .footer-left {
             position: fixed;
             bottom: 10px;
@@ -147,7 +148,7 @@
         <a th:href="@{/summary}">Tổng hợp</a>
     </div>
     <div class="main-container">
-        <h2 class="page-title">Team Registration</h2>
+        <h2 class="page-title">Đăng ký Team</h2>
         <div class="registration-form" id="registration-form">
             <form th:action="@{/register}" th:object="${registerForm}" method="post">
                 <div class="form-group">
@@ -167,6 +168,9 @@
         </div>
     </div>
     <div class="main-content">
+        <div>
+            <input type="text" id="teamIdFilter" placeholder="Nhập tên đội để lọc" onchange="filterByTeam()" class="form-control">
+        </div>
         <div class="container">
             <table>
                 <thead>
@@ -239,7 +243,7 @@
             fetchInitValue();
         });
         function fetchRegisteredAthletes(eventId) {
-            fetch("/registered-athletes", {
+            fetch("/strava-oauth/registered-athletes", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -268,7 +272,7 @@
         }
 
         function fetchInitValue() {
-            fetch("/register/init")
+            fetch("/strava-oauth/register/init")
                 .then(response => response.json())
                 .then(data => {
                     if (data && data.length > 0) {
@@ -283,9 +287,37 @@
                     }
                 })
                 .catch(error => console.error("Error fetching initial values:", error));
-            fetch("/oauth_login")
+            fetch("/strava-oauth/oauth_login")
                 .then(response => console.log("Get activities successfully"))
                 .catch(error => console.error("Error get Activities: ", error));
+        }
+
+        function filterByTeam() {
+            const filter = document.getElementById("teamIdFilter").value;
+            const rows = document.querySelectorAll("#athleteTableBody tr");
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const teamCell = row.querySelector("#team-tr");
+                if (teamCell) {
+                    const teamText = teamCell.textContent || teamCell.innerText;
+                    if (teamText.toLowerCase().includes(filter.toLowerCase())) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement("div");
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
         }
         </script>
     </body>

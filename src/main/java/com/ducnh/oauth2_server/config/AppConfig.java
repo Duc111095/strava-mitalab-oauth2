@@ -73,7 +73,7 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 	}
 
 	@Override
-    public void addCorsMappings(@NonNull CorsRegistry registry) {
+    public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/strava-oauth/registered-athlete")
                 .allowedOrigins("**") // Adjust to match your frontend origin
                 .allowedMethods("POST");
