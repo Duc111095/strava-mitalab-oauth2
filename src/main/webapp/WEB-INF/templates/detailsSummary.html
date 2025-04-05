@@ -20,21 +20,19 @@
     <div class="main-content">
         <div class="container">
             <h1>Bảng xếp hạng</h1>
- 			<table class="summary" th:unless="${#lists.isEmpty(summaryEvents)}">
+ 			<table class="summary" th:unless="${#lists.isEmpty(detailsSummary)}">
             <tr>
                 <th>Hạng</th>
-                <th>Tên nhóm</th>
+                <th>Tên VĐV</th>
                 <th>05/04(Km)</th>
                 <th>Tổng(Km)</th>
             </tr>
-            <tr th:each="ac : ${summaryEvents}">
-                <td th:text="${ac.getSTT()}"></td>
-                <td th:text="${ac.getTeamName()}"><a th:href="@{/summary/team?teamId=${ac.getTeamId()}&eventId=${ac.getEventId()}}"></a></td>
+            <tr th:each="ac : ${detailsSummary}">
+                <td th:text="${ac.getStt()}"></td>
+                <td th:text="${ac.getAthleteName()}"></td>
                 <td id="distance" th:text="${ac.formatTotalCurrentDistance()}"></td>
                 <td id="distance" th:text="${ac.formatTotalDistance()}"></td>
-                <td>
-                    <a th:href="@{/summary/team(teamId=${ac.getTeamId()}, eventId=${ac.getEventId()})}">Chi tiết</a>
-                </td>            
+                <td><a th:href="@{/activities?(athleteId=${ac.getAthleteId()})}">Chi tiết</a></td>
             </tr>
         </table>
         </div>

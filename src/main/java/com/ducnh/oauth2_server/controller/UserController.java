@@ -25,7 +25,6 @@ public class UserController {
 
 	@GetMapping("/athletes")
 	public String getUser(Model model) {
-		
 		Iterable<AthleteUser> users = userService.findAll();
 		model.addAttribute("users", users);
 		return "user";

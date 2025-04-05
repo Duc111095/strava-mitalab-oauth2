@@ -44,4 +44,8 @@ public class EventService {
 	public List<Map<String, Object>> findCurrentEventByAthlete(Long athleteId) {
 		return eventRepository.findCurrentEventByAthlete(athleteId);
 	}
+
+	public Optional<StravaEvent> findExactCurrentEvent() {
+		return eventRepository.findExactCurrentEvent();
+	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -23,9 +24,10 @@ public class ActivityController {
 	private ActivityService activityService;
 	
 	@RequestMapping("/activities")
-	public String showActivities(final Model model, @AuthenticationPrincipal OAuth2User principal) {
-		Long athleteId = Long.parseLong(principal.getName());
-		System.out.println("Athlete ID: " + athleteId);
+	public String showActivities(final Model model, @AuthenticationPrincipal OAuth2User principal, @Param("athleteId") Long athleteId) {
+		if (athleteId == null) {
+			athleteId = Long.parseLong(principal.getName());
+		}
 		model.addAttribute("athleteId", athleteId);
 		List<Map<String, Object>> listExtendedActivities = activityService.listExtendedActivities(athleteId);
 		List<ActivitiesDTO> listActivitiesDTO = new ArrayList<>();

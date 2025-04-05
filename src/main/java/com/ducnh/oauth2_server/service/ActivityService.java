@@ -7,11 +7,13 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ducnh.oauth2_server.dto.SummaryEventDTO;
 import com.ducnh.oauth2_server.model.ActivitySummary;
 import com.ducnh.oauth2_server.model.StravaActivity;
 import com.ducnh.oauth2_server.repository.ActivityRepository;
@@ -58,5 +60,14 @@ public class ActivityService {
 
 	public List<Map<String, Object>> listExtendedActivities(Long athleteId) {
 		return activityRepo.listExtendedActivities(athleteId);
+	}
+
+	public List<Object[]> getSummaryEvent(String eventId, int teamId, int type) {
+		Query query = em.createNativeQuery("call rpt_event_schedule(?, ?, ?)");
+		query.setParameter(1, eventId);
+		query.setParameter(2, teamId);
+		query.setParameter(3, type);
+		List<Object[]> list = query.getResultList();
+		return list;
 	}
 }

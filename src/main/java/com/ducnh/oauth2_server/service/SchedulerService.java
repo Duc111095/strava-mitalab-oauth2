@@ -1,5 +1,7 @@
 package com.ducnh.oauth2_server.service;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class SchedulerService {
 
     @Autowired
     private MapRepository mapRepo;
+
+    @Autowired
+    private StravaLapService stravaLapService;
 
     @Autowired
     private ActivityService activityService;
@@ -51,11 +56,26 @@ public class SchedulerService {
                 if (responseArray.isArray() && responseArray.size() > 0) {
                     for (JsonNode root : responseArray) {
                         PolylineMap map = new PolylineMap();
-                        map.setId(root.get("map").get("id") == null ? null : root.get("map").get("id").asText());
-                        map.setSummaryPolyline(root.get("map").get("summary_polyline") == null ? null : root.get("map").get("summary_polyline").asText());
-                        mapRepo.save(map);
+                        // Get the map data from the response
+                        if (root.get("map") != null) {
+                            map.setId(root.get("map").get("id") == null ? null : root.get("map").get("id").asText());
+                            map.setSummaryPolyline(root.get("map").get("summary_polyline") == null ? null : root.get("map").get("summary_polyline").asText());
+                            mapRepo.save(map);
+                        }
+
+                        // Create a new StravaActivity object and set the map
+                        StravaActivity activity = StravaActivity.createActivityFromResponse(root);
+                        activity.setMap(map);
+                        activityService.save(activity);
+
+                        // Fetch the lap data for the activity has start_date > now - 3 days
+
+                        LocalDate startDate = LocalDate.parse(root.get("start_date_local").asText(), StravaActivity.formatter);
+                        if (startDate.isBefore(LocalDate.now().minusDays(3))) {
+                            continue; // Skip if the activity is older than 3 days
+                        }
+
                         String activityId = root.get("id").asText();
-                        System.out.println("Activity ID: " + activityId);
                         String activityLapUrl = lapUrl.replace("{id}", activityId);
                         String activityLapResponse = tokenService.sendGetRequest(id, activityLapUrl).getBody();
                         ArrayNode responseLapArray = (ArrayNode) mapper.readTree(activityLapResponse);
@@ -63,12 +83,10 @@ public class SchedulerService {
                             System.out.println("Failed to fetch lap data for activity ID: " + activityId);
                             continue;
                         }
-                        System.out.println("Activity Lap URL: " + activityLapUrl);
-                        System.out.println("Activity Lap Response: " + responseLapArray);
                         if (responseLapArray.isArray() && responseLapArray.size() > 0) {
                             for (JsonNode activityLapNode : responseLapArray) {
                                 StravaLap lap = StravaLap.createStravaLapFromJsonNode(activityLapNode);
-                                System.out.println("Activity Lap Response: " + lap);
+                                stravaLapService.save(lap);
                             }
                         }
                         

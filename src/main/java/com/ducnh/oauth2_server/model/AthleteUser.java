@@ -303,6 +303,10 @@ public class AthleteUser {
 		this.weight = weight;
 	}
 	
+	public String getName() {
+		return this.firstName + " " + this.lastName;
+	}
+
 	public static AthleteUser createFromJsonString(JsonNode root) throws Exception{
 		AthleteUser user = new AthleteUser();
 		user.setId(root.get("id") == null ? null : root.get("id").asLong());
