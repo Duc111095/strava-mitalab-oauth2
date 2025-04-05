@@ -10,11 +10,14 @@ import com.ducnh.oauth2_server.service.EventService;
 import com.ducnh.oauth2_server.service.RegisterService;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -68,6 +71,8 @@ public class RegisterController {
 		registerIdentity.setEventId(registerForm.getEventId());
 		registerEvent.setRegisterId(registerIdentity);
         registerEvent.setTeamId(registerForm.getTeamId());
+        registerEvent.setCreatedAt(LocalDateTime.now());
+        registerEvent.setUpdatedAt(LocalDateTime.now());
         registerService.save(registerEvent);
 
         return "redirect:/register";
@@ -92,5 +97,46 @@ public class RegisterController {
             registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
             return registeredAthleteDTO;
         }).collect(Collectors.toList());
+    }
+
+    @GetMapping("/register/unaccepted")
+    public String getUnacceptedAthletes(Model model, @AuthenticationPrincipal OAuth2User principal) {
+        StravaEvent currEvent = eventService.findExactCurrentEvent().orElseThrow(() -> new RuntimeException("No current event found"));
+        String eventId = currEvent.getId();
+        model.addAttribute("currEvent", currEvent);
+
+        List<Map<String, Object>> unacceptedMap = registerService.listUnacceptedAthletes(eventId);
+
+        List<RegisteredAthleteDTO> unacceptedAthletes = unacceptedMap.stream().map(item -> {
+            RegisteredAthleteDTO registeredAthleteDTO = new RegisteredAthleteDTO();
+            registeredAthleteDTO.setAthleteId(Long.parseLong(String.valueOf(item.get("athlete_id"))));
+            registeredAthleteDTO.setAthleteName(item.get("athlete_name") == null ? "" : (String) item.get("athlete_name"));
+            registeredAthleteDTO.setEventId((String) item.get("event_id"));
+            registeredAthleteDTO.setTeamId(String.valueOf(item.get("team_id")));
+            registeredAthleteDTO.setEventName((String) item.get("event_name"));
+            Timestamp registered_at = (Timestamp) item.get("registered_at");
+            Timestamp updated_at = (Timestamp) item.get("updated_at");
+            registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
+            registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
+            System.out.println("Registered Athlete DTO: " + registeredAthleteDTO);
+            return registeredAthleteDTO;
+        }).collect(Collectors.toList());
+        
+        model.addAttribute("unRegisteredAthletes", unacceptedAthletes);
+        return "unaccepted";
+    }
+
+    @PostMapping("/register/accept")
+    @ResponseBody
+    public String acceptAthlete(@RequestBody Map<String, String> request) {
+        try {
+            String eventId = request.get("eventId");
+            Long athleteId = Long.parseLong(request.get("athleteId"));
+            System.out.println("Accepting athlete with ID: " + athleteId + " for event ID: " + eventId);
+            registerService.acceptRegister(eventId, athleteId);
+            return ResponseEntity.ok("success").getBody();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error accepting athlete: " + e.getMessage()).getBody();
+        }
     }
 }

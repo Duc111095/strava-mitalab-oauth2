@@ -43,4 +43,16 @@ public class RegisterService {
     public List<Map<String, Object>> findRegisteredAthlete(String eventId){
         return registerRepository.findRegisteredAthlete(eventId);
     }
+
+    public List<Map<String, Object>> listUnacceptedAthletes(String eventId){
+        return registerRepository.listUnacceptedAthletes(eventId);
+    }
+
+    public void acceptRegister(String eventId, Long athleteId) {
+        RegisterEvent registerEvent = registerRepository.findById(new RegisterIdentity(eventId, athleteId)).orElse(null);
+        if (registerEvent != null) {
+            registerEvent.setAccepted(true);
+            registerRepository.save(registerEvent);
+        }
+    }
 }

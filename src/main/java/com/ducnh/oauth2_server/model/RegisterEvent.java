@@ -21,7 +21,7 @@ public class RegisterEvent {
 	
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	
+	private Boolean accepted = false;
 	public RegisterEvent() {}
 	
 	public RegisterEvent(RegisterIdentity registerId, int teamId) {
@@ -64,9 +64,17 @@ public class RegisterEvent {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
+
 	public LocalDateTime getUpdatedAt() {
 		return this.updatedAt;
+	}
+
+	public Boolean isAccepted() {
+		return accepted;
+	}
+
+	public void setAccepted(Boolean accepted) {
+		this.accepted = accepted;
 	}
 	
 	@PrePersist

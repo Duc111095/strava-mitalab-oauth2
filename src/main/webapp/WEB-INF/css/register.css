@@ -74,6 +74,9 @@ body {
 .main-container {
     margin-left: 240px;
     flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
 }
 .main-content #teamIdFilter {
     margin: 30px auto;
