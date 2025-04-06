@@ -3,7 +3,7 @@
 <head>
     <title>Team Registration</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/register.css}">
 </head>
 
 <body>
@@ -13,12 +13,31 @@
         <a th:href="@{/activities}">Danh sách hoạt động</a>
         <a th:href="@{/summary}">Tổng hợp</a>
     </div>
-    
+    <div class="main-container">
+        <h2 class="page-title">Đăng ký Team</h2>
+        <div class="registration-form" id="registration-form">
+            <form th:action="@{/register}" th:object="${registerForm}" method="post">
+                <div class="form-group">
+                    <label for="eventId">Chọn sự kiện</label>
+                    <select id="eventId" th:field="*{eventId}" class="form-control" required>
+                        <option th:each="event : ${events}" th:value="${event.getId()}" th:text="${event.getEventName()}" th:attr="data-max=${event.getTeamCount()}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="teamId">Chọn đội</label>
+                    <select id="teamId" th:field="*{teamId}" class="form-control" required>
+                        <option value="0" disabled selected>Select a team</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" id="form-actions">Register</button>
+            </form>
+        </div>
+    </div>
     <div class="main-content">
+        <div>
+            <input type="text" id="teamIdFilter" placeholder="Nhập tên đội để lọc" onchange="filterByTeam()" class="form-control">
+        </div>
         <div class="container">
-            <div>
-                <input type="text" id="teamIdFilter" placeholder="Nhập tên đội để lọc" onchange="filterByTeam()" class="form-control">
-            </div>
             <h2>Danh sách VĐV đã đăng ký</h2>
             <table>
                 <thead>
@@ -33,7 +52,6 @@
 				<tbody id="athleteTableBody"></tbody>
             </table>
         </div>
-    </div>
     <div class="footer-left">
         <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
             <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
@@ -168,6 +186,6 @@
                 alertDiv.remove();
             }, 3000);
         }
-    </script>
-</body>
+        </script>
+    </body>
 </html>
