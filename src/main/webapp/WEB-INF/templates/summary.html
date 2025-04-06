@@ -19,17 +19,19 @@
     </div>
     <div class="main-content">
         <div class="container">
-            <h1>Bảng xếp hạng</h1>
+            <h1>Bảng xếp hạng tổng</h1>
  			<table class="summary" th:unless="${#lists.isEmpty(summaryEvents)}">
             <tr>
                 <th>Hạng</th>
                 <th>Tên nhóm</th>
-                <th>05/04(Km)</th>
+                <th>SL thành viên</th>
+                <th th:text="${currentDate} + '(Km)'"></th>
                 <th>Tổng(Km)</th>
             </tr>
             <tr th:each="ac : ${summaryEvents}">
-                <td th:text="${ac.getSTT()}"></td>
-                <td th:text="${ac.getTeamName()}"><a th:href="@{/summary/team?teamId=${ac.getTeamId()}&eventId=${ac.getEventId()}}"></a></td>
+                <td id="distance" th:text="${ac.getSTT()}"></td>
+                <td id="distance" th:text="${ac.getTeamName()}"><a th:href="@{/summary/team?teamId=${ac.getTeamId()}&eventId=${ac.getEventId()}}"></a></td>
+                <td id="distance" th:text="${ac.getTeamCount()}"></td>
                 <td id="distance" th:text="${ac.formatTotalCurrentDistance()}"></td>
                 <td id="distance" th:text="${ac.formatTotalDistance()}"></td>
                 <td>

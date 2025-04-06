@@ -19,12 +19,12 @@
     </div>
     <div class="main-content">
         <div class="container">
-            <h1>Bảng xếp hạng</h1>
+            <h1 th:text="'Team ' + ${teamId}"></h1>
  			<table class="summary" th:unless="${#lists.isEmpty(detailsSummary)}">
             <tr>
                 <th>Hạng</th>
                 <th>Tên VĐV</th>
-                <th>05/04(Km)</th>
+                <th th:text="${currentDate} + '(Km)'"></th>
                 <th>Tổng(Km)</th>
             </tr>
             <tr th:each="ac : ${detailsSummary}">

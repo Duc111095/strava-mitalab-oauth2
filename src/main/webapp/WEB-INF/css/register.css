@@ -57,11 +57,11 @@ body {
     color: #E0E0E0;
     width: 200px;
 }
-.form-actions {
+.register {
     display: flex;
     gap: 10px;
 }
-.form-actions button {
+.register button {
     flex: 1;
 }
 .main-content {

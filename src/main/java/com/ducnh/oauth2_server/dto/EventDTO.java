@@ -6,6 +6,8 @@ public class EventDTO {
     private String eventName;
     private Long athleteId;
     private int teamId;
+    private boolean isAccepted = false;
+    private boolean isRegistered = false;
 
     public EventDTO() {}
 
@@ -34,6 +36,22 @@ public class EventDTO {
         this.teamId = teamId;
     }
 
+    public void setAccepted(boolean isAccepted) {
+        this.isAccepted = isAccepted;
+    }
+
+    public boolean isAccepted() {
+        return this.isAccepted;
+    }
+
+    public void setRegistered(boolean isRegistered) {
+        this.isRegistered = isRegistered;
+    }
+
+    public boolean isRegistered() {
+        return this.isRegistered;
+    }
+
     public String getEventName() {
         return eventName;
     }
@@ -44,9 +62,5 @@ public class EventDTO {
     @Override
     public String toString() {
         return "EventDTO [eventId=" + eventId + ", athleteId=" + athleteId + ", teamId=" + teamId + "]";
-    }
-    
-    public String toJson() {
-        return "{ \"eventId\": \"" + eventId + "\", \"athleteId\": " + athleteId + ", \"teamId\": " + teamId + " }";
     }
 }

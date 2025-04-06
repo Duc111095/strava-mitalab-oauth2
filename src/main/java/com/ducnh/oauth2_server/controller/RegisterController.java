@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,7 +40,7 @@ public class RegisterController {
     private EventService eventService;
     
     @GetMapping("/register")
-    public String showRegisterForm(Model model) {
+    public String showRegisterForm(Model model, @AuthenticationPrincipal OAuth2User principal) {
         model.addAttribute("registerForm", new RegisterForm());
         Iterable<StravaEvent> events = eventService.findCurrentEvent();
         model.addAttribute("events", events);
@@ -48,18 +49,20 @@ public class RegisterController {
 
     @GetMapping("register/init")
     @ResponseBody
-    public List<EventDTO> getCurrentEvent(Model model, @AuthenticationPrincipal OAuth2User principal) {
+    public ResponseEntity<EventDTO> getCurrentEvent(Model model, @AuthenticationPrincipal OAuth2User principal) {
         Long athleteId = Long.parseLong(principal.getName());
-        List<Map<String, Object>> events = eventService.findCurrentEventByAthlete(athleteId);
-        List<EventDTO> eventList = events.stream().map(item -> {
-            EventDTO event = new EventDTO();
-            event.setAthleteId(Long.parseLong(item.get("athlete_id").toString()));
-            event.setEventId((String) item.get("event_id"));
-            event.setTeamId((int)item.get("team_id"));
-            event.setEventName((String) item.get("event_name"));
-            return event;
-        }).collect(Collectors.toList());
-        return eventList;
+        Map<String, Object> item = eventService.findCurrentEventByAthlete(athleteId);
+        EventDTO eventDTO = new EventDTO();
+        if (item.size() > 0) {
+            eventDTO.setAthleteId(Long.parseLong((item.get("athlete_id").toString())));
+            eventDTO.setEventId(item.get("event_id").toString());
+            eventDTO.setTeamId((int) item.get("team_id"));
+            eventDTO.setEventName(item.get("event_name").toString());
+            eventDTO.setAccepted((Boolean) item.get("accepted"));
+            eventDTO.setRegistered(true);
+            model.addAttribute("event", eventDTO);
+        }
+        return ResponseEntity.ok(eventDTO);
     }
     
 
@@ -74,7 +77,6 @@ public class RegisterController {
         registerEvent.setCreatedAt(LocalDateTime.now());
         registerEvent.setUpdatedAt(LocalDateTime.now());
         registerService.save(registerEvent);
-
         return "redirect:/register";
     }
 
@@ -132,11 +134,19 @@ public class RegisterController {
         try {
             String eventId = request.get("eventId");
             Long athleteId = Long.parseLong(request.get("athleteId"));
-            System.out.println("Accepting athlete with ID: " + athleteId + " for event ID: " + eventId);
             registerService.acceptRegister(eventId, athleteId);
             return ResponseEntity.ok("success").getBody();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error accepting athlete: " + e.getMessage()).getBody();
         }
     }
+
+    @GetMapping("/register/leave")
+    public ResponseEntity<?> leaveRegistered(@Param("eventId") String eventId, @Param("athleteId") Long athleteId) {
+        if (registerService.existsById(eventId, athleteId)) {
+            registerService.deleteById(eventId, athleteId);
+        }
+        return ResponseEntity.ok().body(null);
+    }
+    
 }

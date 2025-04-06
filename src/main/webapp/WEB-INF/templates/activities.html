@@ -100,8 +100,12 @@
             button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sync`;
             button.disabled = true; // Disable the button to prevent multiple clicks
             const tbody = document.getElementById("athleteTableBody");
-            
-            fetch("/runner/activities/update", {
+            const athleteId = getUrlParam("athleteId");
+            var endpoint = '/runner/activities/update';
+            if (athleteId != null) {
+                endpoint += '?athleteId=' + athleteId; 
+            }
+            fetch(endpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -194,6 +198,10 @@
             setTimeout(() => {
                 alertDiv.remove();
             }, 3000);
+        }
+        function getUrlParam(paramName) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(paramName);
         }
     </script>
 </body>

@@ -21,12 +21,8 @@ import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.StravaLapService;
 import com.ducnh.oauth2_server.service.TokenService;
 
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-
 
 @Controller
 @RequestMapping("")
@@ -58,9 +54,14 @@ public class ActivityController {
 
 	@PostMapping("/activities/update")
 	@ResponseBody
-	public ResponseEntity<List<ActivitiesDTO>> updateActivites(@AuthenticationPrincipal OAuth2User principal) {
+	public ResponseEntity<List<ActivitiesDTO>> updateActivites(@Param("athleteId") Long athleteId,@AuthenticationPrincipal OAuth2User principal) {
 		try {
-			Long athleteId = Long.parseLong(principal.getName());
+			if (athleteId == null || athleteId == 0) {
+				athleteId = Long.parseLong(principal.getName());
+			} 
+			
+			System.out.println("AthleteID: " + athleteId);
+
 			// Call Strava API to get activities
 			ResponseEntity<String> activities = tokenService.sendGetRequest(athleteId, activitiesStravaUrl);
 			

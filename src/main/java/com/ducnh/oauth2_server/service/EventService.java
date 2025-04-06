@@ -41,7 +41,7 @@ public class EventService {
 		return eventRepository.findCurrentEvent();
 	}
 
-	public List<Map<String, Object>> findCurrentEventByAthlete(Long athleteId) {
+	public Map<String, Object> findCurrentEventByAthlete(Long athleteId) {
 		return eventRepository.findCurrentEventByAthlete(athleteId);
 	}
 

@@ -1,6 +1,8 @@
 package com.ducnh.oauth2_server.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +56,9 @@ public class SummaryController {
 			summaryEvent.setSTT(stt);
 			summaryEvents.add(summaryEvent);
 		}
+		LocalDate currentDate = LocalDate.now();
+        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
+        model.addAttribute("currentDate", formattedDate);
 		model.addAttribute("summaryEvents", summaryEvents);
 		model.addAttribute("currEvent", currEvent);
 		return "summary";
@@ -87,6 +92,10 @@ public class SummaryController {
 			detailResult.setTeamName(teamName);
 			detailsSummary.add(detailResult);
 		}
+		LocalDate currentDate = LocalDate.now();
+        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
+        model.addAttribute("teamId", teamId);
+		model.addAttribute("currentDate", formattedDate);
 		model.addAttribute("detailsSummary", detailsSummary);
 		model.addAttribute("teamId", teamId);
 		return "detailsSummary";

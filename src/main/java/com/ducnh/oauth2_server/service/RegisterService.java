@@ -55,4 +55,13 @@ public class RegisterService {
             registerRepository.save(registerEvent);
         }
     }
+
+    public boolean isRegisted(String eventId, Long athleteId) {
+        return this.existsById(eventId, athleteId);
+    }
+
+    public boolean isAccepted(String eventId, Long athleteId) {
+        RegisterEvent event = this.findById(eventId, athleteId);
+        return event.isAccepted();
+    }
 }
