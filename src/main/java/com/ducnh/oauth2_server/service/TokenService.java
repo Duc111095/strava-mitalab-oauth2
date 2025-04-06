@@ -123,7 +123,7 @@ public class TokenService {
 	
 	public ResponseEntity<String> sendGetRequest(Long athleteId, String url) {
 		try {
-			String accessToken = tokenRepo.findById(athleteId).get().getAccessToken();
+			String accessToken = this.getAccessToken(athleteId);
 			return sendGetRequest(accessToken, url); 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,5 +1,7 @@
 package com.ducnh.oauth2_server.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,7 @@ public class StravaLapService {
             return stravaLapRepo.findByAthleteId(athleteId);
         }
         
-        public Iterable<StravaLap> findByActivityId(Long activityId) {
+        public List<StravaLap> findByActivityId(Long activityId) {
             return stravaLapRepo.findByActivityId(activityId);
         }
 }

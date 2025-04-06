@@ -15,7 +15,6 @@ public class Oauth2ServerApplication extends SpringBootServletInitializer {
 	}
 	@Bean
 	public void debug() {
-		System.out.println("Debugging Oauth2ServerApplication...");
 		System.out.println("Encoding: " + System.getProperty("file.encoding"));
 	}
 }

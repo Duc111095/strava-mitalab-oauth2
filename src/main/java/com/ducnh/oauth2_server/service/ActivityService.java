@@ -1,5 +1,7 @@
 package com.ducnh.oauth2_server.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,18 +13,41 @@ import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.ducnh.oauth2_server.dto.SummaryEventDTO;
+import com.ducnh.oauth2_server.dto.ActivitiesDTO;
 import com.ducnh.oauth2_server.model.ActivitySummary;
+import com.ducnh.oauth2_server.model.PolylineMap;
 import com.ducnh.oauth2_server.model.StravaActivity;
+import com.ducnh.oauth2_server.model.StravaLap;
 import com.ducnh.oauth2_server.repository.ActivityRepository;
+import com.ducnh.oauth2_server.repository.MapRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Service
 public class ActivityService {
 
 	@Autowired
 	private ActivityRepository activityRepo;
+
+	@Autowired
+	private ObjectMapper mapper;
+
+	@Autowired
+	private TokenService tokenService;
+
+	@Autowired
+	private MapRepository mapRepo;
+
+	@Autowired
+	private StravaLapService stravaLapService;
+
+	@Value("${strava.url.activities.lap}")
+	private String lapUrl;
 	
 	@Autowired
 	@PersistenceContext
@@ -69,5 +94,77 @@ public class ActivityService {
 		query.setParameter(3, type);
 		List<Object[]> list = query.getResultList();
 		return list;
+	}
+
+	public void saveActivitiesFromStravaResponse(ResponseEntity<String> response, Long athleteId) {
+		try {
+			// Save activities to database
+			ArrayNode treeActivityRoot = (ArrayNode) mapper.readTree(response.getBody());
+			if (treeActivityRoot.isArray() && treeActivityRoot.size() > 0) {
+				for (JsonNode root : treeActivityRoot) {
+
+					// Get the map data from the response
+					PolylineMap map = new PolylineMap();
+					map.setId(root.get("map").get("id") == null ? null : root.get("map").get("id").asText());
+					map.setSummaryPolyline(root.get("map").get("summary_polyline") == null ? null : root.get("map").get("summary_polyline").asText());
+					mapRepo.save(map);
+
+					// Create a new StravaActivity object and set the map
+					String activityId = root.get("id").asText();
+					StravaActivity activity = new StravaActivity();
+					activity = StravaActivity.createActivityFromResponse(root);
+					activity.setMap(map);
+					this.save(activity);
+
+					// Fetch the lap data for the activity has start_date > now - 3 days
+					LocalDate startDate = LocalDate.parse(root.get("start_date_local").asText(), StravaActivity.formatter);
+					if (startDate.isBefore(LocalDate.now().minusDays(60))) {
+						continue; // Skip if the activity is older than 3 days
+					}
+	
+					String activityLapUrl = lapUrl.replace("{id}", activityId);
+					String activityLapResponse = tokenService.sendGetRequest(athleteId, activityLapUrl).getBody();
+					ArrayNode responseLapArray = (ArrayNode) mapper.readTree(activityLapResponse);
+					if (responseLapArray == null) {
+						System.out.println("Failed to fetch lap data for activity ID: " + activityId);
+						continue;
+					}
+					if (responseLapArray.isArray() && responseLapArray.size() > 0) {
+						for (JsonNode activityLapNode : responseLapArray) {
+							StravaLap lap = StravaLap.createStravaLapFromJsonNode(activityLapNode);
+							stravaLapService.save(lap);
+						}
+					}	
+				}
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public List<ActivitiesDTO> convertToActivitiesDTO(List<Map<String, Object>> listExtendedActivities) {
+		List<ActivitiesDTO> listActivitiesDTO = new ArrayList<>();
+		listExtendedActivities.stream().forEach(extendedActivity -> {
+			ActivitiesDTO activitiesDTO = new ActivitiesDTO();
+			activitiesDTO.setAthleteID(extendedActivity.get("athlete_id") != null ? Long.parseLong(extendedActivity.get("athlete_id").toString()) : null);
+			activitiesDTO.setAthleteName(extendedActivity.get("athlete_name") != null ? extendedActivity.get("athlete_name").toString() : null);
+			activitiesDTO.setDistance(extendedActivity.get("distance") != null ? Double.parseDouble(extendedActivity.get("distance").toString()) : null);
+			activitiesDTO.setMovingTime(extendedActivity.get("moving_time") != null ? Integer.parseInt(extendedActivity.get("moving_time").toString()) : null);
+			activitiesDTO.setStartDateLocal(extendedActivity.get("start_date_local") != null ? ((Timestamp)extendedActivity.get("start_date_local")).toLocalDateTime() : null);
+			activitiesDTO.setActivityName(extendedActivity.get("name") != null ? extendedActivity.get("name").toString() : null);
+			activitiesDTO.setActivityID(extendedActivity.get("id") != null ? Long.parseLong(extendedActivity.get("id").toString()) : null);
+			
+			String mapId = extendedActivity.get("map_id") != null ? extendedActivity.get("map_id").toString() : null;
+			
+			if (mapId != null) {
+				PolylineMap map = mapRepo.findById(mapId).orElse(null);
+				if (map != null) {
+					activitiesDTO.setMap(map);
+				}
+			}
+			
+			listActivitiesDTO.add(activitiesDTO);
+		});
+		return listActivitiesDTO;
 	}
 }

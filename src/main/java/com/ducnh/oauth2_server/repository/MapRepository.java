@@ -7,5 +7,4 @@ import com.ducnh.oauth2_server.model.PolylineMap;
 
 @Repository
 public interface MapRepository extends CrudRepository<PolylineMap, String>{
-
 }

@@ -2,6 +2,11 @@ package com.ducnh.oauth2_server.dto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ducnh.oauth2_server.model.PolylineMap;
+import com.ducnh.oauth2_server.model.StravaLap;
 
 public class ActivitiesDTO {
     
@@ -12,6 +17,7 @@ public class ActivitiesDTO {
     private Double distance;
     private Integer movingTime;
     private LocalDateTime startDateLocal;
+    private PolylineMap map;
 
     public ActivitiesDTO() {
     }
@@ -49,21 +55,38 @@ public class ActivitiesDTO {
     public void setActivityID(Long activityID) {
         this.activityID = activityID;
     }
-    public Double getDistance() {
-        return distance;
+    public String getDistance() {
+        return String.format("%.2f km", distance / 1000);
+    }
+
+    public String getStartDateLocal() {
+        return this.startDateLocal.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
     }
     public void setDistance(Double distance) {
         this.distance = distance;
     }
-    public Integer getMovingTime() {
-        return movingTime;
+    
+    public PolylineMap getMap() {
+        return map;
     }
+    public void setMap(PolylineMap map) {
+        this.map = map;
+    }
+
+    public String getMovingTime() {
+        if (movingTime < 3600) {
+            return "" + (movingTime / 60) + "m" + (movingTime % 60) + "s";
+        }
+        int hours = (movingTime / 3600);
+        int minutes = (movingTime % 3600) / 60;
+		int seconds = this.movingTime - hours * 3600 - 60 * minutes;
+        return "" + hours + "h" + minutes + "m" + seconds + "s";
+    }
+
     public void setMovingTime(Integer movingTime) {
         this.movingTime = movingTime;
     }
-    public LocalDateTime getStartDateLocal() {
-        return startDateLocal;
-    }
+
     public void setStartDateLocal(LocalDateTime startDateLocal) {
         this.startDateLocal = startDateLocal;
     }
