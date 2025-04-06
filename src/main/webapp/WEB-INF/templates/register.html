@@ -15,12 +15,25 @@
         <a th:href="@{/summary}">Tổng hợp</a>
     </div>
     <div class="main-content">
-        <h2 class="page-title">Đăng ký Team</h2>
-        <div class="registration-form" id="registration-form">
-            <form th:action="@{/register}" th:object="${registerForm}" method="post">
-                
-                <button type="submit" class="btn btn-primary" id="form-actions">Register</button>
-            </form>
+        <div class="container">
+            <h2 class="page-title">Đăng ký Team</h2>
+            <div class="registration-form" id="registration-form">
+                <form th:action="@{/register}" th:object="${registerForm}" method="post">
+                    <div class="form-group">
+                        <label for="eventId">Chọn sự kiện</label>
+                        <select id="eventId" th:field="*{eventId}" class="form-control" required>
+                            <option th:each="event : ${events}" th:value="${event.getId()}" th:text="${event.getEventName()}" th:attr="data-max=${event.getTeamCount()}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="teamId">Chọn đội</label>
+                        <select id="teamId" th:field="*{teamId}" class="form-control" required>
+                            <option value="0" disabled selected>Select a team</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="form-actions">Register</button>
+                </form>
+            </div>
         </div>
     </div>
     <div class="main-content">
