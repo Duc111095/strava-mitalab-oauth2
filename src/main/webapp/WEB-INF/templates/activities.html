@@ -71,7 +71,7 @@
                         <td colspan="6" style="text-align: center;">Không có hoạt động nào</td>
                     </tr>
 
-                    <tr th:each="activity : ${allActivities}" >
+                    <tr th:each="activity : ${allActivities}" onmouseover="showLapDetails(this)" onmouseout="hideLapDetails()" th:attr="activity-id=${activity.getActivityID()}">
                             <td th:text="${activity.getAthleteName()}"></td>
                             <td th:text="${activity.getActivityName()}"></td>
                             <td th:text="${activity.formatDistance()}"></td>
@@ -79,8 +79,6 @@
                             <td th:text="${activity.getPaced()}"></td>
                             <td th:text="${activity.formatStartDate()}"></td>
                             <td><a th:href="@{https://www.strava.com/activities/{id}(id=${activity.getActivityID()})}" target="blank">View On Strava</a></td>
-                            <td onmouseover="showLapDetails(this)" onmouseout="hideLapDetails()" th:attr="activity-id=${activity.getActivityID()}">
-                            </td>
                         </tr>
                 </tbody>    
             </table>
@@ -153,7 +151,8 @@
             lapDetailsRow.id = "lap-details-row";
             const lapDetailsCell = document.createElement("td");
             lapDetailsCell.colSpan = 7; // Span across all columns
-            lapDetailsCell.style.backgroundColor = "#f9f9f9";
+            lapDetailsCell.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+            lapDetailsCell.style.color = "white";
             lapDetailsCell.style.border = "1px solid #ccc";
             lapDetailsCell.style.padding = "10px";
             lapDetailsRow.appendChild(lapDetailsCell);
@@ -165,14 +164,12 @@
             fetch(`/runner/activities/laps?activityId=${activityId}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 if (data.length > 0) {
-                    lapDetailsCell.innerHTML = `
-                        <h4>Lap Details</h4>
-                        <ul>
-                            ${data.map(lap => `<li>Lap ${lap.lapIndex}: ${lap.distance} km in ${lap.movingTime} mins</li>`).join("")}
-                        </ul>
-                    `;
+                    innerHTML = "<h4>Lap Details</h4>";
+                    for (let i = 0; i < data.length; i++) {
+                        innerHTML += `<p>Lap ${i + 1}: ${data[i].distance}m in ${data[i].movingTime}</p>`;
+                    }
+                    lapDetailsCell.innerHTML = innerHTML;
                 } else {
                     lapDetailsCell.innerHTML = `<p>Không có thông tin Lap</p>`;
                 }

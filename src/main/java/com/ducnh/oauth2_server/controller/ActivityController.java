@@ -2,6 +2,7 @@ package com.ducnh.oauth2_server.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,10 +88,10 @@ public class ActivityController {
 	@ResponseBody
 	public ResponseEntity<List<StravaLap>> getInformationLap(@Param("activityId") Long activityId) {
 		List<StravaLap> laps = lapService.findByActivityId(activityId);
+		laps.sort((a, b) -> a.getLapIndex().compareTo(b.getLapIndex()));	
 		if (laps.isEmpty() || laps.size() == 0) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 		return ResponseEntity.ok(laps);
 	}
-	
 }

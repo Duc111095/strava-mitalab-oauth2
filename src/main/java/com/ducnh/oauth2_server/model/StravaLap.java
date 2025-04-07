@@ -136,8 +136,8 @@ public class StravaLap {
     public void setMaxSpeed(Double maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
-    public Integer getMovingTime() {
-        return movingTime;
+    public String getMovingTime() {
+        return (this.movingTime == null) ? "0" : "" + this.movingTime / 60 + "m" + (this.movingTime % 60) + "s";    
     }
     public void setMovingTime(Integer movingTime) {
         this.movingTime = movingTime;
