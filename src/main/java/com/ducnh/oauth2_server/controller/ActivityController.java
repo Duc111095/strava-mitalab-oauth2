@@ -2,7 +2,6 @@ package com.ducnh.oauth2_server.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

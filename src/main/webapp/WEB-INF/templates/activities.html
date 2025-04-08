@@ -2,52 +2,201 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activity List</title>
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" th:href="@{css/style.css}">
     <style>
-        .alert {
+        /* Responsive additions to style.css */
+        * {
+            box-sizing: border-box;
+        }
+        
+        /* Toggle button for sidebar */
+        .toggle-menu {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-        .alert-success {
-            background-color: #28a745;
-            color: white;
-        }
-        .alert-warning {
-            background-color: #ffc107;
-            color: white;
-        }
-        .alert-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-        .update-button {
-            margin-bottom: 20px;
-        }
-        .update-button button {
-            padding: 10px 20px;
-            background-color: #281fc9;
+            top: 10px;
+            left: 10px;
+            z-index: 200;
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            padding: 8px 12px;
+            font-size: 18px;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .toggle-menu:hover {
+            box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.5);
+        }
+        
+        /* Sidebar modifications for toggle */
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+            z-index: 100;
+        }
+        
+        .sidebar.closed {
+            margin-left: -260px; /* Width + padding */
+        }
+        
+        /* Main content modifications for sidebar toggle */
+        .main-content.full-width {
+            margin-left: 0;
+        }
+        
+        /* Lap details styling */
+        .lap-details-container {
+            display: none;
+            background-color: #2A2A2A;
+            color: #E0E0E0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+        }
+        
+        .lap-details-container.show {
+            display: block;
+        }
+        
+        /* Action buttons styling */
+        .action-button {
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            margin-right: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .action-button:hover {
+            box-shadow: 0px 0px 8px rgba(255, 140, 0, 0.7);
+        }
+        
+        .action-button i {
+            margin-right: 5px;
+        }
+        
+        /* Update button styling */
+        .update-button button {
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .update-button button:hover {
+            box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.5);
+        }
+        
+        /* Map container styling */
+        #activity-map {
+            border-radius: 5px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Alert styling adjustment */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.8);
+            color: white;
+        }
+        
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.8);
+            color: white;
+        }
+        
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.8);
+            color: white;
+        }
+        
+        /* Responsive media queries */
+        @media screen and (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                left: 0;
+                top: 0;
+                padding-top: 60px;
+                display: none;
+                overflow-y: auto;
+                max-height: 100vh;
+            }
+            
+            .sidebar.show {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .footer-left, .footer-right {
+                position: static;
+                margin: 10px 0;
+                text-align: center;
+            }
+            
+            .footer-left {
+                display: flex;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <button class="toggle-menu" id="toggleMenu">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="sidebar" id="sidebar">
         <a th:href="@{/events}">Sự kiện</a>
         <a th:href="@{/register}">Đăng ký</a>
         <a th:href="@{#}">Danh sách hoạt động</a>
         <a th:href="@{/summary}">Tổng hợp</a>
     </div>
-    <div class="main-content"  th:unless="${#lists.isEmpty(allActivities)}">
+    
+    <div class="main-content" id="mainContent" th:unless="${#lists.isEmpty(allActivities)}">
         <div class="container">
             <h1>Danh Sách Hoạt Động</h1>
             <div class="update-button">
@@ -55,42 +204,139 @@
                     <i class="fas fa-sync-alt"></i> Sync
                 </button>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>VĐV</th>
-                        <th>Hoạt động</th>
-                        <th>Quãng đường</th>
-                        <th>Tổng thời gian</th>
-                        <th>Pace</th>
-                        <th>Ngày hoạt động</th>
-                    </tr>
-                </thead>
-                <tbody id="athleteTableBody" th:unless="${#lists.isEmpty(allActivities)}">
-                    <tr th:if="${#lists.isEmpty(allActivities)}">
-                        <td colspan="6" style="text-align: center;">Không có hoạt động nào</td>
-                    </tr>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VĐV</th>
+                            <th>Hoạt động</th>
+                            <th>Quãng đường</th>
+                            <th>Tổng thời gian</th>
+                            <th>Pace</th>
+                            <th>Ngày hoạt động</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="athleteTableBody" th:unless="${#lists.isEmpty(allActivities)}">
+                        <tr th:if="${#lists.isEmpty(allActivities)}">
+                            <td colspan="7" style="text-align: center;">Không có hoạt động nào</td>
+                        </tr>
 
-                    <tr th:each="activity : ${allActivities}" onmouseover="showLapDetails(this)" onmouseout="hideLapDetails()" th:attr="activity-id=${activity.getActivityID()}">
+                        <tr th:each="activity : ${allActivities}" th:attr="activity-id=${activity.getActivityID()}">
                             <td th:text="${activity.getAthleteName()}"></td>
                             <td th:text="${activity.getActivityName()}"></td>
                             <td th:text="${activity.formatDistance()}"></td>
                             <td th:text="${activity.formatMovingTime()}"></td>
                             <td th:text="${activity.getPaced()}"></td>
                             <td th:text="${activity.formatStartDate()}"></td>
-                            <td><a th:href="@{https://www.strava.com/activities/{id}(id=${activity.getActivityID()})}" target="blank">View On Strava</a></td>
+                            <td>
+                                <button class="action-button view-strava" th:onclick="'window.open(\'https://www.strava.com/activities/' + ${activity.getActivityID()} + '\', \'_blank\')'">
+                                    <i class="fas fa-external-link-alt"></i> Strava
+                                </button>
+                                <button class="action-button view-map" th:onclick="'showActivityMap(this)'" th:attr="polyline-map=${activity.getMap().getSummaryPolyline()}">
+                                    <i class="fas fa-map-marked-alt"></i> Map
+                                </button>
+                                <button class="action-button view-laps" th:onclick="'toggleLapDetails(this, \'' + ${activity.getActivityID()} + '\')'">
+                                    <i class="fas fa-list-ol"></i> Laps
+                                </button>
+                            </td>
                         </tr>
-                </tbody>    
-            </table>
+                        <tr th:each="activity : ${allActivities}">
+                            <td colspan="7" class="lap-details-container" th:id="'lap-details-' + ${activity.getActivityID()}">
+                                <div class="lap-details-content">
+                                    <p>Đang tải dữ liệu...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>    
+                </table>
+            </div>
+            <div id="activity-map" style="height: 400px; margin-top: 20px; display: none;"></div>
         </div>
-    <div class="footer-left">
-        <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
-            <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
-        </a>
-    </div>
+        <div class="footer-left">
+            <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
+                <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
+            </a>
+        </div>
         <div class="footer-right">Developed by ERP</div>
     </div>
+    
     <script th:inline="javascript">
+        // Toggle sidebar
+        const toggleMenu = document.getElementById('toggleMenu');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        
+        // Check screen size on page load and set appropriate classes
+        function checkScreenSize() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('closed');
+                sidebar.classList.remove('show');
+                mainContent.classList.add('full-width');
+            } else {
+                sidebar.classList.remove('show');
+                sidebar.classList.remove('closed');
+                mainContent.classList.remove('full-width');
+            }
+        }
+        
+        // Run on page load
+        window.addEventListener('load', checkScreenSize);
+        
+        // Run when window is resized
+        window.addEventListener('resize', checkScreenSize);
+        
+        toggleMenu.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('show');
+            } else {
+                sidebar.classList.toggle('closed');
+                mainContent.classList.toggle('full-width');
+            }
+        });
+        
+        // Function to toggle lap details visibility
+        function toggleLapDetails(button, activityId) {
+            const lapDetailsContainer = document.getElementById('lap-details-' + activityId);
+            
+            // If container is already visible, just hide it
+            if (lapDetailsContainer.classList.contains('show')) {
+                lapDetailsContainer.classList.remove('show');
+                return;
+            }
+            
+            // Hide all other lap details that might be open
+            const allLapDetails = document.querySelectorAll('.lap-details-container');
+            allLapDetails.forEach(container => {
+                container.classList.remove('show');
+            });
+            
+            // Show this lap details container
+            lapDetailsContainer.classList.add('show');
+            
+            // Fetch lap details if not already loaded
+            const contentContainer = lapDetailsContainer.querySelector('.lap-details-content');
+            if (contentContainer.innerHTML === '<p>Đang tải dữ liệu...</p>') {
+                fetch(`/runner/activities/laps?activityId=${activityId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        let html = "<h4>Lap Details</h4>";
+                        for (let i = 0; i < data.length; i++) {
+                            html += `<p>Lap ${i + 1}: ${data[i].distance}m in ${data[i].movingTime}</p>`;
+                        }
+                        contentContainer.innerHTML = html;
+                    } else {
+                        contentContainer.innerHTML = `<p>Không có thông tin Lap</p>`;
+                    }
+                })
+                .catch(error => {
+                    contentContainer.innerHTML = `<p>Error fetching lap details</p>`;
+                    console.error("Error fetching lap details:", error);
+                });
+            }
+        }
+        
         updateActivities = function() {
             const button = document.getElementById("update-activities");
             const originalContent = button.innerHTML;
@@ -113,7 +359,9 @@
             .then(data => {
                 tbody.innerHTML = ""; 
                 data.forEach(activity => {
+                    // Create activity row
                     const row = document.createElement("tr");
+                    row.setAttribute("activity-id", activity.activityId);
                     row.innerHTML = `
                         <td>${activity.athleteName}</td>
                         <td>${activity.activityName}</td>
@@ -121,10 +369,21 @@
                         <td>${activity.movingTime}</td>
                         <td>${activity.paced}</td>
                         <td>${activity.startDateLocal}</td>
-                        <td><a href="https://www.strava.com/activities/${activity.activityId}" target="blank">View On Strava</a></td>
+                        <td>
+                            <button class="action-button view-strava" onclick="window.open('https://www.strava.com/activities/${activity.activityId}', '_blank')">
+                                <i class="fas fa-external-link-alt"></i> Strava
+                            </button>
+                            <button class="action-button view-map" onclick="showActivityMap(this)" polyline-map="${activity.map.summaryPolyline}">
+                                <i class="fas fa-map-marked-alt"></i> Map
+                            </button>
+                            <button class="action-button view-laps" onclick="toggleLapDetails(this, '${activity.activityId}')">
+                                <i class="fas fa-list-ol"></i> Laps
+                            </button>
+                        </td>
                     `;
                     tbody.appendChild(row);
                 });
+                
                 if (data && data.length > 0) {
                     showAlert("Cập nhật hoạt động thành công", "success");
                 } else {
@@ -137,8 +396,9 @@
                 button.disabled = false; // Re-enable the button
             });
         }
-        function showLapDetails(row) {
-            const activityId = row.getAttribute("activity-id");
+
+        function toggleLapDetails(button, activityId) {
+            const row = button.closest("tr"); // Find the closest <tr> ancestor
 
             // Check if a lap details row already exists and remove it
             const existingLapRow = document.getElementById("lap-details-row");
@@ -179,14 +439,7 @@
                 console.error("Error fetching lap details:", error);
             });
         }
-
-        function hideLapDetails() {
-            // Remove the lap details row when the mouse leaves the activity row
-            const lapDetailsRow = document.getElementById("lap-details-row");
-            if (lapDetailsRow) {
-                lapDetailsRow.remove();
-            }
-        }
+        
         showAlert = function(message, type) {
             const alertDiv = document.createElement("div");
             alertDiv.className = `alert alert-${type}`;
@@ -196,9 +449,44 @@
                 alertDiv.remove();
             }, 3000);
         }
+        
         function getUrlParam(paramName) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(paramName);
+        }
+        
+        function showActivityMap(mapButton) {
+            const polyline = mapButton.getAttribute("polyline-map");
+            const decodedPolyline = L.Polyline.fromEncoded(polyline);
+            
+            // Get map container
+            const mapContainer = document.getElementById('activity-map');
+            
+            // Make sure map container is visible
+            mapContainer.style.display = 'block';
+            
+            // Scroll to map
+            mapContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Initialize the map
+            const map = L.map('activity-map').setView(decodedPolyline[0], 13);
+
+            // Add a tile layer (OpenStreetMap)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Add the polyline to the map
+            L.polyline(decodedPolyline, { color: '#ff8c00' }).addTo(map);
+
+            // Fit the map to the polyline bounds
+            map.fitBounds(L.polyline(decodedPolyline).getBounds());
+            
+            // Invalidate size to ensure proper rendering after display change
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
         }
     </script>
 </body>

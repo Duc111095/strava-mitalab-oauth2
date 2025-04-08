@@ -2,11 +2,8 @@ package com.ducnh.oauth2_server.dto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.ducnh.oauth2_server.model.PolylineMap;
-import com.ducnh.oauth2_server.model.StravaLap;
 
 public class ActivitiesDTO {
     
