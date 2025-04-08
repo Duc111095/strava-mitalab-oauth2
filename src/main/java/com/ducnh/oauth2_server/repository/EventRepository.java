@@ -10,7 +10,7 @@ import com.ducnh.oauth2_server.model.StravaEvent;
 
 
 public interface EventRepository extends CrudRepository<StravaEvent, String> {
-    @Query(value = "SELECT * FROM strava_event e WHERE e.end_date >= NOW() ORDER BY e.end_date desc  limit 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM strava_event e WHERE e.end_date >= NOW() ORDER BY e.end_date desc", nativeQuery = true)
     Optional<Iterable<StravaEvent>> findCurrentEvent();
 
     @Query(value = "SELECT * FROM strava_event e WHERE e.end_date >= NOW() ORDER BY e.end_date desc limit 1", nativeQuery = true)

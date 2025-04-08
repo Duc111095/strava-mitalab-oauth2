@@ -126,7 +126,6 @@ public class ActivityService {
 					String activityLapResponse = tokenService.sendGetRequest(athleteId, activityLapUrl).getBody();
 					ArrayNode responseLapArray = (ArrayNode) mapper.readTree(activityLapResponse);
 					if (responseLapArray == null) {
-						System.out.println("Failed to fetch lap data for activity ID: " + activityId);
 						continue;
 					}
 					if (responseLapArray.isArray() && responseLapArray.size() > 0) {

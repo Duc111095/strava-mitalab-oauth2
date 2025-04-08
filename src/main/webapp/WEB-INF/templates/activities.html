@@ -271,7 +271,7 @@
                                 <button class="action-button view-map" th:onclick="'showActivityMap(this)'" th:attr="polyline-map=${activity.getMap().getSummaryPolyline()}">
                                     <i class="fas fa-map-marked-alt"></i> Map
                                 </button>
-                                <button class="action-button view-laps" th:onclick="'toggleLapDetails(\'' + ${activity.getActivityID()} + '\')'">
+                                <button class="action-button view-laps" th:onclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'">
                                     <i class="fas fa-list-ol"></i> Laps
                                 </button>
                             </td>
@@ -332,51 +332,55 @@
         });
         
         // Function to toggle lap details visibility
-        function toggleLapDetails(activityId) {
-            const lapDetailsContainer = document.getElementById('lap-details-container');
-            const lapDetailsContent = document.getElementById('lap-details-content');
+        function toggleLapDetails(td_lap, activityId) {
             
-            // If already showing this activity's laps, hide it
-            if (lapDetailsContainer.style.display === 'block' && lapDetailsContainer.getAttribute('data-activity-id') === activityId) {
-                lapDetailsContainer.style.display = 'none';
-                return;
+            // Check if a lap details row already exists and remove it
+            const existingLapRow = document.getElementById("lap-details-row");
+            if (existingLapRow) {
+                existingLapRow.remove();
             }
+
+            // Create a new row for lap details
+            const lapDetailsRow = document.createElement("tr");
+            lapDetailsRow.id = "lap-details-row";
+            const lapDetailsCell = document.createElement("td");
+            lapDetailsCell.colSpan = 7; // Span across all columns
+            lapDetailsCell.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+            lapDetailsCell.style.color = "white";
+            lapDetailsCell.style.border = "1px solid #ccc";
+            lapDetailsCell.style.padding = "10px";
+            lapDetailsRow.appendChild(lapDetailsCell);
+            td_lap.parentNode.parentNode.parentNode.insertBefore(lapDetailsRow, td_lap.parentNode.parentNode.nextSibling);
             
-            // Show lap details container
-            lapDetailsContainer.style.display = 'block';
-            lapDetailsContainer.setAttribute('data-activity-id', activityId);
-            lapDetailsContent.innerHTML = '<p>Đang tải dữ liệu...</p>';
-            
-            // Scroll to lap details
-            lapDetailsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            
+        
             // Fetch lap details
             fetch(`/runner/activities/laps?activityId=${activityId}`)
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 if (data.length > 0) {
-                    console.log(data);
                     // Create lap details table
                     let html = `<h4>Chi tiết Lap</h4>`;
-                    html += `<button onclick="document.getElementById('lap-details-container').style.display='none'" 
+                    html += `<button onclick="document.getElementById('lap-details-row').style.display='none'" 
                                style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
                                <i class="fas fa-times"></i> Đóng
                             </button>`;
                     html += "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>";
-                    html += "<thead><tr><th>Lap</th><th>Km</th><th>Pace</th></tr></thead><tbody>";
+                    html += "<thead><tr><th>Lap</th><th>Km</th><th>Pace</th><th>Vi phạm</th></tr></thead><tbody>";
                     
                     for (let i = 0; i < data.length; i++) {
                         html += `<tr>
                             <td>${i + 1}</td>
                             <td>${data[i].distance}m</td>
-                            <td>${data[i].movingTime}</td>
+                            <td>${data[i].formatPaced}</td>
+                            <td>${data[i].violated == false ? "" : "Vi phạm"}</td>
                         </tr>`;
                     }
                     
                     html += "</tbody></table>";
-                    lapDetailsContent.innerHTML = html;
+                    lapDetailsCell.innerHTML = html;
                 } else {
-                    lapDetailsContent.innerHTML = `<p>Không có thông tin Lap</p>
+                    lapDetailsCell.innerHTML = `<p>Không có thông tin Lap</p>
                     <button onclick="document.getElementById('lap-details-container').style.display='none'" 
                        style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
                        <i class="fas fa-times"></i> Đóng
@@ -384,7 +388,7 @@
                 }
             })
             .catch(error => {
-                lapDetailsContent.innerHTML = `<p>Error fetching lap details</p>
+                lapDetailsCell.innerHTML = `<p>Error fetching lap details</p>
                 <button onclick="document.getElementById('lap-details-container').style.display='none'" 
                    style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
                    <i class="fas fa-times"></i> Đóng
@@ -433,7 +437,7 @@
                             <button class="action-button view-map" onclick="showActivityMap(this)" polyline-map="${activity.map.summaryPolyline}">
                                 <i class="fas fa-map-marked-alt"></i> Map
                             </button>
-                            <button class="action-button view-laps" onclick="toggleLapDetails('${activity.activityID}')">
+                            <button class="action-button view-laps" onclick="toggleLapDetails(this,'${activity.activityID}')">
                                 <i class="fas fa-list-ol"></i> Laps
                             </button>
                         </td>

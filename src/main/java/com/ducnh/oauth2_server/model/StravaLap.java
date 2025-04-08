@@ -34,7 +34,7 @@ public class StravaLap {
     private LocalDateTime startDateLocal;
     private Boolean isViolated;
     @Transient
-    private Double paced;
+    private String formatPaced;
     public StravaLap() {
     }
 
@@ -120,7 +120,16 @@ public class StravaLap {
         if (movingTime == null || movingTime == 0) {
             return 0.0;
         }
-        return (distance / movingTime) * 1000.0;
+        return (movingTime * 1.0 / 60) / (distance / 1000); // pace in min/km
+    }
+
+    public String getFormatPaced() {
+        if (movingTime == null || movingTime == 0) {
+            return "0:00";
+        }
+        int pace = (int) ((movingTime / 60) / (distance / 1000)); // pace in min/km
+        int seconds = (int) ((movingTime % 60) / (distance / 1000)); // seconds in km
+        return String.format("%d:%02d /km", pace, seconds);
     }
 
     public void setEndIndex(Integer endIndex) {

@@ -112,6 +112,7 @@ public class RegisterController {
         
         for (StravaEvent currEvent : currEvents) {
             String eventId = currEvent.getId();
+            System.out.println("Event ID: " + eventId);
             model.addAttribute("currEvent", currEvent);
     
             List<Map<String, Object>> unacceptedMap = registerService.listUnacceptedAthletes(eventId);

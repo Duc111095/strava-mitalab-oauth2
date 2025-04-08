@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ducnh.oauth2_server.dto.ActivitiesDTO;
+import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.model.StravaLap;
 import com.ducnh.oauth2_server.service.ActivityService;
+import com.ducnh.oauth2_server.service.EventService;
 import com.ducnh.oauth2_server.service.StravaLapService;
 import com.ducnh.oauth2_server.service.TokenService;
 
@@ -36,6 +38,9 @@ public class ActivityController {
 
 	@Autowired
 	private TokenService tokenService;
+
+	@Autowired
+	private EventService eventService;
 
 	@Value("${strava.url.athlete.activities}")
 	private String activitiesStravaUrl;
@@ -60,8 +65,6 @@ public class ActivityController {
 				athleteId = Long.parseLong(principal.getName());
 			} 
 			
-			System.out.println("AthleteID: " + athleteId);
-
 			// Call Strava API to get activities
 			ResponseEntity<String> activities = tokenService.sendGetRequest(athleteId, activitiesStravaUrl);
 			
@@ -86,7 +89,12 @@ public class ActivityController {
 	@GetMapping("/activities/laps")
 	@ResponseBody
 	public ResponseEntity<List<StravaLap>> getInformationLap(@Param("activityId") Long activityId) {
+		StravaEvent currentEvent = eventService.findExactCurrentEvent().get();
+
 		List<StravaLap> laps = lapService.findByActivityId(activityId);
+		if (currentEvent != null) {
+			laps.forEach(lap -> lap.setViolated(currentEvent));
+		}
 		laps.sort((a, b) -> a.getLapIndex().compareTo(b.getLapIndex()));	
 		if (laps.isEmpty() || laps.size() == 0) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

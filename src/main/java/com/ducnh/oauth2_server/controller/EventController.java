@@ -38,7 +38,7 @@ public class EventController {
         event = eventService.save(event);
 		Iterable<StravaEvent> events = eventService.findAll();
 		model.addAttribute("events", events);
-		return "events";
+		return "redirect:/events";
     }
 	
 	@GetMapping("/events/{id}/delete")
