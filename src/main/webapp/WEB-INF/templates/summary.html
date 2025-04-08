@@ -2,51 +2,216 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bảng xếp hạng</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         #distance {
             text-align: center;
         }
+        
+        /* Responsive additions from activities2.html */
+        * {
+            box-sizing: border-box;
+        }
+        
+        /* Toggle button for sidebar */
+        .toggle-menu {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 200;
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 8px 12px;
+            font-size: 18px;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .toggle-menu:hover {
+            box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.5);
+        }
+        
+        /* Sidebar modifications for toggle */
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+            z-index: 100;
+            padding-top: 50px; /* Add more padding at the top to prevent overlap */
+        }
+        
+        /* Sidebar link styling */
+        .sidebar a {
+            display: block;
+            padding: 10px 20px 10px 40px; /* Add more left padding to links */
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar a:hover {
+            background-color: rgba(255, 140, 0, 0.3);
+        }
+        
+        /* Add active class for current page */
+        .sidebar a.active {
+            border-left: 4px solid #ff8c00;
+            background-color: rgba(255, 140, 0, 0.2);
+        }
+        
+        .sidebar.closed {
+            margin-left: -260px; /* Width + padding */
+        }
+        
+        /* Main content modifications for sidebar toggle */
+        .main-content.full-width {
+            margin-left: 0;
+        }
+        
+        /* Responsive media queries */
+        @media screen and (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                left: 0;
+                top: 0;
+                padding-top: 60px; /* More padding on mobile */
+                display: none;
+                overflow-y: auto;
+                max-height: 100vh;
+                background-color: rgba(0, 0, 0, 0.95); /* Darker background for mobile menu */
+            }
+            
+            .sidebar.show {
+                display: block;
+            }
+            
+            .sidebar a {
+                text-align: center;
+                padding: 15px 20px; /* Center links on mobile */
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                width: 100%;
+                padding: 15px;
+                padding-top: 60px; /* Add padding at top for mobile view */
+            }
+            
+            .container {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .footer-left, .footer-right {
+                position: static;
+                margin: 10px 0;
+                text-align: center;
+            }
+            
+            .footer-left {
+                display: flex;
+                justify-content: center;
+            }
+            
+            /* Move toggle button further right on mobile */
+            .toggle-menu {
+                left: 10px;
+                top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <button class="toggle-menu" id="toggleMenu">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="sidebar" id="sidebar">
         <a th:href="@{/events}">Sự kiện</a>
         <a th:href="@{/register}">Đăng ký</a>
         <a th:href="@{/activities}">Danh sách hoạt động</a>
-        <a th:href="@{#}">Tổng hợp</a>
+        <a th:href="@{#}" class="active">Tổng hợp</a>
     </div>
-    <div class="main-content">
+    
+    <div class="main-content" id="mainContent">
         <div class="container">
             <h1>Bảng xếp hạng tổng</h1>
- 			<table class="summary" th:unless="${#lists.isEmpty(summaryEvents)}">
-            <tr>
-                <th>Hạng</th>
-                <th>Tên nhóm</th>
-                <th>SL thành viên</th>
-                <th th:text="${currentDate} + '(Km)'"></th>
-                <th>Tổng(Km)</th>
-            </tr>
-            <tr th:each="ac : ${summaryEvents}">
-                <td id="distance" th:text="${ac.getSTT()}"></td>
-                <td id="distance" th:text="${ac.getTeamName()}"><a th:href="@{/summary/team?teamId=${ac.getTeamId()}&eventId=${ac.getEventId()}}"></a></td>
-                <td id="distance" th:text="${ac.getTeamCount()}"></td>
-                <td id="distance" th:text="${ac.formatTotalCurrentDistance()}"></td>
-                <td id="distance" th:text="${ac.formatTotalDistance()}"></td>
-                <td>
-                    <a th:href="@{/summary/team(teamId=${ac.getTeamId()}, eventId=${ac.getEventId()})}">Chi tiết</a>
-                </td>            
-            </tr>
-        </table>
+            <table class="summary" th:unless="${#lists.isEmpty(summaryEvents)}">
+                <tr>
+                    <th>Hạng</th>
+                    <th>Tên nhóm</th>
+                    <th>SL thành viên</th>
+                    <th th:text="${currentDate} + '(Km)'"></th>
+                    <th>Tổng(Km)</th>
+                </tr>
+                <tr th:each="ac : ${summaryEvents}">
+                    <td id="distance" th:text="${ac.getSTT()}"></td>
+                    <td id="distance" th:text="${ac.getTeamName()}"><a th:href="@{/summary/team?teamId=${ac.getTeamId()}&eventId=${ac.getEventId()}}"></a></td>
+                    <td id="distance" th:text="${ac.getTeamCount()}"></td>
+                    <td id="distance" th:text="${ac.formatTotalCurrentDistance()}"></td>
+                    <td id="distance" th:text="${ac.formatTotalDistance()}"></td>
+                    <td>
+                        <a th:href="@{/summary/team(teamId=${ac.getTeamId()}, eventId=${ac.getEventId()})}">Chi tiết</a>
+                    </td>            
+                </tr>
+            </table>
         </div>
-  <div class="footer-left">
-        <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
-            <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
-        </a>
-    </div>
+        <div class="footer-left">
+            <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
+                <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
+            </a>
+        </div>
         <div class="footer-right">Developed by ERP</div>
     </div>
+    
+    <script>
+        // Toggle sidebar
+        const toggleMenu = document.getElementById('toggleMenu');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        
+        // Check screen size on page load and set appropriate classes
+        function checkScreenSize() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('closed');
+                sidebar.classList.remove('show');
+                mainContent.classList.add('full-width');
+            } else {
+                sidebar.classList.remove('show');
+                sidebar.classList.remove('closed');
+                mainContent.classList.remove('full-width');
+            }
+        }
+        
+        // Run on page load
+        window.addEventListener('load', checkScreenSize);
+        
+        // Run when window is resized
+        window.addEventListener('resize', checkScreenSize);
+        
+        toggleMenu.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('show');
+            } else {
+                sidebar.classList.toggle('closed');
+                mainContent.classList.toggle('full-width');
+            }
+        });
+    </script>
 </body>
 </html>
-

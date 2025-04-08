@@ -131,7 +131,6 @@ public class RegisterController {
             }).collect(Collectors.toList()));
         }
         
-        
         model.addAttribute("unRegisteredAthletes", unacceptedAthletes);
         return "unaccepted";
     }

@@ -3,65 +3,442 @@
 <head>
     <title>Đăng ký</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/register.css}">
+    <style>
+        /* Responsive additions from activities2.html */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #E0E0E0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Toggle button for sidebar */
+        .toggle-menu {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 200;
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 8px 12px;
+            font-size: 18px;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .toggle-menu:hover {
+            box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.5);
+        }
+        
+        /* Sidebar modifications for toggle */
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+            z-index: 100;
+            padding-top: 50px; /* Add more padding at the top to prevent overlap */
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #1A1A1A;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar link styling */
+        .sidebar a {
+            display: block;
+            padding: 10px 20px 10px 40px; /* Add more left padding to links */
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar a:hover {
+            background-color: rgba(255, 140, 0, 0.3);
+        }
+        
+        /* Add active class for current page */
+        .sidebar a.active {
+            border-left: 4px solid #ff8c00;
+            background-color: rgba(255, 140, 0, 0.2);
+        }
+        
+        .sidebar.closed {
+            margin-left: -260px; /* Width + padding */
+        }
+        
+        /* Main content modifications for sidebar toggle */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s ease-in-out;
+        }
+        
+        .main-content.full-width {
+            margin-left: 0;
+        }
+        
+        /* Container styling */
+        .container {
+            background-color: #2A2A2A;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        /* Form styling */
+        .registration-form {
+            background-color: #2A2A2A;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #E0E0E0;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            background-color: #3A3A3A;
+            border: 1px solid #4A4A4A;
+            border-radius: 5px;
+            color: #E0E0E0;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.25);
+        }
+        
+        /* Button styling */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #ff0000, #ff8c00);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(90deg, #dc3545, #ff4d5a);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0px 0px 10px rgba(220, 53, 69, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        /* Page title styling */
+        .page-title {
+            color: #ff8c00;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #2A2A2A;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #3A3A3A;
+        }
+        
+        th {
+            background-color: rgba(255, 140, 0, 0.2);
+            color: #ff8c00;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #333333;
+        }
+        
+        /* Alert styling adjustment */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.8);
+            color: white;
+        }
+        
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.8);
+            color: white;
+        }
+        
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.8);
+            color: white;
+        }
+        
+        /* Notification styling */
+        #notification {
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Footer styling */
+        .footer-left, .footer-right {
+            margin-top: 30px;
+            padding: 15px 0;
+        }
+        
+        .footer-right {
+            text-align: right;
+            color: #888;
+            font-size: 14px;
+        }
+        
+        /* Filter styling */
+        .filter-container {
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive media queries */
+        @media screen and (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                left: 0;
+                top: 0;
+                padding-top: 60px; /* More padding on mobile */
+                display: none;
+                overflow-y: auto;
+                max-height: 100vh;
+                background-color: rgba(0, 0, 0, 0.95); /* Darker background for mobile menu */
+            }
+            
+            .sidebar.show {
+                display: block;
+            }
+            
+            .sidebar a {
+                text-align: center;
+                padding: 15px 20px; /* Center links on mobile */
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                width: 100%;
+                padding: 15px;
+                padding-top: 60px; /* Add padding at top for mobile view */
+            }
+            
+            .container {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .footer-left, .footer-right {
+                position: static;
+                margin: 10px 0;
+                text-align: center;
+            }
+            
+            .footer-left {
+                display: flex;
+                justify-content: center;
+            }
+            
+            /* Move toggle button further right on mobile */
+            .toggle-menu {
+                left: 10px;
+                top: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="sidebar">
+    <button class="toggle-menu" id="toggleMenu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
         <a th:href="@{/events}">Sự kiện</a>
-        <a th:href="@{#}">Đăng ký</a>
+        <a th:href="@{#}" class="active">Đăng ký</a>
         <a th:href="@{/activities}">Danh sách hoạt động</a>
         <a th:href="@{/summary}">Tổng hợp</a>
     </div>
-    <div class="main-container">
-        <h2 class="page-title">Đăng ký Team</h2>
+    
+    <div class="main-content" id="mainContent">
+        <h2 class="page-title"><i class="fas fa-users"></i> Đăng ký Team</h2>
+        
         <div class="registration-form" id="registration-form">
             <form th:action="@{/register}" th:object="${registerForm}" method="post">
                 <div class="form-group">
-                    <label for="eventId">Chọn sự kiện</label>
+                    <label for="eventId"><i class="fas fa-calendar-alt"></i> Chọn sự kiện</label>
                     <select id="eventId" th:field="*{eventId}" class="form-control" required>
                         <option th:each="event : ${events}" th:value="${event.getId()}" th:text="${event.getEventName()}" th:attr="data-max=${event.getTeamCount()}"></option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="teamId">Chọn đội</label>
+                    <label for="teamId"><i class="fas fa-flag"></i> Chọn đội</label>
                     <select id="teamId" th:field="*{teamId}" class="form-control" required>
                         <option value="0" disabled selected>Select a team</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary" id="register">Đăng ký</button>
-                <button type="button" style="display: none;" class="btn btn-danger" id="leave-team" onclick="leaveTeam(this)">Rời khỏi đội</button>
-                <div id="notification" style="display: none; text-align: center; margin: 10px 0; padding: 10px; border-radius: 5px;"></div>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button type="submit" class="btn btn-primary" id="register">
+                        <i class="fas fa-check-circle"></i> Đăng ký
+                    </button>
+                    <button type="button" style="display: none;" class="btn btn-danger" id="leave-team" onclick="leaveTeam(this)">
+                        <i class="fas fa-sign-out-alt"></i> Rời khỏi đội
+                    </button>
+                </div>
+                <div id="notification" style="display: none;"></div>
             </form>
         </div>
-    </div>
-    <div class="main-content">
-        <div>
-            <input type="text" id="teamIdFilter" placeholder="Nhập tên đội để lọc" onchange="filterByTeam()" class="form-control">
-        </div>
+        
         <div class="container">
-            <h2>Danh sách VĐV đã đăng ký</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>VĐV</th>
-                        <th>Tên VĐV</th>
-                        <th>Tên sự kiện</th>
-                        <th>Tên đội</th>
-                        <th>Thời gian đăng ký</th>
-                    </tr>
-                </thead>
-				<tbody id="athleteTableBody"></tbody>
-            </table>
+            <h2><i class="fas fa-list"></i> Danh sách VĐV đã đăng ký</h2>
+            
+            <div class="filter-container">
+                <div class="form-group">
+                    <label for="teamIdFilter"><i class="fas fa-search"></i> Tìm kiếm theo tên đội</label>
+                    <input type="text" id="teamIdFilter" placeholder="Nhập tên đội để lọc" onkeyup="filterByTeam()" class="form-control">
+                </div>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-id-card"></i> VĐV</th>
+                            <th><i class="fas fa-user"></i> Tên VĐV</th>
+                            <th><i class="fas fa-calendar-check"></i> Tên sự kiện</th>
+                            <th><i class="fas fa-users"></i> Tên đội</th>
+                            <th><i class="fas fa-clock"></i> Thời gian đăng ký</th>
+                        </tr>
+                    </thead>
+                    <tbody id="athleteTableBody"></tbody>
+                </table>
+            </div>
         </div>
-    <div class="footer-left">
-        <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
-            <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
-        </a>
-    </div>
+        
+        <div class="footer-left">
+            <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
+                <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
+            </a>
+        </div>
         <div class="footer-right">Developed by ERP</div>
     </div>
+    
     <script>
+        // Toggle sidebar
+        const toggleMenu = document.getElementById('toggleMenu');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        
+        // Check screen size on page load and set appropriate classes
+        function checkScreenSize() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('closed');
+                sidebar.classList.remove('show');
+                mainContent.classList.add('full-width');
+            } else {
+                sidebar.classList.remove('show');
+                sidebar.classList.remove('closed');
+                mainContent.classList.remove('full-width');
+            }
+        }
+        
+        // Run on page load
+        window.addEventListener('load', checkScreenSize);
+        
+        // Run when window is resized
+        window.addEventListener('resize', checkScreenSize);
+        
+        toggleMenu.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('show');
+            } else {
+                sidebar.classList.toggle('closed');
+                mainContent.classList.toggle('full-width');
+            }
+        });
+        
         document.addEventListener("DOMContentLoaded", function() {
             const eventSelect = document.getElementById("eventId");
             const teamIdInput = document.getElementById("teamId");
@@ -109,6 +486,7 @@
             fetchRegisteredAthletes(eventSelect.value);
             fetchInitValue();
         });
+        
         function fetchRegisteredAthletes(eventId) {
             fetch("/runner/registered-athletes", {
                 method: "POST",
@@ -122,20 +500,29 @@
                 const athleteTableBody = document.getElementById("athleteTableBody");
                 athleteTableBody.innerHTML = "";
 
-                // Populate the table with the response data
-                data.forEach(athlete => {
+                if (data.length === 0) {
                     const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${athlete.athleteId}</td>
-                        <td>${athlete.athleteName}</td>
-                        <td>${athlete.eventName}</td>
-                        <td id="team-tr">Đội ${athlete.teamId}</td>
-                        <td>${athlete.formatedDateFromStartDateLocal}</td>
-                    `;
+                    row.innerHTML = `<td colspan="5" style="text-align: center;">Không có VĐV nào đăng ký</td>`;
                     athleteTableBody.appendChild(row);
-                });
+                } else {
+                    // Populate the table with the response data
+                    data.forEach(athlete => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${athlete.athleteId}</td>
+                            <td>${athlete.athleteName}</td>
+                            <td>${athlete.eventName}</td>
+                            <td id="team-tr">Đội ${athlete.teamId}</td>
+                            <td>${athlete.formatedDateFromStartDateLocal}</td>
+                        `;
+                        athleteTableBody.appendChild(row);
+                    });
+                }
             })
-            .catch(error => console.error("Error fetching registered athletes:", error));
+            .catch(error => {
+                console.error("Error fetching registered athletes:", error);
+                showAlert("Không thể tải danh sách VĐV đã đăng ký", "danger");
+            });
         }
 
         function fetchInitValue() {
@@ -166,15 +553,18 @@
                             leaveButton.style.display = "none";
                             teamIdInput.setAttribute("readonly", true);
                             eventSelect.setAttribute("readonly", true);
-                            notificationDiv.style.display = "inline-block";
+                            notificationDiv.style.display = "block";
                             notificationDiv.style.backgroundColor = "#d4edda";
                             notificationDiv.style.color = "#155724";
                             notificationDiv.style.border = "1px solid #c3e6cb";
-                            notificationDiv.style.width ="400px";
-                            notificationDiv.textContent = "Đã đăng ký thành công. Chờ BTC xét duyệt!";
+                            notificationDiv.innerHTML = `<i class="fas fa-info-circle"></i> Đã đăng ký thành công. Chờ BTC xét duyệt!`;
                             setTimeout(() => {
-                                notificationDiv.remove();
-                            }, 3000);
+                                notificationDiv.style.opacity = "0";
+                                setTimeout(() => {
+                                    notificationDiv.style.display = "none";
+                                    notificationDiv.style.opacity = "1";
+                                }, 300);
+                            }, 5000);
                         }
                     }
                 })
@@ -186,49 +576,104 @@
 
         function leaveTeam(button) {
             const endpoint = button.getAttribute("href");
+            
+            // Add loading state to button
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+            button.disabled = true;
+            
             fetch(endpoint)
             .then(response => {
                 if (response.ok) {
+                    showAlert("Đã rời khỏi đội thành công", "success");
                     // Redirect to the desired page after leaving the team
-                    window.location.href = "/runner/register"; // Redirect to the registration page
+                    setTimeout(() => {
+                        window.location.href = "/runner/register"; // Redirect to the registration page
+                    }, 1500);
                 } else {
                     console.error("Failed to leave the team.");
-                    showAlert("Failed to leave the team.", "danger");
+                    showAlert("Không thể rời khỏi đội", "danger");
+                    // Reset button state
+                    button.innerHTML = originalHTML;
+                    button.disabled = false;
                 }
             })
             .catch(error => {
                 console.error("Error leaving team:", error);
-                showAlert("An error occurred while leaving the team.", "danger");
+                showAlert("Đã xảy ra lỗi khi rời khỏi đội", "danger");
+                // Reset button state
+                button.innerHTML = originalHTML;
+                button.disabled = false;
             });
         }
 
         function filterByTeam() {
-            const filter = document.getElementById("teamIdFilter").value;
+            const filter = document.getElementById("teamIdFilter").value.toLowerCase();
             const rows = document.querySelectorAll("#athleteTableBody tr");
+            let hasVisible = false;
             
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
                 const teamCell = row.querySelector("#team-tr");
                 if (teamCell) {
                     const teamText = teamCell.textContent || teamCell.innerText;
-                    if (teamText.toLowerCase().includes(filter.toLowerCase())) {
+                    if (teamText.toLowerCase().includes(filter)) {
                         row.style.display = "";
+                        hasVisible = true;
                     } else {
                         row.style.display = "none";
                     }
                 }
             }
+            
+            // If no matching results, show message
+            if (!hasVisible && rows.length > 0 && filter !== "") {
+                const noResultsRow = document.createElement("tr");
+                noResultsRow.id = "no-results-row";
+                noResultsRow.innerHTML = `<td colspan="5" style="text-align: center;">Không tìm thấy kết quả phù hợp</td>`;
+                
+                // Remove existing no-results-row if it exists
+                const existingNoResults = document.getElementById("no-results-row");
+                if (existingNoResults) {
+                    existingNoResults.remove();
+                }
+                
+                document.getElementById("athleteTableBody").appendChild(noResultsRow);
+            } else {
+                // Remove no-results-row if it exists
+                const existingNoResults = document.getElementById("no-results-row");
+                if (existingNoResults) {
+                    existingNoResults.remove();
+                }
+            }
         }
 
         function showAlert(message, type) {
+            // Remove any existing alerts
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => {
+                alert.remove();
+            });
+            
             const alertDiv = document.createElement("div");
             alertDiv.className = `alert alert-${type}`;
-            alertDiv.textContent = message;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'}"></i> ${message}`;
+            
             document.body.appendChild(alertDiv);
+            
+            // Add fade-in effect
             setTimeout(() => {
-                alertDiv.remove();
+                alertDiv.style.opacity = '1';
+            }, 10);
+            
+            // Auto remove after delay
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 300);
             }, 3000);
         }
-        </script>
-    </body>
+    </script>
+</body>
 </html>

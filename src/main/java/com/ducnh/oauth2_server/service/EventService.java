@@ -36,7 +36,7 @@ public class EventService {
 		return eventRepository.existsById(id);
 	}
 	
-	public Iterable<StravaEvent> findCurrentEvent() {
+	public Optional<Iterable<StravaEvent>> findCurrentEvent() {
 		return eventRepository.findCurrentEvent();
 	}
 
