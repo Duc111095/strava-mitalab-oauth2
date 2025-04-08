@@ -11,6 +11,7 @@ import com.ducnh.oauth2_server.service.RegisterService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class RegisterController {
     @GetMapping("/register")
     public String showRegisterForm(Model model, @AuthenticationPrincipal OAuth2User principal) {
         model.addAttribute("registerForm", new RegisterForm());
-        Iterable<StravaEvent> events = eventService.findCurrentEvent();
+        Iterable<StravaEvent> events = eventService.findCurrentEvent().orElseThrow(() -> new RuntimeException("No current event found"));
         model.addAttribute("events", events);
         return "register";
     }
@@ -103,26 +104,33 @@ public class RegisterController {
 
     @GetMapping("/register/unaccepted")
     public String getUnacceptedAthletes(Model model, @AuthenticationPrincipal OAuth2User principal) {
-        StravaEvent currEvent = eventService.findExactCurrentEvent().orElseThrow(() -> new RuntimeException("No current event found"));
-        String eventId = currEvent.getId();
-        model.addAttribute("currEvent", currEvent);
-
-        List<Map<String, Object>> unacceptedMap = registerService.listUnacceptedAthletes(eventId);
-
-        List<RegisteredAthleteDTO> unacceptedAthletes = unacceptedMap.stream().map(item -> {
-            RegisteredAthleteDTO registeredAthleteDTO = new RegisteredAthleteDTO();
-            registeredAthleteDTO.setAthleteId(Long.parseLong(String.valueOf(item.get("athlete_id"))));
-            registeredAthleteDTO.setAthleteName(item.get("athlete_name") == null ? "" : (String) item.get("athlete_name"));
-            registeredAthleteDTO.setEventId((String) item.get("event_id"));
-            registeredAthleteDTO.setTeamId(String.valueOf(item.get("team_id")));
-            registeredAthleteDTO.setEventName((String) item.get("event_name"));
-            Timestamp registered_at = (Timestamp) item.get("registered_at");
-            Timestamp updated_at = (Timestamp) item.get("updated_at");
-            registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
-            registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
-            System.out.println("Registered Athlete DTO: " + registeredAthleteDTO);
-            return registeredAthleteDTO;
-        }).collect(Collectors.toList());
+        Iterable<StravaEvent> currEvents = eventService.findCurrentEvent().orElseThrow(() -> new RuntimeException("No current event found"));
+        if (currEvents == null) {
+            return "redirect:/register";
+        }
+        List<RegisteredAthleteDTO> unacceptedAthletes = new ArrayList<>();
+        
+        for (StravaEvent currEvent : currEvents) {
+            String eventId = currEvent.getId();
+            model.addAttribute("currEvent", currEvent);
+    
+            List<Map<String, Object>> unacceptedMap = registerService.listUnacceptedAthletes(eventId);
+    
+            unacceptedAthletes.addAll(unacceptedMap.stream().map(item -> {
+                RegisteredAthleteDTO registeredAthleteDTO = new RegisteredAthleteDTO();
+                registeredAthleteDTO.setAthleteId(Long.parseLong(String.valueOf(item.get("athlete_id"))));
+                registeredAthleteDTO.setAthleteName(item.get("athlete_name") == null ? "" : (String) item.get("athlete_name"));
+                registeredAthleteDTO.setEventId((String) item.get("event_id"));
+                registeredAthleteDTO.setTeamId(String.valueOf(item.get("team_id")));
+                registeredAthleteDTO.setEventName((String) item.get("event_name"));
+                Timestamp registered_at = (Timestamp) item.get("registered_at");
+                Timestamp updated_at = (Timestamp) item.get("updated_at");
+                registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
+                registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
+                return registeredAthleteDTO;
+            }).collect(Collectors.toList()));
+        }
+        
         
         model.addAttribute("unRegisteredAthletes", unacceptedAthletes);
         return "unaccepted";
