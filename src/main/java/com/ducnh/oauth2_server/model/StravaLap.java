@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -32,6 +33,7 @@ public class StravaLap {
     private LocalDateTime startDate;
     private LocalDateTime startDateLocal;
     private Boolean isViolated;
+    @Transient
     private Double paced;
     public StravaLap() {
     }
@@ -171,9 +173,7 @@ public class StravaLap {
     public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
-
-
-
+    
     public LocalDateTime getStartDateLocal() {
         return startDateLocal;
     }

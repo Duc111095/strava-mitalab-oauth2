@@ -7,7 +7,7 @@
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         /* Responsive additions to style.css */
         * {
@@ -38,6 +38,26 @@
         .sidebar {
             transition: all 0.3s ease-in-out;
             z-index: 100;
+            padding-top: 50px; /* Add more padding at the top to prevent overlap */
+        }
+        
+        /* Sidebar link styling */
+        .sidebar a {
+            display: block;
+            padding: 10px 20px 10px 40px; /* Add more left padding to links */
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar a:hover {
+            background-color: rgba(255, 140, 0, 0.3);
+        }
+        
+        /* Add active class for current page */
+        .sidebar a.active {
+            border-left: 4px solid #ff8c00;
+            background-color: rgba(255, 140, 0, 0.2);
         }
         
         .sidebar.closed {
@@ -145,20 +165,27 @@
                 position: fixed;
                 left: 0;
                 top: 0;
-                padding-top: 60px;
+                padding-top: 60px; /* More padding on mobile */
                 display: none;
                 overflow-y: auto;
                 max-height: 100vh;
+                background-color: rgba(0, 0, 0, 0.95); /* Darker background for mobile menu */
             }
             
             .sidebar.show {
                 display: block;
             }
             
+            .sidebar a {
+                text-align: center;
+                padding: 15px 20px; /* Center links on mobile */
+            }
+            
             .main-content {
                 margin-left: 0 !important;
                 width: 100%;
                 padding: 15px;
+                padding-top: 60px; /* Add padding at top for mobile view */
             }
             
             .container {
@@ -181,6 +208,12 @@
                 display: flex;
                 justify-content: center;
             }
+            
+            /* Move toggle button further right on mobile */
+            .toggle-menu {
+                left: 10px;
+                top: 10px;
+            }
         }
     </style>
 </head>
@@ -192,7 +225,7 @@
     <div class="sidebar" id="sidebar">
         <a th:href="@{/events}">Sự kiện</a>
         <a th:href="@{/register}">Đăng ký</a>
-        <a th:href="@{#}">Danh sách hoạt động</a>
+        <a th:href="@{#}" class="active">Danh sách hoạt động</a>
         <a th:href="@{/summary}">Tổng hợp</a>
     </div>
     
@@ -236,20 +269,18 @@
                                 <button class="action-button view-map" th:onclick="'showActivityMap(this)'" th:attr="polyline-map=${activity.getMap().getSummaryPolyline()}">
                                     <i class="fas fa-map-marked-alt"></i> Map
                                 </button>
-                                <button class="action-button view-laps" th:onclick="'toggleLapDetails(this, \'' + ${activity.getActivityID()} + '\')'">
+                                <button class="action-button view-laps" th:onclick="'toggleLapDetails(\'' + ${activity.getActivityID()} + '\')'">
                                     <i class="fas fa-list-ol"></i> Laps
                                 </button>
                             </td>
                         </tr>
-                        <tr th:each="activity : ${allActivities}">
-                            <td colspan="7" class="lap-details-container" th:id="'lap-details-' + ${activity.getActivityID()}">
-                                <div class="lap-details-content">
-                                    <p>Đang tải dữ liệu...</p>
-                                </div>
-                            </td>
-                        </tr>
                     </tbody>    
                 </table>
+            </div>
+            <div id="lap-details-container" style="display: none; margin-top: 20px; background-color: #2A2A2A; color: #E0E0E0; padding: 15px; border-radius: 5px; box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);">
+                <div id="lap-details-content">
+                    <p>Đang tải dữ liệu...</p>
+                </div>
             </div>
             <div id="activity-map" style="height: 400px; margin-top: 20px; display: none;"></div>
         </div>
@@ -261,6 +292,9 @@
         <div class="footer-right">Developed by ERP</div>
     </div>
     
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-polylinedecorator/1.6.0/leaflet.polylineDecorator.min.js"></script>
     <script th:inline="javascript">
         // Toggle sidebar
         const toggleMenu = document.getElementById('toggleMenu');
@@ -296,45 +330,65 @@
         });
         
         // Function to toggle lap details visibility
-        function toggleLapDetails(button, activityId) {
-            const lapDetailsContainer = document.getElementById('lap-details-' + activityId);
+        function toggleLapDetails(activityId) {
+            const lapDetailsContainer = document.getElementById('lap-details-container');
+            const lapDetailsContent = document.getElementById('lap-details-content');
             
-            // If container is already visible, just hide it
-            if (lapDetailsContainer.classList.contains('show')) {
-                lapDetailsContainer.classList.remove('show');
+            // If already showing this activity's laps, hide it
+            if (lapDetailsContainer.style.display === 'block' && lapDetailsContainer.getAttribute('data-activity-id') === activityId) {
+                lapDetailsContainer.style.display = 'none';
                 return;
             }
             
-            // Hide all other lap details that might be open
-            const allLapDetails = document.querySelectorAll('.lap-details-container');
-            allLapDetails.forEach(container => {
-                container.classList.remove('show');
-            });
+            // Show lap details container
+            lapDetailsContainer.style.display = 'block';
+            lapDetailsContainer.setAttribute('data-activity-id', activityId);
+            lapDetailsContent.innerHTML = '<p>Đang tải dữ liệu...</p>';
             
-            // Show this lap details container
-            lapDetailsContainer.classList.add('show');
+            // Scroll to lap details
+            lapDetailsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             
-            // Fetch lap details if not already loaded
-            const contentContainer = lapDetailsContainer.querySelector('.lap-details-content');
-            if (contentContainer.innerHTML === '<p>Đang tải dữ liệu...</p>') {
-                fetch(`/runner/activities/laps?activityId=${activityId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.length > 0) {
-                        let html = "<h4>Lap Details</h4>";
-                        for (let i = 0; i < data.length; i++) {
-                            html += `<p>Lap ${i + 1}: ${data[i].distance}m in ${data[i].movingTime}</p>`;
-                        }
-                        contentContainer.innerHTML = html;
-                    } else {
-                        contentContainer.innerHTML = `<p>Không có thông tin Lap</p>`;
+            // Fetch lap details
+            fetch(`/runner/activities/laps?activityId=${activityId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    console.log(data);
+                    // Create lap details table
+                    let html = `<h4>Chi tiết Lap</h4>`;
+                    html += `<button onclick="document.getElementById('lap-details-container').style.display='none'" 
+                               style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                               <i class="fas fa-times"></i> Đóng
+                            </button>`;
+                    html += "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>";
+                    html += "<thead><tr><th>Lap</th><th>Km</th><th>Pace</th></tr></thead><tbody>";
+                    
+                    for (let i = 0; i < data.length; i++) {
+                        html += `<tr>
+                            <td>${i + 1}</td>
+                            <td>${data[i].distance}m</td>
+                            <td>${data[i].movingTime}</td>
+                        </tr>`;
                     }
-                })
-                .catch(error => {
-                    contentContainer.innerHTML = `<p>Error fetching lap details</p>`;
-                    console.error("Error fetching lap details:", error);
-                });
-            }
+                    
+                    html += "</tbody></table>";
+                    lapDetailsContent.innerHTML = html;
+                } else {
+                    lapDetailsContent.innerHTML = `<p>Không có thông tin Lap</p>
+                    <button onclick="document.getElementById('lap-details-container').style.display='none'" 
+                       style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                       <i class="fas fa-times"></i> Đóng
+                    </button>`;
+                }
+            })
+            .catch(error => {
+                lapDetailsContent.innerHTML = `<p>Error fetching lap details</p>
+                <button onclick="document.getElementById('lap-details-container').style.display='none'" 
+                   style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                   <i class="fas fa-times"></i> Đóng
+                </button>`;
+                console.error("Error fetching lap details:", error);
+            });
         }
         
         updateActivities = function() {
@@ -377,7 +431,7 @@
                             <button class="action-button view-map" onclick="showActivityMap(this)" polyline-map="${activity.map.summaryPolyline}">
                                 <i class="fas fa-map-marked-alt"></i> Map
                             </button>
-                            <button class="action-button view-laps" onclick="toggleLapDetails(this, '${activity.activityID}')">
+                            <button class="action-button view-laps" onclick="toggleLapDetails('${activity.activityID}')">
                                 <i class="fas fa-list-ol"></i> Laps
                             </button>
                         </td>
@@ -395,49 +449,6 @@
             .finally(() => {
                 button.innerHTML = originalContent; // Restore the original content
                 button.disabled = false; // Re-enable the button
-            });
-        }
-
-        function toggleLapDetails(button, activityId) {
-            const row = button.closest("tr"); // Find the closest <tr> ancestor
-
-            // Check if a lap details row already exists and remove it
-            const existingLapRow = document.getElementById("lap-details-row");
-            if (existingLapRow) {
-                existingLapRow.remove();
-            }
-
-            // Create a new row for lap details
-            const lapDetailsRow = document.createElement("tr");
-            lapDetailsRow.id = "lap-details-row";
-            const lapDetailsCell = document.createElement("td");
-            lapDetailsCell.colSpan = 7; // Span across all columns
-            lapDetailsCell.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-            lapDetailsCell.style.color = "white";
-            lapDetailsCell.style.border = "1px solid #ccc";
-            lapDetailsCell.style.padding = "10px";
-            lapDetailsRow.appendChild(lapDetailsCell);
-
-            // Insert the lap details row after the current row
-            row.parentNode.insertBefore(lapDetailsRow, row.nextSibling);
-
-            // Fetch lap details
-            fetch(`/runner/activities/laps?activityId=${activityId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.length > 0) {
-                    innerHTML = "<h4>Lap Details</h4>";
-                    for (let i = 0; i < data.length; i++) {
-                        innerHTML += `<p>Lap ${i + 1}: ${data[i].distance}m in ${data[i].movingTime}</p>`;
-                    }
-                    lapDetailsCell.innerHTML = innerHTML;
-                } else {
-                    lapDetailsCell.innerHTML = `<p>Không có thông tin Lap</p>`;
-                }
-            })
-            .catch(error => {
-                lapDetailsCell.innerHTML = `<p>Error fetching lap details</p>`;
-                console.error("Error fetching lap details:", error);
             });
         }
         
@@ -458,7 +469,6 @@
         
         function showActivityMap(mapButton) {
             const polyline = mapButton.getAttribute("polyline-map");
-            const decodedPolyline = L.Polyline.fromEncoded(polyline);
             
             // Get map container
             const mapContainer = document.getElementById('activity-map');
@@ -469,8 +479,11 @@
             // Scroll to map
             mapContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
+            // Clear previous map if exists
+            mapContainer.innerHTML = '';
+
             // Initialize the map
-            const map = L.map('activity-map').setView(decodedPolyline[0], 13);
+            const map = L.map('activity-map');
 
             // Add a tile layer (OpenStreetMap)
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -478,11 +491,53 @@
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Add the polyline to the map
-            L.polyline(decodedPolyline, { color: '#ff8c00' }).addTo(map);
+            // Add Polyline functionality
+            if (typeof L.Polyline.fromEncoded !== 'function') {
+                // Define function if it doesn't exist
+                L.Polyline.fromEncoded = function(encoded, options) {
+                    var points = [];
+                    var index = 0, len = encoded.length;
+                    var lat = 0, lng = 0;
+                
+                    while (index < len) {
+                        var b, shift = 0, result = 0;
+                        do {
+                            b = encoded.charAt(index++).charCodeAt(0) - 63;
+                            result |= (b & 0x1f) << shift;
+                            shift += 5;
+                        } while (b >= 0x20);
+                        var dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                        lat += dlat;
+                
+                        shift = 0;
+                        result = 0;
+                        do {
+                            b = encoded.charAt(index++).charCodeAt(0) - 63;
+                            result |= (b & 0x1f) << shift;
+                            shift += 5;
+                        } while (b >= 0x20);
+                        var dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                        lng += dlng;
+                
+                        points.push([lat * 1e-5, lng * 1e-5]);
+                    }
+                    return points;
+                };
+            }
 
-            // Fit the map to the polyline bounds
-            map.fitBounds(L.polyline(decodedPolyline).getBounds());
+            // Decode the polyline
+            const decodedPolyline = L.Polyline.fromEncoded(polyline);
+            
+            if (decodedPolyline && decodedPolyline.length > 0) {
+                // Add the polyline to the map
+                L.polyline(decodedPolyline, { color: '#ff8c00' }).addTo(map);
+                
+                // Fit the map to the polyline bounds
+                map.fitBounds(L.latLngBounds(decodedPolyline));
+            } else {
+                // If no route data, show a message
+                mapContainer.innerHTML = '<p style="text-align: center; padding: 20px;">No route data available for this activity</p>';
+            }
             
             // Invalidate size to ensure proper rendering after display change
             setTimeout(() => {
