@@ -32,6 +32,7 @@ public class StravaLap {
     private LocalDateTime startDate;
     private LocalDateTime startDateLocal;
     private Boolean isViolated;
+    private Double paced;
     public StravaLap() {
     }
 
