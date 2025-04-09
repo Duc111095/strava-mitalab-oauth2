@@ -373,7 +373,7 @@
                             <td>${i + 1}</td>
                             <td>${data[i].distance}</td>
                             <td>${data[i].formatPaced}</td>
-                            <td>${data[i].averageHeartRate == null ? "" : data[i].averageHeartRate}</td>
+                            <td>${data[i].averageHeartRate == null ? "" : Math.round(data[i].averageHeartRate)}</td>
                             <td>${data[i].violated == false ? "" : "Vi phạm"}</td>
                             
                         </tr>`;
@@ -390,8 +390,8 @@
                 }
             })
             .catch(error => {
-                lapDetailsCell.innerHTML = `<p>Error fetching lap details</p>
-                <button onclick="" 
+                lapDetailsCell.innerHTML = `<p>Không có thông tin Lap</p>
+                <button onclick="closeLapDetails()" 
                    style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
                    <i class="fas fa-times"></i> Đóng
                 </button>`;

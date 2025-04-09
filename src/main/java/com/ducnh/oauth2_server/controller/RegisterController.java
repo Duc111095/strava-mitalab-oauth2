@@ -88,9 +88,24 @@ public class RegisterController {
 
     @PostMapping("/registered-athletes")
     @ResponseBody
-    public List<RegisteredAthleteDTO> getRegisteredAthletes(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> getRegisteredAthletes(@RequestBody Map<String, String> request, @AuthenticationPrincipal OAuth2User principal) {
+        Long athleteId = Long.parseLong(principal.getName());
         String eventId = request.get("eventId");
-        return getRegisteredAthletes(eventId);
+        Map<String, Object> result = new HashMap<>();
+
+        RegisterEvent register = registerService.findById(eventId, athleteId);
+        EventDTO eventDTO = new EventDTO();
+        if (register != null) {
+            eventDTO.setAthleteId(register.getAthleteId());
+            eventDTO.setEventId(register.getEventId());
+            eventDTO.setTeamId(register.getTeamId());
+            eventDTO.setAccepted(register.isAccepted());
+            eventDTO.setRegistered(true);
+        }
+        List<RegisteredAthleteDTO> registeredAthletes = getRegisteredAthletes(eventId);
+        result.put("event", eventDTO);
+        result.put("registeredAthletes", registeredAthletes);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/register/unaccepted")
@@ -99,6 +114,7 @@ public class RegisterController {
         if (currEvents == null) {
             return "redirect:/register";
         }
+        
         List<RegisteredAthleteDTO> unacceptedAthletes = new ArrayList<>();
         
         for (StravaEvent currEvent : currEvents) {

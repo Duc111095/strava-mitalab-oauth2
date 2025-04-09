@@ -488,10 +488,10 @@
             })
             .then(response => response.json())
             .then(data => {
-                insertRegisterAthlete(data);
+                fetchStatusEvent(data.event);
+                insertRegisterAthlete(data.registeredAthletes);
             })
             .catch(error => {
-                console.error("Error fetching registered athletes:", error);
                 showAlert("Không thể tải danh sách VĐV đã đăng ký", "danger");
             });
         }
@@ -500,52 +500,56 @@
             fetch("/runner/register/init")
                 .then(response => response.json())
                 .then(result => {
-                    console.log(result);
-                    const event = result.event;
-                    const isRegistered = event.registered;
-                    const isAccepted = event.accepted;
-                    if (isRegistered) {
-                        const eventSelect = document.getElementById("eventId");
-                        const teamIdInput = document.getElementById("teamId");
-                        const submitButton = document.getElementById("register");
-                        const registerForm = document.getElementById("registration-form");
-                        const leaveButton = document.getElementById("leave-team");
-                        const notificationDiv = document.getElementById("notification");
-
-                        submitButton.style.display = "none";
-
-                        eventSelect.value = event.eventId;
-                        eventSelect.setAttribute("data-max", event.teamId);
-                        teamIdInput.value = event.teamId;
-                        if (isAccepted) {
-                            leaveButton.style.display = "inline-block";
-                            teamIdInput.setAttribute("readonly", true);
-                            eventSelect.setAttribute("readonly", true);
-                            leaveButton.setAttribute("href", `/runner/register/leave?eventId=${event.eventId}&athleteId=${event.athleteId}`);
-                        } else {
-                            leaveButton.style.display = "none";
-                            teamIdInput.setAttribute("readonly", true);
-                            eventSelect.setAttribute("readonly", true);
-                            notificationDiv.style.display = "block";
-                            notificationDiv.style.backgroundColor = "#d4edda";
-                            notificationDiv.style.color = "#155724";
-                            notificationDiv.style.border = "1px solid #c3e6cb";
-                            notificationDiv.innerHTML = `<i class="fas fa-info-circle"></i> Đã đăng ký thành công. Chờ BTC xét duyệt!`;
-                            setTimeout(() => {
-                                notificationDiv.style.opacity = "0";
-                                setTimeout(() => {
-                                    notificationDiv.style.display = "none";
-                                    notificationDiv.style.opacity = "1";
-                                }, 300);
-                            }, 5000);
-                        }
-                    }
+                    fetchStatusEvent(result.event);
                     insertRegisterAthlete(result.registeredAthletes);
                 })
                 .catch(error => console.error("Error fetching initial values:", error));
             fetch("/runner/oauth_login")
                 .then(response => console.log("Get activities successfully"))
                 .catch(error => console.error("Error get Activities: ", error));
+        }
+
+        function fetchStatusEvent(event) {
+            const eventSelect = document.getElementById("eventId");
+            const teamIdInput = document.getElementById("teamId");
+            const submitButton = document.getElementById("register");
+            const registerForm = document.getElementById("registration-form");
+            const leaveButton = document.getElementById("leave-team");
+            const notificationDiv = document.getElementById("notification");
+
+            const isRegistered = event.registered;
+            const isAccepted = event.accepted;
+            if (isRegistered) {
+                submitButton.style.display = "none";
+                eventSelect.value = event.eventId;
+                eventSelect.setAttribute("data-max", event.teamId);
+                teamIdInput.value = event.teamId;
+                if (isAccepted) {
+                    leaveButton.style.display = "inline-block";
+                    teamIdInput.setAttribute("readonly", true);
+                    eventSelect.setAttribute("readonly", true);
+                    leaveButton.setAttribute("href", `/runner/register/leave?eventId=${event.eventId}&athleteId=${event.athleteId}`);
+                } else {
+                    leaveButton.style.display = "none";
+                    teamIdInput.setAttribute("readonly", true);
+                    eventSelect.setAttribute("readonly", true);
+                    notificationDiv.style.display = "block";
+                    notificationDiv.style.backgroundColor = "#d4edda";
+                    notificationDiv.style.color = "#155724";
+                    notificationDiv.style.border = "1px solid #c3e6cb";
+                    notificationDiv.innerHTML = `<i class="fas fa-info-circle"></i> Đã đăng ký thành công. Chờ BTC xét duyệt!`;
+                    setTimeout(() => {
+                        notificationDiv.style.opacity = "0";
+                        setTimeout(() => {
+                            notificationDiv.style.display = "none";
+                            notificationDiv.style.opacity = "1";
+                        }, 300);
+                    }, 5000);
+                }
+            } else {
+                submitButton.style.display = "block";
+                leaveButton.style.display = "none";
+            }
         }
 
         function leaveTeam(button) {
@@ -565,7 +569,6 @@
                         window.location.href = "/runner/register"; // Redirect to the registration page
                     }, 1500);
                 } else {
-                    console.error("Failed to leave the team.");
                     showAlert("Không thể rời khỏi đội", "danger");
                     // Reset button state
                     button.innerHTML = originalHTML;
@@ -573,7 +576,6 @@
                 }
             })
             .catch(error => {
-                console.error("Error leaving team:", error);
                 showAlert("Đã xảy ra lỗi khi rời khỏi đội", "danger");
                 // Reset button state
                 button.innerHTML = originalHTML;
