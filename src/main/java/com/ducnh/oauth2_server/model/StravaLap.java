@@ -127,9 +127,10 @@ public class StravaLap {
         if (movingTime == null || movingTime == 0) {
             return "0:00";
         }
-        int pace = (int) ((movingTime / 60) / (distance / 1000)); // pace in min/km
-        int seconds = (int) ((movingTime % 60) / (distance / 1000)); // seconds in km
-        return String.format("%d:%02d /km", pace, seconds);
+        double pace = ((movingTime / 60) / (distance / 1000)); // pace in min/km
+        int minutes = (int) pace; // minutes in km
+        int seconds = (int) ((pace % 1) * 60); // seconds in km
+        return String.format("%d:%02d /km", minutes, seconds);
     }
 
     public void setEndIndex(Integer endIndex) {

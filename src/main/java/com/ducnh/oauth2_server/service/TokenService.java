@@ -117,6 +117,8 @@ public class TokenService {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(accessToken);
+		System.out.println("Bearer " + accessToken);
+		System.out.println("URL: " + url);	
 		HttpEntity<String> httpEntity = new HttpEntity<String>("parameters", headers);
 		return restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
 	}

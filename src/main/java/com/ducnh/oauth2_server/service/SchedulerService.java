@@ -29,8 +29,7 @@ public class SchedulerService {
         try {
             for (AthleteUser athleteId : athleteUsers) {
                 Long id = athleteId.getId();
-                ResponseEntity<String> response = tokenService.sendGetRequest(id, activitiesUrl);
-                activityService.saveActivitiesFromStravaResponse(response, id);
+                activityService.saveActivitiesFromStravaResponse(id);
             }
         } catch (Exception e) {
             return "Error fetching athlete users.";

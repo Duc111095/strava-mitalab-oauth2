@@ -231,7 +231,7 @@
         <a th:href="@{/summary}">Tổng hợp</a>
     </div>
     
-    <div class="main-content" id="mainContent" th:unless="${#lists.isEmpty(allActivities)}">
+    <div class="main-content" id="mainContent">
         <div class="container">
             <h1>Danh Sách Hoạt Động</h1>
             <div class="update-button">
@@ -252,7 +252,7 @@
                             <th>Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody id="athleteTableBody" th:unless="${#lists.isEmpty(allActivities)}">
+                    <tbody id="athleteTableBody">
                         <tr th:if="${#lists.isEmpty(allActivities)}">
                             <td colspan="7" style="text-align: center;">Không có hoạt động nào</td>
                         </tr>
@@ -338,6 +338,7 @@
             const existingLapRow = document.getElementById("lap-details-row");
             if (existingLapRow) {
                 existingLapRow.remove();
+                return;
             }
 
             // Create a new row for lap details
@@ -354,26 +355,27 @@
             
         
             // Fetch lap details
-            fetch(`/runner/activities/laps?activityId=${activityId}`)
+            fetch(`/runner/activities/metrics?activityId=${activityId}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 if (data.length > 0) {
                     // Create lap details table
                     let html = `<h4>Chi tiết Lap</h4>`;
-                    html += `<button onclick="document.getElementById('lap-details-row').style.display='none'" 
+                    html += `<button onclick="closeLapDetails()" 
                                style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
                                <i class="fas fa-times"></i> Đóng
                             </button>`;
                     html += "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>";
-                    html += "<thead><tr><th>Lap</th><th>Km</th><th>Pace</th><th>Vi phạm</th></tr></thead><tbody>";
+                    html += "<thead><tr><th>Lap</th><th>Km</th><th>Pace</th><th>Heart Rate</th><th>Vi phạm</th></tr></thead><tbody>";
                     
                     for (let i = 0; i < data.length; i++) {
                         html += `<tr>
                             <td>${i + 1}</td>
-                            <td>${data[i].distance}m</td>
+                            <td>${data[i].distance}</td>
                             <td>${data[i].formatPaced}</td>
+                            <td>${data[i].averageHeartRate == null ? "" : data[i].averageHeartRate}</td>
                             <td>${data[i].violated == false ? "" : "Vi phạm"}</td>
+                            
                         </tr>`;
                     }
                     
@@ -381,7 +383,7 @@
                     lapDetailsCell.innerHTML = html;
                 } else {
                     lapDetailsCell.innerHTML = `<p>Không có thông tin Lap</p>
-                    <button onclick="document.getElementById('lap-details-container').style.display='none'" 
+                    <button onclick="closeLapDetails()" 
                        style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
                        <i class="fas fa-times"></i> Đóng
                     </button>`;
@@ -389,11 +391,10 @@
             })
             .catch(error => {
                 lapDetailsCell.innerHTML = `<p>Error fetching lap details</p>
-                <button onclick="document.getElementById('lap-details-container').style.display='none'" 
+                <button onclick="" 
                    style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
                    <i class="fas fa-times"></i> Đóng
                 </button>`;
-                console.error("Error fetching lap details:", error);
             });
         }
         
@@ -419,7 +420,6 @@
             .then(data => {
                 tbody.innerHTML = ""; 
                 data.forEach(activity => {
-                    console.log(activity);
                     // Create activity row
                     const row = document.createElement("tr");
                     row.setAttribute("activity-id", activity.activityId);
@@ -468,6 +468,10 @@
             }, 3000);
         }
         
+        function closeLapDetails() {
+            document.getElementById('lap-details-row').remove();
+        }
+
         function getUrlParam(paramName) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(paramName);

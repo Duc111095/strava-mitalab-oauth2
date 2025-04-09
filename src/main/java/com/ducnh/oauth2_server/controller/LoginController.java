@@ -48,12 +48,9 @@ public class LoginController {
 	@Autowired
 	private ActivityService activityService;
 	
-	@Value("${strava.url.athlete.activities}")
-	private String activitiesUrl;
+	@Value("${strava.url.athlete.activitiesafter0104}")
+	private String activitiesUrl0104;
 	
-	@Value("${strava.url.athlete.userinfo}")
-	private String userInfoUrl;
-
 	@Value("${strava.url.activities.lap}")
 	private String lapUrl;
 	
@@ -69,35 +66,13 @@ public class LoginController {
 	public String getActivitiesFromStrava(Model model, OAuth2AuthenticationToken authentication) {
 		OAuth2User user = authentication.getPrincipal();
 		Long athleteId = Long.valueOf(user.getName());
-		System.out.println("Getting activities for athlete ID: " + athleteId);
-
-		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, activitiesUrl);
-		ResponseEntity<String> userInfo = tokenService.sendGetRequest(athleteId, userInfoUrl);
+		athleteService.saveAthleteInfoFromStrava(athleteId);
 		
 		try {
-			JsonNode treeUserRoot = mapper.readTree(userInfo.getBody());
-			AthleteUser user1 = AthleteUser.createFromJsonString(treeUserRoot);
-			athleteService.save(user1);
-			ArrayNode treeActivityRoot = (ArrayNode) mapper.readTree(resultActivites.getBody());
-			StravaActivity activity = new StravaActivity();
-			if (treeActivityRoot.isArray() && treeActivityRoot.size() > 0) {
-				for (JsonNode root : treeActivityRoot) {
-					PolylineMap map = new PolylineMap();
-					map.setId(root.get("map").get("id") == null ? null : root.get("map").get("id").asText());
-					map.setSummaryPolyline(root.get("map").get("summary_polyline") == null ? null : root.get("map").get("summary_polyline").asText());
-					mapRepo.save(map);
-					String activityId = root.get("id").asText();
-					System.out.println("Activity ID: " + activityId);
-
-					activity = StravaActivity.createActivityFromResponse(root);
-					activityService.save(activity);
-				}	
-			}
+			activityService.saveActivitiesFromStravaResponse(athleteId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		model.addAttribute("activity", resultActivites.getBody());
 		return "success";
 	}
 }

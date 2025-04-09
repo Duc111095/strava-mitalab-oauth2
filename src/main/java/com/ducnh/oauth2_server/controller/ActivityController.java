@@ -1,7 +1,9 @@
 package com.ducnh.oauth2_server.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,12 +18,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ducnh.oauth2_server.dto.ActivitiesDTO;
+import com.ducnh.oauth2_server.dto.MetricDTO;
 import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.model.StravaLap;
+import com.ducnh.oauth2_server.model.StravaSplitMetrics;
 import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.EventService;
+import com.ducnh.oauth2_server.service.SplitMetricService;
 import com.ducnh.oauth2_server.service.StravaLapService;
-import com.ducnh.oauth2_server.service.TokenService;
+
+import net.bytebuddy.agent.builder.AgentBuilder.InitializationStrategy.SelfInjection.Split;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,10 +40,7 @@ public class ActivityController {
 	private ActivityService activityService;
 
 	@Autowired
-	private StravaLapService lapService;
-
-	@Autowired
-	private TokenService tokenService;
+	private SplitMetricService metricService;
 
 	@Autowired
 	private EventService eventService;
@@ -65,14 +68,7 @@ public class ActivityController {
 				athleteId = Long.parseLong(principal.getName());
 			} 
 			
-			// Call Strava API to get activities
-			ResponseEntity<String> activities = tokenService.sendGetRequest(athleteId, activitiesStravaUrl);
-			
-			if (activities.getStatusCode().is2xxSuccessful()) {
-				activityService.saveActivitiesFromStravaResponse(activities, athleteId);
-			} else {
-				return ResponseEntity.status(activities.getStatusCode()).body(null);
-			}
+			activityService.saveActivitiesFromStravaResponse(athleteId);
 			List<Map<String, Object>> listExtendedActivities = activityService.listExtendedActivities(athleteId);
 			listExtendedActivities.forEach( activity -> {
 				System.out.println(activity.keySet());
@@ -86,19 +82,20 @@ public class ActivityController {
 		}
 	}
 	
-	@GetMapping("/activities/laps")
+	@GetMapping("/activities/metrics")
 	@ResponseBody
-	public ResponseEntity<List<StravaLap>> getInformationLap(@Param("activityId") Long activityId) {
+	public ResponseEntity<List<MetricDTO>> getInformationLap(@Param("activityId") Long activityId) {
 		StravaEvent currentEvent = eventService.findExactCurrentEvent().get();
+		List<StravaSplitMetrics> listMetric = metricService.findByActivityId(activityId);
+		List<MetricDTO> metrics = listMetric.stream().map(metric -> {
+			MetricDTO metricDTO = metricService.convertMetricDTOFromSplitsMetric(currentEvent, metric);
+			return metricDTO;
+		}).collect(Collectors.toList());
 
-		List<StravaLap> laps = lapService.findByActivityId(activityId);
-		if (currentEvent != null) {
-			laps.forEach(lap -> lap.setViolated(currentEvent));
-		}
-		laps.sort((a, b) -> a.getLapIndex().compareTo(b.getLapIndex()));	
-		if (laps.isEmpty() || laps.size() == 0) {
+		metrics.sort((a, b) -> a.getSplitId().compareTo(b.getSplitId()));	
+		if (metrics.isEmpty() || metrics.size() == 0) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		return ResponseEntity.ok(laps);
+		return ResponseEntity.ok(metrics);
 	}
 }

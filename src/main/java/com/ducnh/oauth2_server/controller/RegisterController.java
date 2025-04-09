@@ -12,6 +12,7 @@ import com.ducnh.oauth2_server.service.RegisterService;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,8 +51,9 @@ public class RegisterController {
 
     @GetMapping("register/init")
     @ResponseBody
-    public ResponseEntity<EventDTO> getCurrentEvent(Model model, @AuthenticationPrincipal OAuth2User principal) {
+    public ResponseEntity<Map<String, Object>> getCurrentEvent(Model model, @AuthenticationPrincipal OAuth2User principal) {
         Long athleteId = Long.parseLong(principal.getName());
+        Map<String, Object> result = new HashMap<>();
         Map<String, Object> item = eventService.findCurrentEventByAthlete(athleteId);
         EventDTO eventDTO = new EventDTO();
         if (item.size() > 0) {
@@ -63,7 +65,10 @@ public class RegisterController {
             eventDTO.setRegistered(true);
             model.addAttribute("event", eventDTO);
         }
-        return ResponseEntity.ok(eventDTO);
+        List<RegisteredAthleteDTO> registeredAthletes = getRegisteredAthletes(eventDTO.getEventId());
+        result.put("event", eventDTO);
+        result.put("registeredAthletes", registeredAthletes);
+        return ResponseEntity.ok(result);
     }
     
 
@@ -85,21 +90,7 @@ public class RegisterController {
     @ResponseBody
     public List<RegisteredAthleteDTO> getRegisteredAthletes(@RequestBody Map<String, String> request) {
         String eventId = request.get("eventId");
-        List<Map<String, Object>> registerEvents = registerService.findRegisteredAthlete(eventId);
-
-        return registerEvents.stream().map(item -> {
-            RegisteredAthleteDTO registeredAthleteDTO = new RegisteredAthleteDTO();
-            registeredAthleteDTO.setAthleteId(Long.parseLong(String.valueOf(item.get("athlete_id"))));
-            registeredAthleteDTO.setAthleteName(item.get("athlete_name") == null ? "" : (String) item.get("athlete_name"));
-            registeredAthleteDTO.setEventId((String) item.get("event_id"));
-            registeredAthleteDTO.setTeamId(String.valueOf(item.get("team_id")));
-            registeredAthleteDTO.setEventName((String) item.get("event_name"));
-            Timestamp registered_at = (Timestamp) item.get("registered_at");
-            Timestamp updated_at = (Timestamp) item.get("updated_at");
-            registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
-            registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
-            return registeredAthleteDTO;
-        }).collect(Collectors.toList());
+        return getRegisteredAthletes(eventId);
     }
 
     @GetMapping("/register/unaccepted")
@@ -156,5 +147,21 @@ public class RegisterController {
         }
         return ResponseEntity.ok().body(null);
     }
-    
+
+    private List<RegisteredAthleteDTO> getRegisteredAthletes(String eventId) {
+        List<Map<String, Object>> registerEvents = registerService.findRegisteredAthlete(eventId);
+        return registerEvents.stream().map(item -> {
+            RegisteredAthleteDTO registeredAthleteDTO = new RegisteredAthleteDTO();
+            registeredAthleteDTO.setAthleteId(Long.parseLong(String.valueOf(item.get("athlete_id"))));
+            registeredAthleteDTO.setAthleteName(item.get("athlete_name") == null ? "" : (String) item.get("athlete_name"));
+            registeredAthleteDTO.setEventId((String) item.get("event_id"));
+            registeredAthleteDTO.setTeamId(String.valueOf(item.get("team_id")));
+            registeredAthleteDTO.setEventName((String) item.get("event_name"));
+            Timestamp registered_at = (Timestamp) item.get("registered_at");
+            Timestamp updated_at = (Timestamp) item.get("updated_at");
+            registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
+            registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
+            return registeredAthleteDTO;
+        }).collect(Collectors.toList());
+    }
 }

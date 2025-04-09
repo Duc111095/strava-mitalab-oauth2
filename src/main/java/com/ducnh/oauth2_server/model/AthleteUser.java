@@ -309,6 +309,10 @@ public class AthleteUser {
 
 	public static AthleteUser createFromJsonString(JsonNode root) throws Exception{
 		AthleteUser user = new AthleteUser();
+		return createFromJsonString(root, user);
+	}
+
+	public static AthleteUser createFromJsonString(JsonNode root, AthleteUser user) throws Exception{
 		user.setId(root.get("id") == null ? null : root.get("id").asLong());
 		user.setUsername(root.get("username")== null ? null : root.get("username").asText());
 		user.setResourceState(root.get("resource_state")== null ? null : root.get("resource_state").asInt());

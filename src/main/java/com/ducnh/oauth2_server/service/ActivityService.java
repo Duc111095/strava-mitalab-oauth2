@@ -21,7 +21,6 @@ import com.ducnh.oauth2_server.dto.ActivitiesDTO;
 import com.ducnh.oauth2_server.model.ActivitySummary;
 import com.ducnh.oauth2_server.model.PolylineMap;
 import com.ducnh.oauth2_server.model.StravaActivity;
-import com.ducnh.oauth2_server.model.StravaLap;
 import com.ducnh.oauth2_server.repository.ActivityRepository;
 import com.ducnh.oauth2_server.repository.MapRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -44,11 +43,17 @@ public class ActivityService {
 	private MapRepository mapRepo;
 
 	@Autowired
-	private StravaLapService stravaLapService;
+	private SplitMetricService metricService;
 
 	@Value("${strava.url.activities.lap}")
 	private String lapUrl;
 	
+	@Value("${strava.url.athlete.activities}")
+	private String activitiesUrl;
+
+	@Value("${strava.url.athlete.activitiesafter0104}")
+	private String activitiesUrlAfter0104;
+
 	@Autowired
 	@PersistenceContext
 	private EntityManager em;
@@ -96,13 +101,15 @@ public class ActivityService {
 		return list;
 	}
 
-	public void saveActivitiesFromStravaResponse(ResponseEntity<String> response, Long athleteId) {
+	public void saveActivitiesFromStravaResponse(Long athleteId) {
+		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, activitiesUrlAfter0104);
 		try {
 			// Save activities to database
-			ArrayNode treeActivityRoot = (ArrayNode) mapper.readTree(response.getBody());
+			ArrayNode treeActivityRoot = (ArrayNode) mapper.readTree(resultActivites.getBody());
 			if (treeActivityRoot.isArray() && treeActivityRoot.size() > 0) {
 				for (JsonNode root : treeActivityRoot) {
-
+					Long activityId = Long.parseLong(root.get("id").asText());
+				
 					// Get the map data from the response
 					PolylineMap map = new PolylineMap();
 					map.setId(root.get("map").get("id") == null ? null : root.get("map").get("id").asText());
@@ -110,7 +117,6 @@ public class ActivityService {
 					mapRepo.save(map);
 
 					// Create a new StravaActivity object and set the map
-					String activityId = root.get("id").asText();
 					StravaActivity activity = new StravaActivity();
 					activity = StravaActivity.createActivityFromResponse(root);
 					activity.setMap(map);
@@ -119,21 +125,10 @@ public class ActivityService {
 					// Fetch the lap data for the activity has start_date > now - 3 days
 					LocalDate startDate = LocalDate.parse(root.get("start_date_local").asText(), StravaActivity.formatter);
 					if (startDate.isBefore(LocalDate.now().minusDays(60))) {
-						continue; // Skip if the activity is older than 3 days
+						continue; 
 					}
-	
-					String activityLapUrl = lapUrl.replace("{id}", activityId);
-					String activityLapResponse = tokenService.sendGetRequest(athleteId, activityLapUrl).getBody();
-					ArrayNode responseLapArray = (ArrayNode) mapper.readTree(activityLapResponse);
-					if (responseLapArray == null) {
-						continue;
-					}
-					if (responseLapArray.isArray() && responseLapArray.size() > 0) {
-						for (JsonNode activityLapNode : responseLapArray) {
-							StravaLap lap = StravaLap.createStravaLapFromJsonNode(activityLapNode);
-							stravaLapService.save(lap);
-						}
-					}	
+					// Save Metrics for the activity
+					metricService.saveSplitMetricFromStrava(activityId, athleteId);
 				}
 			}	
 		} catch (Exception e) {
@@ -165,5 +160,10 @@ public class ActivityService {
 			listActivitiesDTO.add(activitiesDTO);
 		});
 		return listActivitiesDTO;
+	}
+
+	public void saveActivitesFromStravaResponse(Long athleteId) {
+		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, lapUrl);
+
 	}
 }
