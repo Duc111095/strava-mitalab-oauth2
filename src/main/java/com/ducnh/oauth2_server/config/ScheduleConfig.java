@@ -21,6 +21,6 @@ public class ScheduleConfig {
     // @Scheduled(fixedRate = 1000 * 60 * 15) //Fetch Data 15 minutes
 	@Scheduled(fixedRate = 1000 * 60 * 15)
 	public void scheduleTask() {
-    //    logger.info(schedulerService.getDataActivity());	
+        logger.info(schedulerService.getDataActivity());	
     } 
 }

@@ -13,4 +13,5 @@ public interface SplitMetricsRepository extends CrudRepository<StravaSplitMetric
     // Custom query methods can be defined here if needed
     // For example, to find by activityId or splitId, etc.
     List<StravaSplitMetrics> findBySplitsMetricIdActivityId(Long activityId);
+    Boolean existsBySplitsMetricIdActivityId(Long activityId);
 }

@@ -128,7 +128,10 @@ public class ActivityService {
 						continue; 
 					}
 					// Save Metrics for the activity
-					metricService.saveSplitMetricFromStrava(activityId, athleteId);
+					// Save metrics not found in the database
+					if (!metricService.existsByActivityId(activityId)) {
+						metricService.saveSplitMetricFromStrava(activityId, athleteId);
+					}
 				}
 			}	
 		} catch (Exception e) {

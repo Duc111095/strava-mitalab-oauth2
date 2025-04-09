@@ -36,6 +36,10 @@ public class SplitMetricService {
         splitMetricsRepository.save(splitMetric);
     }
 
+    public Boolean existsByActivityId(Long activityId) {
+        return splitMetricsRepository.existsBySplitsMetricIdActivityId(activityId);
+    }
+
     public List<StravaSplitMetrics> findByActivityId(Long activityId) {
         return splitMetricsRepository.findBySplitsMetricIdActivityId(activityId);
     }

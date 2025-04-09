@@ -20,14 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ducnh.oauth2_server.dto.ActivitiesDTO;
 import com.ducnh.oauth2_server.dto.MetricDTO;
 import com.ducnh.oauth2_server.model.StravaEvent;
-import com.ducnh.oauth2_server.model.StravaLap;
 import com.ducnh.oauth2_server.model.StravaSplitMetrics;
 import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.EventService;
 import com.ducnh.oauth2_server.service.SplitMetricService;
-import com.ducnh.oauth2_server.service.StravaLapService;
-
-import net.bytebuddy.agent.builder.AgentBuilder.InitializationStrategy.SelfInjection.Split;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
