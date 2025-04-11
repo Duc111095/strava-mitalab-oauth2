@@ -59,6 +59,11 @@
                             data-event-id=${athlete.getEventId()}" 
                             onclick="acceptAthlete(this)">Duyệt</button>
                         </td>
+                        <td>
+                            <button type="button" th:attr="data-athlete-id=${athlete.getAthleteId()}, 
+                            data-event-id=${athlete.getEventId()}" 
+                            onclick="deleteAthlete(this)">Hủy</button>
+                        </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(unRegisteredAthletes)}">
                         <td colspan="6" style="text-align: center;">Không có vận động viên nào</td>
@@ -93,6 +98,30 @@
                     button.closest("tr").remove();
                 } else {
                     showAlert("Duyệt không thành công", "danger");
+                }
+            })
+            .catch(error => console.error("Error accepting athlete:", error));
+        }
+
+        function acceptAthlete(button) {
+            const athleteId = button.getAttribute("data-athlete-id");
+            const eventId = button.getAttribute("data-event-id");
+
+            console.log("Deleting athlete with ID:", athleteId, "for event ID:", eventId);
+
+            fetch("/runner/register/delete", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ athleteId: athleteId, eventId: eventId })
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    showAlert("Hủy thành công", "success");
+                    button.closest("tr").remove();
+                } else {
+                    showAlert("Hủy không thành công", "danger");
                 }
             })
             .catch(error => console.error("Error accepting athlete:", error));

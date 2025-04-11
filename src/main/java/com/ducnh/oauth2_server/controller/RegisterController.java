@@ -156,6 +156,20 @@ public class RegisterController {
         }
     }
 
+    @PostMapping("/register/delete")
+    @ResponseBody
+    public String deleteAthlete(@RequestBody Map<String, String> request) {
+        try {
+            String eventId = request.get("eventId");
+            Long athleteId = Long.parseLong(request.get("athleteId"));
+            registerService.deleteById(eventId, athleteId);
+            return ResponseEntity.ok("success").getBody();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error accepting athlete: " + e.getMessage()).getBody();
+        }
+    }
+
+
     @GetMapping("/register/leave")
     public ResponseEntity<?> leaveRegistered(@Param("eventId") String eventId, @Param("athleteId") Long athleteId) {
         if (registerService.existsById(eventId, athleteId)) {
