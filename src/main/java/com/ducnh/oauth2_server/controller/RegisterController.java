@@ -169,7 +169,6 @@ public class RegisterController {
         }
     }
 
-
     @GetMapping("/register/leave")
     public ResponseEntity<?> leaveRegistered(@Param("eventId") String eventId, @Param("athleteId") Long athleteId) {
         if (registerService.existsById(eventId, athleteId)) {

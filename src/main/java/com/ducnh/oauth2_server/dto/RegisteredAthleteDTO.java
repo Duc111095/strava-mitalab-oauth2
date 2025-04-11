@@ -83,7 +83,7 @@ public class RegisteredAthleteDTO {
     }   
     
     public String getFormatedDateFromStartDateLocal(){
-        return this.updatedAt == null ? "" : this.updatedAt.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
+        return this.registeredAt == null ? "" : this.registeredAt.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
     }
 
     @Override
