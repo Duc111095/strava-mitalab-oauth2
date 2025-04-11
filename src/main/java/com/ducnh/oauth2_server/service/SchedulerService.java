@@ -9,9 +9,6 @@ import com.ducnh.oauth2_server.model.AthleteUser;
 @Service
 public class SchedulerService {
     @Autowired
-    private TokenService tokenService;
-
-    @Autowired
     private ActivityService activityService;
 
     @Value("${strava.url.athlete.activities}")

@@ -376,6 +376,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>STT</th>
                             <th><i class="fas fa-id-card"></i> VĐV</th>
                             <th><i class="fas fa-user"></i> Tên VĐV</th>
                             <th><i class="fas fa-calendar-check"></i> Tên sự kiện</th>
@@ -586,7 +587,7 @@
             const filter = document.getElementById("teamIdFilter").value.toLowerCase();
             const rows = document.querySelectorAll("#athleteTableBody tr");
             let hasVisible = false;
-            
+            var index = 0;
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
                 const teamCell = row.querySelector("#team-tr");
@@ -594,6 +595,7 @@
                     const teamText = teamCell.textContent || teamCell.innerText;
                     if (teamText.toLowerCase().includes(filter)) {
                         row.style.display = "";
+                        row.querySelector("td:first-child").textContent = ++index;
                         hasVisible = true;
                     } else {
                         row.style.display = "none";
@@ -632,10 +634,12 @@
                     row.innerHTML = `<td colspan="5" style="text-align: center;">Không có VĐV nào đăng ký</td>`;
                     athleteTableBody.appendChild(row);
                 } else {
+                    var index = 0; // Initialize index for numbering
                     // Populate the table with the response data
                     data.forEach(athlete => {
                         const row = document.createElement("tr");
                         row.innerHTML = `
+                            <td>${++index}</td>
                             <td>${athlete.athleteId}</td>
                             <td>${athlete.athleteName}</td>
                             <td>${athlete.eventName}</td>

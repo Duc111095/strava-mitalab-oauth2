@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -16,32 +15,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ducnh.oauth2_server.model.AthleteUser;
-import com.ducnh.oauth2_server.model.PolylineMap;
-import com.ducnh.oauth2_server.model.StravaActivity;
-import com.ducnh.oauth2_server.repository.MapRepository;
 import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.AthleteUserService;
-import com.ducnh.oauth2_server.service.TokenService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Controller
 @RequestMapping("")
 public class LoginController {
 
 	public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-	
-	@Autowired
-	private ObjectMapper mapper;
-	
-	@Autowired
-	private TokenService tokenService;
-	
-	@Autowired
-	private MapRepository mapRepo;
-	
+
 	@Autowired
 	private AthleteUserService athleteService;
 	

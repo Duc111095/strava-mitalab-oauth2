@@ -65,7 +65,11 @@ public class RegisterController {
             eventDTO.setRegistered(true);
             model.addAttribute("event", eventDTO);
         }
-        List<RegisteredAthleteDTO> registeredAthletes = getRegisteredAthletes(eventDTO.getEventId());
+        String eventId = eventDTO.getEventId();
+        if (eventId == null) {
+            eventId = eventService.findCurrentEvent().orElseThrow(() -> new RuntimeException("No current event found")).iterator().next().getId();
+        }
+        List<RegisteredAthleteDTO> registeredAthletes = getRegisteredAthletes(eventId);
         result.put("event", eventDTO);
         result.put("registeredAthletes", registeredAthletes);
         return ResponseEntity.ok(result);
@@ -191,6 +195,6 @@ public class RegisterController {
             registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
             registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
             return registeredAthleteDTO;
-        }).collect(Collectors.toList());
+        }).sorted((r1, r2) -> r2.getRegisteredAt().compareTo(r1.getRegisteredAt())).collect(Collectors.toList());
     }
 }

@@ -165,8 +165,4 @@ public class ActivityService {
 		return listActivitiesDTO;
 	}
 
-	public void saveActivitesFromStravaResponse(Long athleteId) {
-		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, lapUrl);
-
-	}
 }

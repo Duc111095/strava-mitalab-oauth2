@@ -8,12 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ducnh.oauth2_server.model.AthleteUser;
-import com.ducnh.oauth2_server.model.PolylineMap;
-import com.ducnh.oauth2_server.model.StravaActivity;
 import com.ducnh.oauth2_server.repository.AthleteUserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 
 @Service
