@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.AthleteUserService;
+import com.ducnh.oauth2_server.service.EventService;
+import com.ducnh.oauth2_server.service.RegisterService;
 
 @Controller
 @RequestMapping("")
@@ -29,6 +32,12 @@ public class LoginController {
 	
 	@Autowired
 	private ActivityService activityService;
+
+	@Autowired
+	private EventService eventService;
+
+	@Autowired
+	private RegisterService registerService;
 	
 	@Value("${strava.url.athlete.activitiesafter0104}")
 	private String activitiesUrl0104;
@@ -48,10 +57,15 @@ public class LoginController {
 	public String getActivitiesFromStrava(Model model, OAuth2AuthenticationToken authentication) {
 		OAuth2User user = authentication.getPrincipal();
 		Long athleteId = Long.valueOf(user.getName());
-		athleteService.saveAthleteInfoFromStrava(athleteId);
 		
+		athleteService.saveAthleteInfoFromStrava(athleteId);
+		StravaEvent event = eventService.findExactCurrentEvent().orElse(null);
 		try {
-			activityService.saveActivitiesFromStravaResponse(athleteId);
+			if (event != null) {
+				if (registerService.isAccepted(event.getId(), athleteId)) {
+					activityService.saveActivitiesFromStravaResponse(athleteId);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

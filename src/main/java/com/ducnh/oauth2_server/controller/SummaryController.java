@@ -46,7 +46,7 @@ public class SummaryController {
 		List<DetailsResultDTO> detailsSummary = new ArrayList<>();
 		List<Object[]> results = activityService.getSummaryEvent(eventId, teamId, 1);
 		
-		if (results.isEmpty()) {
+		if (results.isEmpty() || results == null || results.size() == 0) {
 			model.addAttribute("message", "Không có dữ liệu cho đội này");
 			return "detailsSummary";
 		}

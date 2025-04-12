@@ -48,8 +48,8 @@ public class SummaryEventDTO {
         this.totalDistance = totalDistance;
     }
 
-    public Double getTotalDistance() {
-        return this.totalDistance;
+    public String getTotalDistance() {
+        return String.format("%.1f", this.totalDistance / 1000);
     }
 
     public String formatTotalDistance() {
@@ -64,8 +64,8 @@ public class SummaryEventDTO {
         this.totalCurrentDistance = currentDistance;
     }
 
-    public Double getTotalCurrentDistance() {
-        return this.totalCurrentDistance;
+    public String getTotalCurrentDistance() {
+        return String.format("%.2f", this.totalCurrentDistance / 1000);
     }
 
     public void setSTT(int stt) {

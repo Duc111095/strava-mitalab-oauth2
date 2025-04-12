@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
@@ -36,13 +38,12 @@ import org.springframework.security.oauth2.core.endpoint.MapOAuth2AccessTokenRes
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.client.RestTemplate;
 
+import com.ducnh.oauth2_server.handler.CustomAuthenticationFailureHandler;
 import com.ducnh.oauth2_server.model.StravaToken;
 import com.ducnh.oauth2_server.repository.TokenRepository;
-import org.springframework.core.convert.converter.Converter;
-
-import org.springframework.http.converter.FormHttpMessageConverter;
 
 @Configuration
 @EnableWebSecurity
@@ -61,6 +62,7 @@ public class SecurityConfig {
         http.csrf(c -> c.disable())
 			.authorizeRequests(requests -> requests
                 .antMatchers("/",
+						"/cuserror",
                         "/info",
                         "/error",
                         "/favicon.ico",
@@ -80,12 +82,18 @@ public class SecurityConfig {
                                 .clientRegistrationRepository(clientRegistrationRepository())
                                 .authorizedClientService(authorizedClientService())
                                 .tokenEndpoint(c -> c.accessTokenResponseClient(accessTokenResponseClient()))
-                                .defaultSuccessUrl("/register"));
+                                .defaultSuccessUrl("/register")
+								.failureHandler(authenticationFailureHandler()));	
 		return http.build();
 	}
 	
 	@Autowired
 	private Environment env;
+
+	@Bean
+	public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
+    } 
 
     @Bean
     ClientRegistrationRepository clientRegistrationRepository() {
