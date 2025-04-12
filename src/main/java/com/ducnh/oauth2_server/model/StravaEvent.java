@@ -1,6 +1,7 @@
 package com.ducnh.oauth2_server.model;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -35,7 +36,11 @@ public class StravaEvent {
 	
 	@Column(nullable = true)
 	private String description;
-	
+
+	private LocalTime startTime;
+	private LocalTime endTime;
+	private Double maxDistancePerDay;
+	private Integer maxAthlete;
 	public StravaEvent() {}
 	
 	public StravaEvent(String eventName, int teamCount, LocalDateTime startDate, LocalDateTime endDate, String description, double lowPace, double highPace) {
@@ -106,6 +111,14 @@ public class StravaEvent {
 		return this.teamCount;
 	}
 
+	public Integer getMaxAthlete() {
+		return maxAthlete;
+	}
+
+	public void setMaxAthlete(Integer maxAthlete) {
+		this.maxAthlete = maxAthlete;
+	}
+
 	public String getDescription() {
 		return this.description;
 	}
@@ -113,7 +126,31 @@ public class StravaEvent {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public LocalTime getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(LocalTime startTime) {
+		this.startTime = startTime;
+	}
+
+	public LocalTime getEndTime() {
+		return endTime;
+	}
 	
+	public void setEndTime(LocalTime endTime) {
+		this.endTime = endTime;
+	}
+
+	public Double getMaxDistancePerDay() {
+		return maxDistancePerDay;
+	}
+	
+	public void setMaxDistancePerDay(Double maxDistancePerDay) {
+		this.maxDistancePerDay = maxDistancePerDay;
+	}
+
 	@Override
 	public String toString() {
 		return "StravaEvent [id=" + id + ", eventName=" + eventName + ", teamCount=" + teamCount + ", startDate="

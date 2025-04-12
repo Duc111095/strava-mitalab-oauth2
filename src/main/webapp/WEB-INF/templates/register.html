@@ -640,7 +640,7 @@
                         const row = document.createElement("tr");
                         row.innerHTML = `
                             <td>${++index}</td>
-                            <td>${athlete.athleteId}</td>
+                            <td id="athlete_id"><a href='https://www.strava.com/athletes/${athlete.athleteId}' target="_blank">${athlete.athleteId}</a></td>
                             <td>${athlete.athleteName}</td>
                             <td>${athlete.eventName}</td>
                             <td id="team-tr">Đội ${athlete.teamId}</td>
@@ -652,6 +652,7 @@
         }
 
         function showAlert(message, type) {
+    
             // Remove any existing alerts
             const existingAlerts = document.querySelectorAll('.alert');
             existingAlerts.forEach(alert => {

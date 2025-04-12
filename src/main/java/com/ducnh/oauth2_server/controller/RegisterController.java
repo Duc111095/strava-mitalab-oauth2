@@ -195,6 +195,6 @@ public class RegisterController {
             registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
             registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
             return registeredAthleteDTO;
-        }).sorted((r1, r2) -> r2.getRegisteredAt().compareTo(r1.getRegisteredAt())).collect(Collectors.toList());
+        }).sorted((r1, r2) -> r1.getRegisteredAt().compareTo(r2.getRegisteredAt())).collect(Collectors.toList());
     }
 }

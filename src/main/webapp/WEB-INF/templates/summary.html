@@ -150,7 +150,26 @@
     <div class="main-content" id="mainContent">
         <div class="container">
             <h1>Bảng xếp hạng tổng</h1>
-            <table class="summary" th:unless="${#lists.isEmpty(summaryEvents)}">
+            <div class="form-group">
+                <form id="eventForm" class="event-selector">
+                    <div class="select-wrapper">
+                        <label for="eventId">
+                            <i class="fas fa-calendar-alt"></i> Sự kiện
+                        </label>
+                        <select id="eventId" name="eventId" class="form-control" required>
+                            <option value="" disabled selected>-- Chọn sự kiện --</option>
+                            <option th:each="event : ${events}" 
+                                    th:value="${event.getId()}" 
+                                    th:text="${event.getEventName()}">
+                            </option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="fetchEventSummary()">
+                        <i class="fas fa-search"></i> Tổng hợp
+                    </button>
+                </form>
+            </div>
+            <table class="summary">
                 <tr>
                     <th>Hạng</th>
                     <th>Tên nhóm</th>
@@ -158,15 +177,7 @@
                     <th th:text="${currentDate} + '(Km)'"></th>
                     <th>Tổng(Km)</th>
                 </tr>
-                <tr th:each="ac : ${summaryEvents}">
-                    <td id="distance" th:text="${ac.getSTT()}"></td>
-                    <td id="distance" th:text="${ac.getTeamName()}"><a th:href="@{/summary/team?teamId=${ac.getTeamId()}&eventId=${ac.getEventId()}}"></a></td>
-                    <td id="distance" th:text="${ac.getTeamCount()}"></td>
-                    <td id="distance" th:text="${ac.formatTotalCurrentDistance()}"></td>
-                    <td id="distance" th:text="${ac.formatTotalDistance()}"></td>
-                    <td>
-                        <a th:href="@{/summary/team(teamId=${ac.getTeamId()}, eventId=${ac.getEventId()})}">Chi tiết</a>
-                    </td>            
+                <tr id="event-summary-body">          
                 </tr>
             </table>
         </div>
@@ -211,6 +222,20 @@
                 mainContent.classList.toggle('full-width');
             }
         });
+
+        function fetchEventSummary() {
+            const eventId = document.getElementById('eventId').value;
+            console.log("Fetching summary for event ID:", eventId); 
+            const url = '/runner/summary/event?eventId=' + eventId;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(response => console.log(response));       
+        }
     </script>
 </body>
 </html>

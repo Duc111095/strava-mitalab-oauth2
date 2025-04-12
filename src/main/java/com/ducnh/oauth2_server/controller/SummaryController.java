@@ -1,24 +1,21 @@
 package com.ducnh.oauth2_server.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ducnh.oauth2_server.dto.DetailsResultDTO;
 import com.ducnh.oauth2_server.dto.SummaryEventDTO;
-import com.ducnh.oauth2_server.form.PeriodForm;
-import com.ducnh.oauth2_server.model.ActivitySummary;
 import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.EventService;
@@ -35,32 +32,12 @@ public class SummaryController {
 
 	@GetMapping("/summary")
 	public String getTeamSummary(Model model) {
-		StravaEvent currEvent = eventService.findExactCurrentEvent().get();
-		String eventId = currEvent.getId();
-		List<SummaryEventDTO> summaryEvents = new ArrayList<>();
-		List<Object[]> results = activityService.getSummaryEvent(eventId, 0, 0);
-		for (Object[] result : results) {
-			int teamId = ((Number) result[0]).intValue();
-			int totalAthlete = ((Number) result[1]).intValue();
-			double totalDistance = ((Number) result[2]).doubleValue();
-			double totalCurrentDistance = ((Number) result[3]).doubleValue();
-			int stt = ((Number) result[4]).intValue();
-
-			SummaryEventDTO summaryEvent = new SummaryEventDTO();
-			summaryEvent.setEventId(eventId);
-			summaryEvent.setTeamName("Đội " + teamId);
-			summaryEvent.setTeamId(teamId);
-			summaryEvent.setTeamCount(totalAthlete);
-			summaryEvent.setTotalDistance(totalDistance);
-			summaryEvent.setTotalCurrentDistance(totalCurrentDistance);
-			summaryEvent.setSTT(stt);
-			summaryEvents.add(summaryEvent);
-		}
+		Iterable<StravaEvent> events = eventService.findCurrentEvent().get();
 		LocalDate currentDate = LocalDate.now();
         String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
         model.addAttribute("currentDate", formattedDate);
-		model.addAttribute("summaryEvents", summaryEvents);
-		model.addAttribute("currEvent", currEvent);
+		model.addAttribute("events", events);
+		getEventSummary(events.iterator().next().getId());
 		return "summary";
 	}
 	
@@ -101,12 +78,43 @@ public class SummaryController {
 		return "detailsSummary";
 	}
 
-	@PostMapping("/summary")
-	public String getActivitySummary(Model model, @ModelAttribute PeriodForm periodForm) {
-		LocalDateTime startDate = periodForm.getStartDate();
-		LocalDateTime endDate = periodForm.getEndDate();
-		List<ActivitySummary> allActivitiesSummary = activityService.getActivitySummaryByPeriodDate(startDate, endDate); 
-		model.addAttribute("allActivitiesSummary", allActivitiesSummary);
-		return "summary";
+	@GetMapping("/summary/event")
+	@ResponseBody
+	public ResponseEntity<List<?>> getActivitySummary(Model model, @Param("eventId") String eventId) {
+		try {
+			List<SummaryEventDTO> summaryEvents = getEventSummary(eventId);
+			return ResponseEntity.ok(summaryEvents);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(null);
+		}
 	}
+
+	private List<SummaryEventDTO> getEventSummary(String eventId) throws RuntimeException{
+		if (eventId == null || !eventService.existsById(eventId)) {
+			throw new RuntimeException("No event found with id: " + eventId);
+		}
+		List<SummaryEventDTO> summaryEvents = new ArrayList<>();
+		List<Object[]> results = activityService.getSummaryEvent(eventId, 0, 0);
+		System.out.println("results: " + results.size());
+		System.out.println(results);
+		for (Object[] result : results) {
+			int teamId = ((Number) result[0]).intValue();
+			int totalAthlete = ((Number) result[1]).intValue();
+			double totalDistance = ((Number) result[2]).doubleValue();
+			double totalCurrentDistance = ((Number) result[3]).doubleValue();
+			int stt = ((Number) result[4]).intValue();
+
+			SummaryEventDTO summaryEvent = new SummaryEventDTO();
+			summaryEvent.setEventId(eventId);
+			summaryEvent.setTeamName("Đội " + teamId);
+			summaryEvent.setTeamId(teamId);
+			summaryEvent.setTeamCount(totalAthlete);
+			summaryEvent.setTotalDistance(totalDistance);
+			summaryEvent.setTotalCurrentDistance(totalCurrentDistance);
+			summaryEvent.setSTT(stt);
+			summaryEvents.add(summaryEvent);
+		}
+		return summaryEvents;
+	}
+
 }

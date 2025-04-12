@@ -37,6 +37,17 @@ body {
     -webkit-text-fill-color: white;
 }
 
+#athleteTableBody a {
+    -webkit-background-clip: text;
+    text-decoration: none;
+    color: white;
+}
+#athleteTableBody a:hover {
+    background-color: #ff8c00;
+    color: rgb(214, 84, 32);
+    -webkit-text-fill-color: white;
+}
+
 .form-group {
     margin-bottom: 10px;
     flex-direction: column;
@@ -55,7 +66,7 @@ body {
     border: 1px solid #e9d4d4;
     background-color: #524a08;
     color: #E0E0E0;
-    width: 200px;
+    width: 300px;
 }
 .register {
     display: flex;
