@@ -34,7 +34,7 @@ public class ScheduleConfig {
     // @Scheduled(fixedRate = 1000 * 60 * 15) //Fetch Data 15 minutes
 	@Scheduled(fixedRate = 1000 * 60 * 30)
 	public void scheduleTask() {
-        System.out.println("Hour: " + LocalDateTime.now().getHour() + " minute: " + LocalDateTime.now().getMinute());   
+        logger.info("Hour: " + LocalDateTime.now().getHour() + " minute: " + LocalDateTime.now().getMinute());   
         List<Integer> listHour = new ArrayList<>();
         
         Arrays.stream(syncTimeHour.split(",")).forEach(hour -> {
