@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.ducnh.oauth2_server.model.AthleteUser;
+import com.ducnh.oauth2_server.model.RegisterEvent;
+import com.ducnh.oauth2_server.model.StravaEvent;
 
 @Service
 public class SchedulerService {
@@ -20,11 +21,21 @@ public class SchedulerService {
     @Autowired
     private AthleteUserService athleteUserService;
 
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private RegisterService registerService;
+
     public String getDataActivity() {
-        Iterable<AthleteUser> athleteUsers = athleteUserService.findAll();
+        StravaEvent event = eventService.findExactCurrentEvent().orElse(null);
+        if (event == null) {
+            return "No current event found.";   
+        }
+        Iterable<RegisterEvent> registerEvents = registerService.findAllByEventId(event.getId());
         try {
-            for (AthleteUser athleteId : athleteUsers) {
-                Long id = athleteId.getId();
+            for (RegisterEvent registered : registerEvents) {
+                Long id = registered.getAthleteId();
                 activityService.saveActivitiesFromStravaResponse(id);
             }
         } catch (Exception e) {

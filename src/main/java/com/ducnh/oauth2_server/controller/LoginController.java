@@ -58,7 +58,7 @@ public class LoginController {
 		OAuth2User user = authentication.getPrincipal();
 		Long athleteId = Long.valueOf(user.getName());
 		
-		athleteService.saveAthleteInfoFromStrava(athleteId);
+		// athleteService.saveAthleteInfoFromStrava(athleteId);
 		StravaEvent event = eventService.findExactCurrentEvent().orElse(null);
 		try {
 			if (event != null) {

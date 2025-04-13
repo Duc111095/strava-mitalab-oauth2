@@ -20,7 +20,7 @@ public class RegisterService {
         registerRepository.save(registerEvent); 
     }
 
-    public RegisterEvent findById(String eventId, Long athleteId) {
+    public <Optional>RegisterEvent findById(String eventId, Long athleteId) {
         return registerRepository.findById(new RegisterIdentity(eventId, athleteId)).orElse(null);
     }
 

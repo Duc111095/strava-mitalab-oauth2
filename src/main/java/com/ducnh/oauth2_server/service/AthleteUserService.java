@@ -1,5 +1,6 @@
 package com.ducnh.oauth2_server.service;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,4 +53,12 @@ public class AthleteUserService {
 		}
 	}
 
+	public void saveAthleteInfoFromStrava(ResponseEntity<Map<String, Object>> response) throws RuntimeException {
+		try {
+			AthleteUser athleteUser = AthleteUser.createFromJsonMapStringObject(response);
+			athleteRepo.save(athleteUser);
+		} catch (Exception e) {
+			throw new RuntimeException("Error parsing athlete user info: " + e.getMessage(), e);
+		}
+	}
 }

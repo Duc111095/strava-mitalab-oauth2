@@ -2,12 +2,15 @@ package com.ducnh.oauth2_server.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+
+import org.springframework.http.ResponseEntity;
 
 import com.ducnh.oauth2_server.model.constants.MeasurementPreference;
 import com.ducnh.oauth2_server.model.constants.ResourceState;
@@ -331,6 +334,30 @@ public class AthleteUser {
 		user.setProfile(root.get("profile")== null ? null :root.get("profile").asText());
 		user.setFriend(root.get("friend")== null ? null :root.get("friend").asText());
 		user.setFollower(root.get("follower")== null ? null :root.get("follower").asText());
+		return user;
+	}
+
+    public static AthleteUser createFromJsonMapStringObject(ResponseEntity<Map<String, Object>> response) {
+		Map<String, Object> bodyMap = response.getBody();
+		AthleteUser user = new AthleteUser();
+		user.setId(Long.parseLong(bodyMap.get("id").toString()));
+		user.setUsername(bodyMap.get("username") != null ? bodyMap.get("username").toString() : null);
+		user.setResourceState(bodyMap.get("resource_state") != null ? Integer.parseInt(bodyMap.get("resource_state").toString()) : null);
+		user.setFirstName(bodyMap.get("firstname") != null ? bodyMap.get("firstname").toString() : null);
+		user.setLastName(bodyMap.get("lastname") != null ? bodyMap.get("lastname").toString() : null);
+		user.setCity(bodyMap.get("city") != null ? bodyMap.get("city").toString() : null);
+		user.setState(bodyMap.get("state") != null ? bodyMap.get("state").toString() : null);
+		user.setCountry(bodyMap.get("country") != null ? bodyMap.get("country").toString() : null);
+		user.setSex(bodyMap.get("sex") != null ? bodyMap.get("sex").toString() : null);
+		user.setPremium(bodyMap.get("premium") != null ? Boolean.parseBoolean(bodyMap.get("premium").toString()) : false);
+		user.setCreatedAt(bodyMap.get("created_at") != null ? bodyMap.get("created_at").toString() : null);
+		user.setUpdatedAt(bodyMap.get("updated_at") != null ? bodyMap.get("updated_at").toString() : null);
+		user.setBadgeTypeId(bodyMap.get("badge_type_id") != null ? Integer.parseInt(bodyMap.get("badge_type_id").toString()) : null);
+		user.setWeight(bodyMap.get("weight") != null ? Long.parseLong(bodyMap.get("weight").toString()) : null);
+		user.setProfileMedium(bodyMap.get("profile_medium") != null ? bodyMap.get("profile_medium").toString() : null);
+		user.setProfile(bodyMap.get("profile") != null ? bodyMap.get("profile").toString() : null);
+		user.setFriend(bodyMap.get("friend") != null ? bodyMap.get("friend").toString() : null);
+		user.setFollower(bodyMap.get("follower") != null ? bodyMap.get("follower").toString() : null);
 		return user;
 	}
 }

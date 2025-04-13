@@ -82,6 +82,7 @@ public class SecurityConfig {
                                 .clientRegistrationRepository(clientRegistrationRepository())
                                 .authorizedClientService(authorizedClientService())
                                 .tokenEndpoint(c -> c.accessTokenResponseClient(accessTokenResponseClient()))
+								.userInfoEndpoint(c -> c.userService(customOAuth2UserService()))
                                 .defaultSuccessUrl("/register")
 								.failureHandler(authenticationFailureHandler()));	
 		return http.build();
@@ -91,9 +92,14 @@ public class SecurityConfig {
 	private Environment env;
 
 	@Bean
-	public AuthenticationFailureHandler authenticationFailureHandler() {
+	AuthenticationFailureHandler authenticationFailureHandler() {
         return new CustomAuthenticationFailureHandler();
     } 
+
+	@Bean
+	CustomOAuth2UserService customOAuth2UserService() {
+		return new CustomOAuth2UserService();
+	}
 
     @Bean
     ClientRegistrationRepository clientRegistrationRepository() {

@@ -1,14 +1,5 @@
 package com.ducnh.oauth2_server.controller;
 
-import com.ducnh.oauth2_server.dto.EventDTO;
-import com.ducnh.oauth2_server.dto.RegisteredAthleteDTO;
-import com.ducnh.oauth2_server.form.RegisterForm;
-import com.ducnh.oauth2_server.model.RegisterEvent;
-import com.ducnh.oauth2_server.model.StravaEvent;
-import com.ducnh.oauth2_server.model.keys.RegisterIdentity;
-import com.ducnh.oauth2_server.service.EventService;
-import com.ducnh.oauth2_server.service.RegisterService;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,6 +21,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ducnh.oauth2_server.dto.EventDTO;
+import com.ducnh.oauth2_server.dto.RegisteredAthleteDTO;
+import com.ducnh.oauth2_server.form.RegisterForm;
+import com.ducnh.oauth2_server.model.RegisterEvent;
+import com.ducnh.oauth2_server.model.StravaEvent;
+import com.ducnh.oauth2_server.model.keys.RegisterIdentity;
+import com.ducnh.oauth2_server.service.EventService;
+import com.ducnh.oauth2_server.service.RegisterService;
 
 
 @Controller
@@ -97,9 +97,11 @@ public class RegisterController {
         String eventId = request.get("eventId");
         Map<String, Object> result = new HashMap<>();
 
-        RegisterEvent register = registerService.findById(eventId, athleteId);
         EventDTO eventDTO = new EventDTO();
-        if (register != null) {
+        System.out.println("Debugging...."); 
+        System.out.println("Event ID: " + eventId);
+        if (registerService.existsById(eventId, athleteId)) {
+            RegisterEvent register = registerService.findById(eventId, athleteId);
             eventDTO.setAthleteId(register.getAthleteId());
             eventDTO.setEventId(register.getEventId());
             eventDTO.setTeamId(register.getTeamId());
@@ -195,6 +197,6 @@ public class RegisterController {
             registeredAthleteDTO.setUpdatedAt(updated_at == null ? null : updated_at.toLocalDateTime());
             registeredAthleteDTO.setRegisteredAt(registered_at == null ? null : registered_at.toLocalDateTime().plusHours(7));
             return registeredAthleteDTO;
-        }).sorted((r1, r2) -> r1.getRegisteredAt().compareTo(r2.getRegisteredAt())).collect(Collectors.toList());
+        }).sorted((r1, r2) -> r2.getRegisteredAt().compareTo(r1.getRegisteredAt())).collect(Collectors.toList());
     }
 }
