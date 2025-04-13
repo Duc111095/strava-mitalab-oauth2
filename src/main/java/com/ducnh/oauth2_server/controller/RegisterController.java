@@ -98,8 +98,7 @@ public class RegisterController {
         Map<String, Object> result = new HashMap<>();
 
         EventDTO eventDTO = new EventDTO();
-        System.out.println("Debugging...."); 
-        System.out.println("Event ID: " + eventId);
+
         if (registerService.existsById(eventId, athleteId)) {
             RegisterEvent register = registerService.findById(eventId, athleteId);
             eventDTO.setAthleteId(register.getAthleteId());
@@ -185,6 +184,8 @@ public class RegisterController {
 
     private List<RegisteredAthleteDTO> getRegisteredAthletes(String eventId) {
         List<Map<String, Object>> registerEvents = registerService.findRegisteredAthlete(eventId);
+        System.out.println("Debugging...."); 
+        System.out.println("Event ID: " + eventId);
         return registerEvents.stream().map(item -> {
             RegisteredAthleteDTO registeredAthleteDTO = new RegisteredAthleteDTO();
             registeredAthleteDTO.setAthleteId(Long.parseLong(String.valueOf(item.get("athlete_id"))));

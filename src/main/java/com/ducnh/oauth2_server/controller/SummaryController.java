@@ -1,6 +1,7 @@
 package com.ducnh.oauth2_server.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,8 @@ public class SummaryController {
 	@GetMapping("/summary")
 	public String getTeamSummary(Model model) {
 		Iterable<StravaEvent> events = eventService.findCurrentEvent().get();
-		LocalDate currentDate = LocalDate.now();
+		ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+		LocalDateTime currentDate = LocalDateTime.now(zoneId).plusHours(7);
         String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
         model.addAttribute("currentDate", formattedDate);
 		model.addAttribute("events", events);
@@ -69,8 +71,9 @@ public class SummaryController {
 			detailResult.setTeamName(teamName);
 			detailsSummary.add(detailResult);
 		}
-		LocalDate currentDate = LocalDate.now();
-        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
+		ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+		LocalDateTime currentDate = LocalDateTime.now(zoneId).plusHours(7);
+		String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
         model.addAttribute("teamId", teamId);
 		model.addAttribute("currentDate", formattedDate);
 		model.addAttribute("detailsSummary", detailsSummary);
@@ -95,8 +98,6 @@ public class SummaryController {
 		}
 		List<SummaryEventDTO> summaryEvents = new ArrayList<>();
 		List<Object[]> results = activityService.getSummaryEvent(eventId, 0, 0);
-		System.out.println("results: " + results.size());
-		System.out.println(results);
 		for (Object[] result : results) {
 			int teamId = ((Number) result[0]).intValue();
 			int totalAthlete = ((Number) result[1]).intValue();
