@@ -34,9 +34,7 @@ public class SchedulerService {
 
     public String getDataActivity() {
         StravaEvent event = eventService.findExactCurrentEvent().orElse(null);
-        logger.info("Fetching data for athlete ID: ");
         if (event == null) {
-            System.out.println("Fetching data for event ID: ");
             return "No current event found.";   
         }
         Iterable<RegisterEvent> registerEvents = registerService.findAllByEventId(event.getId());
@@ -50,7 +48,6 @@ public class SchedulerService {
         } catch (Exception e) {
             return "Error fetching athlete users.";
         }
-        logger.info("Total athletes fetched: " + count.get());
         return "Data activity fetched successfully!!!!!";
     }
 }

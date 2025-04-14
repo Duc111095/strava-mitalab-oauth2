@@ -338,8 +338,11 @@ public class AthleteUser {
 	}
 
     public static AthleteUser createFromJsonMapStringObject(ResponseEntity<Map<String, Object>> response) {
+		return createFromJsonMapStringObject(response, new AthleteUser());
+	}
+
+	public static AthleteUser createFromJsonMapStringObject(ResponseEntity<Map<String, Object>> response, AthleteUser user) {
 		Map<String, Object> bodyMap = response.getBody();
-		AthleteUser user = new AthleteUser();
 		user.setId(Long.parseLong(bodyMap.get("id").toString()));
 		user.setUsername(bodyMap.get("username") != null ? bodyMap.get("username").toString() : null);
 		user.setResourceState(bodyMap.get("resource_state") != null ? Integer.parseInt(bodyMap.get("resource_state").toString()) : null);
