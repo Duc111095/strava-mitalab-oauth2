@@ -67,7 +67,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
         RequestEntity<?> request = this.requestEntityConverter.convert(userRequest);
         ResponseEntity<Map<String, Object>> response = getReponse(userRequest, request);
-        athleteUserService.saveAthleteInfoFromStrava(response);
+        System.out.println("Response: " + response.getBody());
+        try {
+            athleteUserService.saveAthleteInfoFromStrava(response);
+        } catch (Exception e) {
+            throw new RuntimeException("Error parsing athlete user info: " + e.getMessage(), e);
+        }
         Map<String, Object> userAttributes = response.getBody();
         Set<GrantedAuthority> authorities = new LinkedHashSet<>();
         authorities.add(new OAuth2UserAuthority(userAttributes));

@@ -353,7 +353,7 @@ public class AthleteUser {
 		user.setCreatedAt(bodyMap.get("created_at") != null ? bodyMap.get("created_at").toString() : null);
 		user.setUpdatedAt(bodyMap.get("updated_at") != null ? bodyMap.get("updated_at").toString() : null);
 		user.setBadgeTypeId(bodyMap.get("badge_type_id") != null ? Integer.parseInt(bodyMap.get("badge_type_id").toString()) : null);
-		user.setWeight(bodyMap.get("weight") != null ? Long.parseLong(bodyMap.get("weight").toString()) : null);
+		//user.setWeight(bodyMap.get("weight") != null ? (Long) bodyMap.get("weight") : null);
 		user.setProfileMedium(bodyMap.get("profile_medium") != null ? bodyMap.get("profile_medium").toString() : null);
 		user.setProfile(bodyMap.get("profile") != null ? bodyMap.get("profile").toString() : null);
 		user.setFriend(bodyMap.get("friend") != null ? bodyMap.get("friend").toString() : null);

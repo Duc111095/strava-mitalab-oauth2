@@ -62,6 +62,6 @@ public class RegisterService {
 
     public boolean isAccepted(String eventId, Long athleteId) {
         RegisterEvent event = this.findById(eventId, athleteId);
-        return event.isAccepted();
+        return event == null ? false : event.isAccepted();
     }
 }
