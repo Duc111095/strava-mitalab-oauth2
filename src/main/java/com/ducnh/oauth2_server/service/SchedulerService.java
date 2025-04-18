@@ -47,7 +47,6 @@ public class SchedulerService {
         }
         AtomicInteger count = new AtomicInteger(0);
         Iterable<RegisterEvent> registerEvents = registerService.findAllByEventId(event.getId());
-<<<<<<< HEAD
         for (RegisterEvent registered : registerEvents) {
             try {
                     Long id = registered.getAthleteId();
@@ -56,14 +55,6 @@ public class SchedulerService {
                 }
             catch (Exception e) {
                 logger.error("Error fetching athlete user: " + registered.getAthleteId() + " - " + e.getMessage());
-=======
-        AtomicInteger count = new AtomicInteger(0);
-        try {
-            for (RegisterEvent registered : registerEvents) {
-                count.incrementAndGet();
-                Long id = registered.getAthleteId();
-                activityService.saveActivitiesFromStravaResponse(id);
->>>>>>> 556b2d188848280ecc0f8680f2622114abada2c1
             }
         }
         return "Fetched " + count.get() + " athlete users successfully.";
