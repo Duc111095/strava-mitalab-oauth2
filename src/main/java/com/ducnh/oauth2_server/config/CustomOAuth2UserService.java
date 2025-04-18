@@ -67,6 +67,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
         RequestEntity<?> request = this.requestEntityConverter.convert(userRequest);
         ResponseEntity<Map<String, Object>> response = getReponse(userRequest, request);
+        
         try {
             athleteUserService.saveAthleteInfoFromStrava(response);
         } catch (Exception e) {

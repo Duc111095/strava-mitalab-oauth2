@@ -8,16 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.ducnh.oauth2_server.config.ScheduleConfig;
 import com.ducnh.oauth2_server.model.RegisterEvent;
 import com.ducnh.oauth2_server.model.StravaEvent;
 
 @Service
 public class SchedulerService {
+<<<<<<< HEAD
 
     public static final Logger logger = LoggerFactory.getLogger(SchedulerService.class);
 
     @Autowired
     private ActivityService activityService;
+=======
+    
+    public static final Logger logger = LoggerFactory.getLogger(ScheduleConfig.class);
+>>>>>>> 556b2d188848280ecc0f8680f2622114abada2c1
 
     @Value("${strava.url.athlete.activities}")
 	private String activitiesUrl;
@@ -27,6 +33,9 @@ public class SchedulerService {
 
     @Autowired
     private EventService eventService;
+    
+    @Autowired
+    private ActivityService activityService;
 
     @Autowired
     private RegisterService registerService;
@@ -38,6 +47,7 @@ public class SchedulerService {
         }
         AtomicInteger count = new AtomicInteger(0);
         Iterable<RegisterEvent> registerEvents = registerService.findAllByEventId(event.getId());
+<<<<<<< HEAD
         for (RegisterEvent registered : registerEvents) {
             try {
                     Long id = registered.getAthleteId();
@@ -46,6 +56,14 @@ public class SchedulerService {
                 }
             catch (Exception e) {
                 logger.error("Error fetching athlete user: " + registered.getAthleteId() + " - " + e.getMessage());
+=======
+        AtomicInteger count = new AtomicInteger(0);
+        try {
+            for (RegisterEvent registered : registerEvents) {
+                count.incrementAndGet();
+                Long id = registered.getAthleteId();
+                activityService.saveActivitiesFromStravaResponse(id);
+>>>>>>> 556b2d188848280ecc0f8680f2622114abada2c1
             }
         }
         return "Fetched " + count.get() + " athlete users successfully.";
