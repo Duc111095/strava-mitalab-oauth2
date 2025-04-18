@@ -43,7 +43,7 @@ public class ScheduleConfig {
 
         if (listHour.contains(LocalDateTime.now().getHour())) {
             logger.info("Scheduled task starting ....");
-            //schedulerService.getDataActivity();
+            logger.info(schedulerService.getDataActivity());
         }
     } 
 }

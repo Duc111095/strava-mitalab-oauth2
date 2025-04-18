@@ -513,7 +513,7 @@ public class StravaActivity {
 		//activity.setMaxWatts(root.get("max_watts")== null ? null :root.get("max_watts").asInt());
 		activity.setWeightedAverageWatts(root.get("weighted_average_watts")== null ? null :root.get("weighted_average_watts").asInt());
 		//activity.setDeviceWatts(root.get("device_watts")== null ? null :root.get("device_watts").asBoolean());
-		//activity.setUploadId(root.get("upload_id")== null ? null :root.get("upload_id").asLong());
+		activity.setUploadId(root.get("upload_id")== null ? null :root.get("upload_id").asLong());
 		//activity.setTotalPhotoCount(root.get("total_photo_count")== null ? null :root.get("total_photo_count").asInt());
 		activity.setHasKudoed(root.get("has_kudoed")== null ? null :root.get("has_kudoed").asBoolean());
 		activity.setDistance(root.get("distance") == null ? null :root.get("distance").asDouble());
