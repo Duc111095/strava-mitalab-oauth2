@@ -14,16 +14,8 @@ import com.ducnh.oauth2_server.model.StravaEvent;
 
 @Service
 public class SchedulerService {
-<<<<<<< HEAD
 
     public static final Logger logger = LoggerFactory.getLogger(SchedulerService.class);
-
-    @Autowired
-    private ActivityService activityService;
-=======
-    
-    public static final Logger logger = LoggerFactory.getLogger(ScheduleConfig.class);
->>>>>>> 556b2d188848280ecc0f8680f2622114abada2c1
 
     @Value("${strava.url.athlete.activities}")
 	private String activitiesUrl;
