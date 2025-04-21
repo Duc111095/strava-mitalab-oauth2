@@ -55,7 +55,10 @@ public class AthleteUserService {
 
 	public void saveAthleteInfoFromStrava(ResponseEntity<Map<String, Object>> response) throws RuntimeException {
 		try {
-			AthleteUser athleteUser = AthleteUser.createFromJsonMapStringObject(response);
+			Long athleteId = Long.parseLong(response.getBody().get("id").toString());
+			System.out.println("Athlete ID: " + athleteId);
+			
+			AthleteUser athleteUser = AthleteUser.createFromJsonMapStringObject(response, athleteRepo.findById(athleteId).orElse(new AthleteUser()));
 			athleteRepo.save(athleteUser);
 		} catch (Exception e) {
 			throw new RuntimeException("Error parsing athlete user info: " + e.getMessage(), e);

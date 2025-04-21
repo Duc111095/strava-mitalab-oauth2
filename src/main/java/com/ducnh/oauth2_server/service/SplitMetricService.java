@@ -49,6 +49,7 @@ public class SplitMetricService {
 
         ResponseEntity<String> detailsActivity = tokenService.sendGetRequest(athleteId, url);
         JsonNode treeUserRoot = mapper.readTree(detailsActivity.getBody());
+        //System.out.println("treeUserRoot: " + treeUserRoot.toString());
         JsonNode splitsMetric = treeUserRoot.get("splits_metric");
         if (splitsMetric != null && splitsMetric.isArray()) {
             for (JsonNode split : splitsMetric) {

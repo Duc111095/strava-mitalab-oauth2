@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.service.ActivityService;
-import com.ducnh.oauth2_server.service.AthleteUserService;
 import com.ducnh.oauth2_server.service.EventService;
 import com.ducnh.oauth2_server.service.RegisterService;
 
@@ -27,9 +26,6 @@ public class LoginController {
 
 	public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-	@Autowired
-	private AthleteUserService athleteService;
-	
 	@Autowired
 	private ActivityService activityService;
 
