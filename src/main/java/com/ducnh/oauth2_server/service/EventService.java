@@ -1,5 +1,6 @@
 package com.ducnh.oauth2_server.service;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -46,5 +47,9 @@ public class EventService {
 
 	public Optional<StravaEvent> findExactCurrentEvent() {
 		return eventRepository.findExactCurrentEvent();
+	}
+
+	public Iterable<StravaEvent> findAllCurrentEvent() {
+		return eventRepository.findAll();
 	}
 }

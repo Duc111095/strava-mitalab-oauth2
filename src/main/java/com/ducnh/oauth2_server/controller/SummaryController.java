@@ -33,7 +33,7 @@ public class SummaryController {
 
 	@GetMapping("/summary")
 	public String getTeamSummary(Model model) {
-		Iterable<StravaEvent> events = eventService.findCurrentEvent().get();
+		Iterable<StravaEvent> events = eventService.findAll();
 		ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
 		LocalDateTime currentDate = LocalDateTime.now(zoneId).plusHours(7);
         String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));

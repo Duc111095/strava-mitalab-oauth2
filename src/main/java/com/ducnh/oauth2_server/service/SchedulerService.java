@@ -33,14 +33,16 @@ public class SchedulerService {
             return "No current event found.";   
         }
         Iterable<RegisterEvent> registerEvents = registerService.findAllByEventId(event.getId());
-        try {
-            for (RegisterEvent registered : registerEvents) {
+        for (RegisterEvent registered : registerEvents) {
+            try {
                 Long id = registered.getAthleteId();
                 activityService.saveActivitiesFromStravaResponse(id);
             }
-        } catch (Exception e) {
-            return "Error fetching athlete users.";
+            catch (Exception e) {
+                System.out.println("Error fetching activities for athlete ID: " + registered.getAthleteId() + " - " + e.getMessage());
+            }
         }
+        
         return "Data activity fetched successfully!!!!!";
     }
 }
