@@ -239,7 +239,8 @@
                         <select id="eventId" name="eventId" class="form-control" required>
                             <option th:each="event : ${events}" 
                                     th:value="${event.getId()}" 
-                                    th:text="${event.getEventName()}">
+                                    th:text="${event.getEventName()}"
+                                    th:attr="end-date=${event.getEndDate()}">
                             </option>
                         </select>
                     </div>
@@ -270,6 +271,16 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const event = document.getElementById('eventId');
+            const eventOptions = event.options;
+            // Sort event options by end-date attribute
+            const eventArr = Array.from(eventOptions).sort((a, b) => {
+                const dateA = new Date(a.getAttribute('end-date'));
+                const dateB = new Date(b.getAttribute('end-date'));
+                return dateA - dateB;
+            });
+            const lastEvent = eventArr[eventArr.length - 1];
+            event.value = lastEvent.value; 
             fetchEventSummary();
         });
         // Toggle sidebar
@@ -307,7 +318,6 @@
 
         function fetchEventSummary() {
             const eventId = document.getElementById('eventId').value;
-            console.log("Fetching summary for event ID:", eventId); 
             const url = '/runner/summary/event?eventId=' + eventId;
             fetch(url, {
                 method: 'GET',
