@@ -35,7 +35,7 @@ public class SummaryController {
 	public String getTeamSummary(Model model) {
 		Iterable<StravaEvent> events = eventService.findAll();
 		ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
-		LocalDateTime currentDate = LocalDateTime.now(zoneId).plusHours(7);
+		LocalDateTime currentDate = LocalDateTime.now(zoneId);
         String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
         model.addAttribute("currentDate", formattedDate);
 		model.addAttribute("events", events);
@@ -72,7 +72,7 @@ public class SummaryController {
 			detailsSummary.add(detailResult);
 		}
 		ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
-		LocalDateTime currentDate = LocalDateTime.now(zoneId).plusHours(7);
+		LocalDateTime currentDate = LocalDateTime.now(zoneId);
 		String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
         model.addAttribute("teamId", teamId);
 		model.addAttribute("currentDate", formattedDate);
