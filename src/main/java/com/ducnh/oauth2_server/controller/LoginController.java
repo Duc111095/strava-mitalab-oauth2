@@ -35,9 +35,6 @@ public class LoginController {
 	@Autowired
 	private RegisterService registerService;
 	
-	@Value("${strava.url.athlete.activitiesafter0104}")
-	private String activitiesUrl0104;
-	
 	@Value("${strava.url.activities.lap}")
 	private String lapUrl;
 	

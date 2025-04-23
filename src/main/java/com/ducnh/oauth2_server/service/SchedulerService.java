@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.ducnh.oauth2_server.config.ScheduleConfig;
 import com.ducnh.oauth2_server.model.RegisterEvent;
 import com.ducnh.oauth2_server.model.StravaEvent;
 

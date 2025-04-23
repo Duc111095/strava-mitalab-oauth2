@@ -1,6 +1,7 @@
 package com.ducnh.oauth2_server.service;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,8 +52,11 @@ public class ActivityService {
 	@Value("${strava.url.athlete.activities}")
 	private String activitiesUrl;
 
-	@Value("${strava.url.athlete.activitiesafter0104}")
-	private String activitiesUrlAfter0104;
+	@Value("${strava.url.athlete.activitiesafter}")
+	private String activitiesUrlAfter;
+
+	@Value("${strava.dayToGetActivities}")
+	private int dayToGetActivities;
 
 	@Autowired
 	@PersistenceContext
@@ -102,7 +106,9 @@ public class ActivityService {
 	}
 
 	public void saveActivitiesFromStravaResponse(Long athleteId) {
-		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, activitiesUrlAfter0104);
+		Long eTime = Instant.now().toEpochMilli()/1000 - dayToGetActivities * 24 * 60 * 60;
+		activitiesUrlAfter = activitiesUrlAfter.replace("{after}", eTime.toString());
+		ResponseEntity<String> resultActivites = tokenService.sendGetRequest(athleteId, activitiesUrlAfter);
 		try {
 			// Save activities to database
 			ArrayNode treeActivityRoot = (ArrayNode) mapper.readTree(resultActivites.getBody());
@@ -129,6 +135,7 @@ public class ActivityService {
 					}
 					// Save Metrics for the activity
 					// Save metrics not found in the database
+
 					if (!metricService.existsByActivityId(activityId)) {
 						metricService.saveSplitMetricFromStrava(activityId, athleteId);
 					}
