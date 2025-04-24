@@ -149,6 +149,7 @@ tr:nth-child(even) {
 .form-actions button {
     flex: 1;
 }
+
 .footer-left {
     position: fixed;
     bottom: 10px;
@@ -158,12 +159,22 @@ tr:nth-child(even) {
     display: flex;
     align-items: center;
 }
+
 .footer-right {
     position: fixed;
     bottom: 10px;
     right: 10px;
     font-size: 14px;
 }
+
+.main-content #teamIdFilter {
+    margin: 30px auto;
+    width: 300px;
+    border-radius: 5px;
+    border: 1px solid #e9d4d4;
+    align-items: flex-end;
+}
+
 .strava-logo {
     height: 20px;
     margin-left: 5px;
@@ -187,6 +198,7 @@ tr:nth-child(even) {
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     text-align: center;
 }
+
 
 .form-group label {
     display: block;
