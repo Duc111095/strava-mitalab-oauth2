@@ -380,14 +380,13 @@ tr:nth-child(even) {
     }
 
     .footer-right {
-        display: none;
-        margin: auto;
+        position: static;
+        margin: 10px 0;
         text-align: center;
     }
     
     .footer-left {
         display: none;
-        justify-content: center;
     }
     
     /* Move toggle button further right on mobile */
