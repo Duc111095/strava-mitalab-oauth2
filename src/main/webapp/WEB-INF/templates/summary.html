@@ -170,30 +170,26 @@
             }
             
             .main-content {
+                overflow-x: auto;
                 margin-left: 0 !important;
-                width: 100%;
+                width: auto !important; /* Change from 100% to auto */
                 padding: 15px;
                 padding-top: 60px; /* Add padding at top for mobile view */
             }
             
             .container {
                 padding: 15px;
-                margin: 20px auto;
+                margin: auto;
             }
             
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .footer-left, .footer-right {
-                position: static;
-                margin: 10px 0;
+            .footer-right {
+                display: none;
+                margin: auto;
                 text-align: center;
             }
             
             .footer-left {
-                display: flex;
+                display: none;
                 justify-content: center;
             }
             
@@ -209,9 +205,16 @@
 
             .summary {
                 overflow-x: auto;
-                width: 100%;
+                width: auto; /* Add width: auto */
                 margin: 20px auto;
                 border-collapse: collapse;
+            }
+
+            .container {
+                padding: 15px;
+                margin: auto;
+                width: auto; /* Add width: auto */
+                max-width: 100%; /* Add max-width constraint */
             }
         }
     </style>
@@ -256,8 +259,8 @@
                             <th class="sortable" onclick="sortTable(0, 'num')">Hạng</th>
                             <th class="sortable" onclick="sortTable(1, 'text')">Tên nhóm</th>
                             <th class="sortable" onclick="sortTable(2, 'num')">SL thành viên</th>
-                            <th class="sortable" onclick="sortTable(3, 'num')" th:text="${currentDate} + '(Km)'"></th>
-                            <th class="sortable" onclick="sortTable(4, 'num')">Tổng(Km)</th>
+                            <th class="sortable" onclick="sortTable(3, 'num')" th:text="${currentDate} + ' (Km)'"></th>
+                            <th class="sortable" onclick="sortTable(4, 'num')">Tổng (Km)</th>
                             <th>Chi tiết</th>
                         </tr>
                     </thead>

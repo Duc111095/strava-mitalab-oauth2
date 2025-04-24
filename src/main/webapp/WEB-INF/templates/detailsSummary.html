@@ -142,7 +142,7 @@
         
         /* Responsive media queries */
         @media screen and (max-width: 768px) {
-            body {
+            body .footer-right {
                 flex-direction: column;
             }
             
@@ -169,8 +169,9 @@
             }
             
             .main-content {
+                overflow-x: auto;
                 margin-left: 0 !important;
-                width: 100%;
+                width: auto !important; /* Change from 100% to auto */
                 padding: 15px;
                 padding-top: 60px; /* Add padding at top for mobile view */
             }
@@ -179,23 +180,7 @@
                 padding: 15px;
                 margin: 20px auto;
             }
-            
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .footer-left, .footer-right {
-                position: static;
-                margin: 10px 0;
-                text-align: center;
-            }
-            
-            .footer-left {
-                display: flex;
-                justify-content: center;
-            }
-            
+
             /* Move toggle button further right on mobile */
             .toggle-menu {
                 left: 10px;
@@ -205,11 +190,30 @@
             .middle-grid {
                 text-align: center;
             }
-
+            
+            .footer-right {
+                display: none;
+                margin: auto;
+                text-align: center;
+            }
+            
+            .footer-left {
+                display: none;
+                justify-content: center;
+            }
+            
             .summary {
-                width: 100%;
+                overflow-x: auto;
+                width: auto; /* Add width: auto */
                 margin: 20px auto;
                 border-collapse: collapse;
+            }
+
+            .container {
+                padding: 15px;
+                margin: 20px auto;
+                width: auto; /* Add width: auto */
+                max-width: 100%; /* Add max-width constraint */
             }
         }
     </style>
@@ -225,14 +229,14 @@
         <a th:href="@{/summary}" class="active">Tổng hợp</a>
     </div>
     <div class="main-content"  id="mainContent">
-        <div class="container">
+        <div class="container" style="overflow-x: auto;">
             <h1 th:text="'Team ' + ${teamId}"></h1>
  			<table class="summary" th:unless="${#lists.isEmpty(detailsSummary)}">
             <tr>
                 <th>Hạng</th>
                 <th>Tên VĐV</th>
-                <th th:text="${currentDate} + '(Km)'"></th>
-                <th>Tổng(Km)</th>
+                <th th:text="${currentDate} + ' (Km)'"></th>
+                <th>Tổng (Km)</th>
             </tr>
             <tr th:each="ac : ${detailsSummary}">
                 <td th:text="${ac.getStt()}"></td>
@@ -243,11 +247,11 @@
             </tr>
         </table>
         </div>
-  <div class="footer-left">
-        <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
-            <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
-        </a>
-    </div>
+        <div class="footer-left">
+            <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
+                <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
+            </a>
+        </div>
         <div class="footer-right">Developed by ERP</div>
     </div>
     <script>

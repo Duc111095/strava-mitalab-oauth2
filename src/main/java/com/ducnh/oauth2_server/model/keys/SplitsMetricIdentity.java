@@ -60,5 +60,4 @@ public class SplitsMetricIdentity implements Serializable {
     public String getKey() {
         return this.activityId + "_" + this.splitId;
     }
-
 }
