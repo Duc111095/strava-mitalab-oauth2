@@ -16,7 +16,7 @@
     <div class="sidebar" id="sidebar">
         <a th:href="@{/register}">Đăng ký</a>
         <a th:href="@{/activities}">Danh sách hoạt động</a>
-        <a th:href="@{#}" class="active">Tổng hợp</a>
+        <a th:href="@{/summary}" class="active">Tổng hợp</a>
     </div>
 
     <div class="main-content" id="mainContent">
@@ -34,7 +34,7 @@
                     </thead>
                     <tbody>
                         <tr th:each="ac : ${detailsSummary}">
-                            <td th:text="${ac.getStt()}"></td>
+                            <td style="text-align: center;" th:text="${ac.getStt()}"></td>
                             <td th:text="${ac.getAthleteName()}"></td>
                             <td id="distance" class="middle-grid" th:text="${ac.formatTotalCurrentDistance()}"></td>
                             <td id="distance" class="middle-grid" th:text="${ac.formatTotalDistance()}"></td>
