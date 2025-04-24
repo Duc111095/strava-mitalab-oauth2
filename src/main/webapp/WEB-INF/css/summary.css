@@ -199,7 +199,6 @@ tr:nth-child(even) {
     text-align: center;
 }
 
-
 .form-group label {
     display: block;
     margin-bottom: 8px;
@@ -314,7 +313,7 @@ tr:nth-child(even) {
 /* Responsive media queries */
 @media screen and (max-width: 768px) {
     body {
-        font-size: 14px;
+        font-size: 15px;
     }
     
     .sidebar {

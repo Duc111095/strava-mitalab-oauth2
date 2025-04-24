@@ -90,7 +90,7 @@ body {
     flex-grow: 1;
 }
 .main-content #teamIdFilter {
-    margin: 30px auto;
+    margin-top: 20px;
     width: 300px;
     border-radius: 5px;
     border: 1px solid #e9d4d4;
