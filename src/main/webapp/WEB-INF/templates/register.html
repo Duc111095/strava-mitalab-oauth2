@@ -256,6 +256,12 @@
         @media screen and (max-width: 768px) {
             body {
                 flex-direction: column;
+                width: 100% !important;
+            }
+
+            .container {
+                width: 100%;
+                font-size: 15px;
             }
             
             .sidebar {
@@ -278,23 +284,6 @@
             .sidebar a {
                 text-align: center;
                 padding: 15px 20px; /* Center links on mobile */
-            }
-            
-            .main-content {
-                margin-left: 0 !important;
-                width: 100%;
-                padding: 15px;
-                padding-top: 60px; /* Add padding at top for mobile view */
-            }
-            
-            .container {
-                padding: 15px;
-                margin: 20px auto;
-            }
-            
-            table {
-                display: block;
-                overflow-x: auto;
             }
             
             .footer-left, .footer-right {
