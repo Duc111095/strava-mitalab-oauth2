@@ -245,11 +245,11 @@
             body {
                 flex-direction: column;
                 width: 100% !important;
+                font-size: 14px;
             }
 
             .container {
                 width: 100%;
-                font-size: 15px;
             }
             
             .sidebar {
@@ -311,7 +311,6 @@
     
     <div class="main-content" id="mainContent">
         <h2 class="page-title"><i class="fas fa-users"></i> Đăng ký Team</h2>
-        
         <div class="registration-form" id="registration-form">
             <form th:action="@{/register}" th:object="${registerForm}" method="post">
                 <div class="form-group">
