@@ -261,12 +261,12 @@
                         </tr>
 
                         <tr th:each="activity : ${allActivities}" th:attr="activity-id=${activity.getActivityID()}" >
-                            <td th:text="${activity.getAthleteName()}" th:onclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.getActivityName()}" th:onclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.formatDistance()}" th:onclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.formatMovingTime()}" th:onclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.getPaced()}" th:onclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.formatStartDate()}" th:onclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.getAthleteName()}" th:ontouch="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.getActivityName()}" th:ontouch="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.formatDistance()}" th:ontouch="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.formatMovingTime()}" th:ontouch="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.getPaced()}" th:ontouch="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.formatStartDate()}" th:ontouch="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
                             <td>
                                 <button class="action-button view-strava" th:onclick="'window.open(\'https://www.strava.com/activities/' + ${activity.getActivityID()} + '\', \'_blank\')'">
                                     <i class="fas fa-external-link-alt"></i> Strava
