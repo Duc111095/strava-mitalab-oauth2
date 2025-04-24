@@ -11,12 +11,12 @@
         #distance {
             text-align: center;
         }
-        .sortable {
-            cursor: pointer;
+        
+        /* Responsive additions from activities2.html */
+        * {
+            box-sizing: border-box;
         }
-        .sortable:hover {
-            text-decoration: underline;
-        } 
+
         .registration-form {
             background-color: #2A2A2A;
             border-radius: 8px;
@@ -141,19 +141,92 @@
         .main-content.full-width {
             margin-left: 0;
         }
+        
+        /* Responsive media queries */
+        @media screen and (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                left: 0;
+                top: 0;
+                padding-top: 60px; /* More padding on mobile */
+                display: none;
+                overflow-y: auto;
+                max-height: 100vh;
+                background-color: rgba(0, 0, 0, 0.95); /* Darker background for mobile menu */
+            }
+            
+            .sidebar.show {
+                display: block;
+            }
+            
+            .sidebar a {
+                text-align: center;
+                padding: 15px 20px; /* Center links on mobile */
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                width: 100%;
+                padding: 15px;
+                padding-top: 60px; /* Add padding at top for mobile view */
+            }
+            
+            .container {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .footer-left, .footer-right {
+                position: static;
+                margin: 10px 0;
+                text-align: center;
+            }
+            
+            .footer-left {
+                display: flex;
+                justify-content: center;
+            }
+            
+            /* Move toggle button further right on mobile */
+            .toggle-menu {
+                left: 10px;
+                top: 10px;
+            }
+
+            .middle-grid {
+                text-align: center;
+            }
+
+            .summary {
+                width: 100%;
+                margin: 20px auto;
+                border-collapse: collapse;
+            }
+        }
     </style>
 </head>
 <body>
     <button class="toggle-menu" id="toggleMenu">
         <i class="fas fa-bars"></i>
     </button>
-
+    
     <div class="sidebar" id="sidebar">
         <a th:href="@{/register}">Đăng ký</a>
         <a th:href="@{/activities}">Danh sách hoạt động</a>
         <a th:href="@{#}" class="active">Tổng hợp</a>
     </div>
-
+    
     <div class="main-content" id="mainContent">
         <div class="container">
             <h1>Bảng xếp hạng tổng</h1>
@@ -176,49 +249,46 @@
                     </button>
                 </form>
             </div>
-            <div style="overflow-x: auto;">
-                <table class="summary" id="summaryTable">
-                    <thead>
-                        <tr>
-                            <th class="sortable" onclick="sortTable(0, 'num')">Hạng</th>
-                            <th class="sortable" onclick="sortTable(1, 'text')">Tên nhóm</th>
-                            <th class="sortable" onclick="sortTable(2, 'num')">SL thành viên</th>
-                            <th class="sortable" onclick="sortTable(3, 'num')" th:text="${currentDate} + '(Km)'"></th>
-                            <th class="sortable" onclick="sortTable(4, 'num')">Tổng(Km)</th>
-                            <th>Chi tiết</th>
-                        </tr>
-                    </thead>
-                    <tbody id="event-summary-body">
-                    </tbody>
-                </table>
-            </div>
+            <table class="summary">
+                <tr>
+                    <th>Hạng</th>
+                    <th>Tên nhóm</th>
+                    <th>SL thành viên</th>
+                    <th th:text="${currentDate} + '(Km)'"></th>
+                    <th>Tổng(Km)</th>
+                </tr>
+                <tbody id="event-summary-body">          
+                </tbody>
+            </table>
         </div>
         <div class="footer-left">
             <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
-                <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width="50%" height="50%"/>
+                <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_white.png}" width=50% height=50%/>
             </a>
         </div>
         <div class="footer-right">Developed by ERP</div>
     </div>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const event = document.getElementById('eventId');
             const eventOptions = event.options;
+            // Sort event options by end-date attribute
             const eventArr = Array.from(eventOptions).sort((a, b) => {
                 const dateA = new Date(a.getAttribute('end-date'));
                 const dateB = new Date(b.getAttribute('end-date'));
                 return dateA - dateB;
             });
             const lastEvent = eventArr[eventArr.length - 1];
-            event.value = lastEvent.value;
+            event.value = lastEvent.value; 
             fetchEventSummary();
         });
-
+        // Toggle sidebar
         const toggleMenu = document.getElementById('toggleMenu');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
-
+        
+        // Check screen size on page load and set appropriate classes
         function checkScreenSize() {
             if (window.innerWidth <= 768) {
                 sidebar.classList.remove('closed');
@@ -230,10 +300,13 @@
                 mainContent.classList.remove('full-width');
             }
         }
-
+        
+        // Run on page load
         window.addEventListener('load', checkScreenSize);
+        
+        // Run when window is resized
         window.addEventListener('resize', checkScreenSize);
-
+        
         toggleMenu.addEventListener('click', function() {
             if (window.innerWidth <= 768) {
                 sidebar.classList.toggle('show');
@@ -256,7 +329,6 @@
             .then(data => {
                 const eventSummaryBody = document.getElementById('event-summary-body');
                 eventSummaryBody.innerHTML = '';
-                data.sort((a, b) => b.totalDistance - a.totalDistance);
                 data.forEach((summary, index) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -270,24 +342,6 @@
                     eventSummaryBody.appendChild(row);
                 });
             })
-        }
-
-        function sortTable(colIndex, type) {
-            const table = document.getElementById('summaryTable');
-            const tbody = table.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            const isAsc = table.getAttribute('data-sort-dir') !== 'asc';
-            table.setAttribute('data-sort-dir', isAsc ? 'asc' : 'desc');
-
-            rows.sort((a, b) => {
-                const valA = a.cells[colIndex].innerText.trim();
-                const valB = b.cells[colIndex].innerText.trim();
-                const aVal = type === 'num' ? parseFloat(valA) || 0 : valA;
-                const bVal = type === 'num' ? parseFloat(valB) || 0 : valB;
-                return isAsc ? aVal - bVal : bVal - aVal;
-            });
-
-            rows.forEach(row => tbody.appendChild(row));
         }
     </script>
 </body>
