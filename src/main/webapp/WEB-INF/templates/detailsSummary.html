@@ -18,7 +18,7 @@
         <a th:href="@{/summary}" class="active">Tổng hợp</a>
     </div>
     <div class="main-content"  id="mainContent">
-        <div class="container" style="overflow-x: auto;">
+        <div class="container">
             <h1 th:text="'Team ' + ${teamId}"></h1>
  			<table class="summary" th:unless="${#lists.isEmpty(detailsSummary)}">
             <tr>
