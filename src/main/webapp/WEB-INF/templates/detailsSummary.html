@@ -10,18 +10,19 @@
         #distance {
             text-align: center;
         }
-        
-        /* Responsive additions from activities2.html */
-        * {
-            box-sizing: border-box;
+        .sortable {
+            cursor: pointer;
         }
-
+        .sortable:hover {
+            text-decoration: underline;
+        } 
         .registration-form {
             background-color: #2A2A2A;
             border-radius: 8px;
             padding: 25px;
             margin: 25px auto;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            text-align: center;
         }
         
         .form-group {
@@ -139,12 +140,10 @@
         .main-content.full-width {
             margin-left: 0;
         }
-        
         /* Responsive media queries */
         @media screen and (max-width: 768px) {
             body {
                 flex-direction: column;
-                align-items: center;
             }
             
             .sidebar {
@@ -177,18 +176,7 @@
             }
             
             .container {
-                padding: 15px;
-                margin: auto;
-            }
-
-            /* Move toggle button further right on mobile */
-            .toggle-menu {
-                left: 10px;
-                top: 10px;
-            }
-
-            .middle-grid {
-                text-align: center;
+                margin-left: 0 !important;
             }
             
             .footer-right {
@@ -202,6 +190,16 @@
                 justify-content: center;
             }
             
+            /* Move toggle button further right on mobile */
+            .toggle-menu {
+                left: 10px;
+                top: 10px;
+            }
+
+            .middle-grid {
+                text-align: center;
+            }
+
             .summary {
                 overflow-x: auto;
                 width: auto; /* Add width: auto */
@@ -211,7 +209,7 @@
 
             .container {
                 padding: 15px;
-                margin: 20px auto;
+                margin: auto;
                 width: auto; /* Add width: auto */
                 max-width: 100%; /* Add max-width constraint */
             }
@@ -222,7 +220,7 @@
     <button class="toggle-menu" id="toggleMenu">
         <i class="fas fa-bars"></i>
     </button>
-    
+
     <div class="sidebar" id="sidebar">
         <a th:href="@{/register}">Đăng ký</a>
         <a th:href="@{/activities}">Danh sách hoạt động</a>
@@ -259,8 +257,7 @@
         const toggleMenu = document.getElementById('toggleMenu');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
-        
-        // Check screen size on page load and set appropriate classes
+
         function checkScreenSize() {
             if (window.innerWidth <= 768) {
                 sidebar.classList.remove('closed');
@@ -272,13 +269,10 @@
                 mainContent.classList.remove('full-width');
             }
         }
-        
-        // Run on page load
+
         window.addEventListener('load', checkScreenSize);
-        
-        // Run when window is resized
         window.addEventListener('resize', checkScreenSize);
-        
+
         toggleMenu.addEventListener('click', function() {
             if (window.innerWidth <= 768) {
                 sidebar.classList.toggle('show');
