@@ -171,5 +171,4 @@ public class ActivityService {
 		});
 		return listActivitiesDTO;
 	}
-
 }

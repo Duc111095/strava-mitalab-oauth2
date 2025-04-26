@@ -9,219 +9,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        /* Responsive additions to style.css */
-        * {
-            box-sizing: border-box;
-        }
-        
-        /* Toggle button for sidebar */
-        .toggle-menu {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            z-index: 200;
-            background: linear-gradient(90deg, #ff0000, #ff8c00);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            padding: 8px 12px;
-            font-size: 18px;
-            transition: all 0.3s ease-in-out;
-        }
-        
-        .toggle-menu:hover {
-            box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.5);
-        }
-        
-        /* Sidebar modifications for toggle */
-        .sidebar {
-            transition: all 0.3s ease-in-out;
-            z-index: 100;
-            padding-top: 50px; /* Add more padding at the top to prevent overlap */
-        }
-        
-        /* Sidebar link styling */
-        .sidebar a {
-            display: block;
-            padding: 10px 20px 10px 40px; /* Add more left padding to links */
-            text-decoration: none;
-            color: white;
-            transition: background-color 0.3s;
-        }
-        
-        .sidebar a:hover {
-            background-color: rgba(255, 140, 0, 0.3);
-        }
-        
-        /* Add active class for current page */
-        .sidebar a.active {
-            border-left: 4px solid #ff8c00;
-            background-color: rgba(255, 140, 0, 0.2);
-        }
-        
-        .sidebar.closed {
-            margin-left: -260px; /* Width + padding */
-        }
-        
-        /* Main content modifications for sidebar toggle */
-        .main-content.full-width {
-            margin-left: 0;
-        }
-        
-        /* Lap details styling */
-        .lap-details-container {
-            display: none;
-            background-color: #2A2A2A;
-            color: #E0E0E0;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            text-align: left;
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
-        }
-        
-        .lap-details-container.show {
-            display: block;
-        }
-        
-        /* Action buttons styling */
-        .action-button {
-            background: linear-gradient(90deg, #ff0000, #ff8c00);
-            color: white;
-            border: none;
-            border-radius: 3px;
-            padding: 5px 10px;
-            margin-right: 5px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s ease-in-out;
-        }
-        
-        .action-button:hover {
-            box-shadow: 0px 0px 8px rgba(255, 140, 0, 0.7);
-        }
-        
-        .action-button i {
-            margin-right: 5px;
-        }
-        
-        /* Update button styling */
-        .update-button button {
-            background: linear-gradient(90deg, #ff0000, #ff8c00);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-        }
-        
-        .update-button button:hover {
-            box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.5);
-        }
-        
-        /* Map container styling */
-        #activity-map {
-            border-radius: 5px;
-            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Alert styling adjustment */
-        .alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-        
-        .alert-success {
-            background-color: rgba(40, 167, 69, 0.8);
-            color: white;
-        }
-        
-        .alert-warning {
-            background-color: rgba(255, 193, 7, 0.8);
-            color: white;
-        }
-        
-        .alert-danger {
-            background-color: rgba(220, 53, 69, 0.8);
-            color: white;
-        }
-        
-        /* Responsive media queries */
-        @media screen and (max-width: 768px) {
-            body {
-                font-size: 15px;
-                flex-direction: column;
-                width: 100% !important;
-            }
+    <link rel="stylesheet" th:href="@{/css/info.css}">
 
-            .container {
-                width: 100%;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: fixed;
-                left: 0;
-                top: 0;
-                padding-top: 60px; /* More padding on mobile */
-                display: none;
-                overflow-y: auto;
-                max-height: 100vh;
-                background-color: rgba(0, 0, 0, 0.95); /* Darker background for mobile menu */
-            }
-            
-            .sidebar.show {
-                display: block;
-            }
-            
-            .sidebar a {
-                text-align: center;
-                padding: 15px 20px; /* Center links on mobile */
-            }
-            
-            .main-content {
-                margin-left: 0 !important;
-                width: 100%;
-                padding: 15px;
-                padding-top: 60px; /* Add padding at top for mobile view */
-            }
-            
-            .container {
-                padding: 15px;
-                margin: 20px auto;
-            }
-            
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .footer-right {
-                position: static;
-                margin: 10px 0;
-                text-align: center;
-            }
-            
-            .footer-left {
-                display: none;
-            }
-            
-            /* Move toggle button further right on mobile */
-            .toggle-menu {
-                left: 10px;
-                top: 10px;
-            }
-        }
-    </style>
 </head>
 <body>
     <button class="toggle-menu" id="toggleMenu">
@@ -296,7 +85,7 @@
         </div>
         <div class="footer-right">Developed by ERP</div>
     </div>
-    
+    <script th:src="@{/js/info.js}"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-polylinedecorator/1.6.0/leaflet.polylineDecorator.min.js"></script>
@@ -333,7 +122,7 @@
                 mainContent.classList.toggle('full-width');
             }
         });
-        
+
         // Function to toggle lap details visibility
         function toggleLapDetailsBut(td_lap, activityId) {
             

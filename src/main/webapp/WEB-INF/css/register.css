@@ -1,62 +1,77 @@
-body {
-    font-family: Arial, sans-serif;
+/* Page title styling */
+.page-title {
+    color: #ff8c00;
+    font-size: 28px;
+    margin-bottom: 20px;
     text-align: center;
-    background-color: #121212;
-    color: #E0E0E0;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-.sidebar {
-    width: 220px;
-    background-color: #1E1E1E;
-    padding: 20px;
-    height: 100vh;
-    text-align: left;
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-.sidebar a {
-    display: block;
-    background: linear-gradient(90deg, #ff0000, #ff8c00);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-decoration: none;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    background-color: #2A2A2A;
-    transition: all 0.3s ease-in-out;
-}
-.sidebar a:hover {
-    background-color: #ff8c00;
-    color: white;
-    -webkit-text-fill-color: white;
+    font-weight: 600;
 }
 
-#athleteTableBody a {
-    -webkit-background-clip: text;
-    text-decoration: none;
+/* Alert styling adjustment */
+.alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.8);
     color: white;
 }
-#athleteTableBody a:hover {
-    background-color: #ff8c00;
-    color: rgb(214, 84, 32);
-    -webkit-text-fill-color: white;
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.8);
+    color: white;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.8);
+    color: white;
+}
+
+/* Notification styling */
+#notification {
+    padding: 12px;
+    margin-top: 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: 500;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Filter styling */
+.filter-container {
+    margin-bottom: 20px;
+}
+
+/* Form styling */
+.registration-form {
+    background-color: #2A2A2A;
+    border-radius: 8px;
+    padding: 25px;
+    margin: 25px auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
 .form-group {
-    margin-bottom: 10px;
-    flex-direction: column;
+    margin-bottom: 20px;
 }
 
-.form-group label{
+.form-group label {
+    display: block;
     margin-bottom: 10px;
     text-align: center;
     size: 16px;
+    color: #E0E0E0;
+}
+
+.form-group-filter label {
+    display: block;
+    margin: 10px;
+    font-weight: 500;
     color: #E0E0E0;
 }
 
@@ -75,22 +90,35 @@ body {
 .register button {
     flex: 1;
 }
-.main-content {
-    margin-left: 240px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-radius: 10px;
-    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #3A3A3A;
+    border: 1px solid #4A4A4A;
+    border-radius: 5px;
+    color: #E0E0E0;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
-.main-container {
-    margin-left: 240px;
-    flex-direction: column;
-    display: flex;
-    justify-content: space-between;
-    flex-grow: 1;
+
+.form-control:focus {
+    outline: none;
+    border-color: #ff8c00;
+    box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.25);
 }
+
+#athleteTableBody a {
+    -webkit-background-clip: text;
+    text-decoration: none;
+    color: white;
+}
+#athleteTableBody a:hover {
+    background-color: #ff8c00;
+    color: rgb(214, 84, 32);
+    -webkit-text-fill-color: white;
+}
+
 .main-content #teamIdFilter {
     margin-top: 20px;
     width: 300px;
@@ -98,67 +126,4 @@ body {
     border: 1px solid #e9d4d4;
     align-items: flex-end;
 }
-.container {
-    margin: 20px auto;
-    max-width: 900px;
-    background-color: #1E1E1E;
-    border-radius: 10px;
-    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
-    flex-grow: 1;
-}
-h1, th {
-    background: linear-gradient(90deg, #ff0000, #ff8c00);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-th {
-    background-color: #333;
-}
-tr:nth-child(even) {
-    background-color: #2A2A2A;
-}
-.alert {
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-}
-.alert-success {
-    background-color: rgba(40, 167, 69, 0.2);
-    color: #28a745;
-}
-.alert-danger {
-    background-color: rgba(220, 53, 69, 0.2);
-    color: #dc3545;
-}
 
-.footer-left {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    font-size: 14px;
-    color: #005f73;
-    display: flex;
-    align-items: center;
-}
-.footer-right {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    font-size: 14px;
-}
-.strava-logo {
-    height: 20px;
-    margin-left: 5px;
-}
-.team-tr {
-    text-align: center;
-}

@@ -13,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -23,9 +25,6 @@ import com.ducnh.oauth2_server.model.StravaSplitMetrics;
 import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.EventService;
 import com.ducnh.oauth2_server.service.SplitMetricService;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @RequestMapping("")
@@ -42,7 +41,7 @@ public class ActivityController {
 
 	@Value("${strava.url.athlete.activities}")
 	private String activitiesStravaUrl;
-	
+
 	@RequestMapping("/activities")
 	public String showActivities(final Model model, @AuthenticationPrincipal OAuth2User principal, @Param("athleteId") Long athleteId) {
 		if (athleteId == null) {
