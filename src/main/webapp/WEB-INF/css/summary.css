@@ -1,0 +1,412 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #121212;
+    color: #E0E0E0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.sidebar {
+    width: 220px;
+    background-color: #1E1E1E;
+    padding: 20px;
+    height: 100vh;
+    text-align: left;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.sidebar a {
+    display: block;
+    background: linear-gradient(90deg, #ff0000, #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #2A2A2A;
+    transition: all 0.3s ease-in-out;
+}
+.sidebar a:hover {
+    background-color: #ff8c00;
+    color: white;
+    -webkit-text-fill-color: white;
+}
+.main-content {
+    margin-left: 240px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.container {
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 900px;
+    background-color: #1E1E1E;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+    flex-grow: 1;
+}
+h1, th {
+    background: linear-gradient(90deg, #ff0000, #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background-color: #333;
+}
+tr:nth-child(even) {
+    background-color: #2A2A2A;
+}
+.footer {
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    background-color: #1E1E1E;
+    width: 100%;
+}
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1E1E1E;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+    width: 400px;
+}
+.popup input, .popup textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: #E0E0E0;
+}
+.popup button {
+    background: linear-gradient(90deg, #ff0000, #ff8c00);
+    border: none;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.popup .cancel-button {
+    background-color: #444;
+    border: none;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: left;
+    color: #E0E0E0;
+}
+.form-actions {
+    display: flex;
+    gap: 10px;
+}
+.form-actions button {
+    flex: 1;
+}
+
+.footer-left {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    font-size: 14px;
+    color: #005f73;
+    display: flex;
+    align-items: center;
+}
+
+.footer-right {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    font-size: 14px;
+}
+
+.main-content #teamIdFilter {
+    margin: 30px auto;
+    width: 300px;
+    border-radius: 5px;
+    border: 1px solid #e9d4d4;
+    align-items: flex-end;
+}
+
+.strava-logo {
+    height: 20px;
+    margin-left: 5px;
+}
+
+#distance {
+    text-align: center;
+}
+.sortable {
+    cursor: pointer;
+}
+.sortable:hover {
+    text-decoration: underline;
+} 
+
+.registration-form {
+    background-color: #2A2A2A;
+    border-radius: 8px;
+    padding: 25px;
+    margin: 25px auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #E0E0E0;
+    text-align: center;
+}     
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #524a08;
+    border: 1px solid #4A4A4A;
+    border-radius: 5px;
+    color: #E0E0E0;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #ff8c00;
+    box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.25);
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #ff0000, #ff8c00);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: linear-gradient(90deg, #dc3545, #ff4d5a);
+    color: white;
+}
+
+.btn-danger:hover {
+    box-shadow: 0px 0px 10px rgba(220, 53, 69, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Toggle button for sidebar */
+.toggle-menu {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 200;
+    background: linear-gradient(90deg, #ff0000, #ff8c00);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px 12px;
+    font-size: 18px;
+    transition: all 0.3s ease-in-out;
+}
+
+.toggle-menu:hover {
+    box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.5);
+}
+
+/* Sidebar modifications for toggle */
+.sidebar {
+    transition: all 0.3s ease-in-out;
+    z-index: 100;
+    padding-top: 50px; /* Add more padding at the top to prevent overlap */
+}
+
+/* Sidebar link styling */
+.sidebar a {
+    display: block;
+    padding: 10px 20px 10px 40px; /* Add more left padding to links */
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: rgba(255, 140, 0, 0.3);
+}
+
+/* Add active class for current page */
+.sidebar a.active {
+    border-left: 4px solid #ff8c00;
+    background-color: rgba(255, 140, 0, 0.2);
+}
+
+.sidebar.closed {
+    margin-left: -260px; /* Width + padding */
+}
+
+/* Main content modifications for sidebar toggle */
+.main-content.full-width {
+    margin-left: 0;
+}
+/* Responsive media queries */
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 15px;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        left: 0;
+        top: 0;
+        padding-top: 60px; /* More padding on mobile */
+        display: none;
+        overflow-y: auto;
+        max-height: 100vh;
+        background-color: rgba(0, 0, 0, 0.95); /* Darker background for mobile menu */
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .sidebar.show {
+        display: block;
+    }
+    
+    .sidebar a {
+        text-align: center;
+        padding: 15px 20px; /* Center links on mobile */
+    }
+
+    #button-form {
+        padding-top: 15px;
+    }
+    
+    .main-content {
+        overflow-x: hidden;
+        margin: 15px;
+        padding: 15px auto;
+        width: 100% !important;
+        padding-top: 60px; /* Add padding at top for mobile view */
+    }
+    
+    .container {
+        width: 100%;
+        padding: 15px auto;
+        margin: 15px auto;
+        box-sizing: border-box;
+    }
+    
+    .registration-form {
+        width: 100%;
+        max-width: 100%;
+        padding: 25px;
+        margin: 25px auto;
+        box-sizing: border-box;
+    }
+
+    table.summary {
+        width: 100%;
+        max-width: 100%;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .form-control {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 15px auto;
+    }
+
+    .footer-right {
+        position: static;
+        margin: 10px 0;
+        text-align: center;
+    }
+    
+    .footer-left {
+        display: none;
+    }
+    
+    /* Move toggle button further right on mobile */
+    .toggle-menu {
+        left: 10px;
+        top: 10px;
+    }
+
+    .middle-grid {
+        text-align: center;
+    }
+}

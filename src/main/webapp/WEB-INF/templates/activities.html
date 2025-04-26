@@ -157,8 +157,13 @@
         /* Responsive media queries */
         @media screen and (max-width: 768px) {
             body {
+                font-size: 15px;
                 flex-direction: column;
-                width: auto;
+                width: 100% !important;
+            }
+
+            .container {
+                width: 100%;
             }
             
             .sidebar {
@@ -200,15 +205,14 @@
                 overflow-x: auto;
             }
             
-            .footer-left, .footer-right {
+            .footer-right {
                 position: static;
                 margin: 10px 0;
                 text-align: center;
             }
             
             .footer-left {
-                display: flex;
-                justify-content: center;
+                display: none;
             }
             
             /* Move toggle button further right on mobile */
@@ -256,13 +260,13 @@
                             <td colspan="7" style="text-align: center;">Không có hoạt động nào</td>
                         </tr>
 
-                        <tr th:each="activity : ${allActivities}" th:attr="activity-id=${activity.getActivityID()}">
-                            <td th:text="${activity.getAthleteName()}"></td>
-                            <td th:text="${activity.getActivityName()}"></td>
-                            <td th:text="${activity.formatDistance()}"></td>
-                            <td th:text="${activity.formatMovingTime()}"></td>
-                            <td th:text="${activity.getPaced()}"></td>
-                            <td th:text="${activity.formatStartDate()}"></td>
+                        <tr th:each="activity : ${allActivities}" th:attr="activity-id=${activity.getActivityID()}" >
+                            <td th:text="${activity.getAthleteName()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.getActivityName()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.formatDistance()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.formatMovingTime()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.getPaced()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.formatStartDate()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
                             <td>
                                 <button class="action-button view-strava" th:onclick="'window.open(\'https://www.strava.com/activities/' + ${activity.getActivityID()} + '\', \'_blank\')'">
                                     <i class="fas fa-external-link-alt"></i> Strava
@@ -270,7 +274,7 @@
                                 <button class="action-button view-map" th:onclick="'showActivityMap(this)'" th:attr="polyline-map=${activity.getMap().getSummaryPolyline()}">
                                     <i class="fas fa-map-marked-alt"></i> Map
                                 </button>
-                                <button class="action-button view-laps" th:onclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'">
+                                <button class="action-button view-laps" th:onclick="'toggleLapDetailsBut(this,\'' + ${activity.getActivityID()} + '\')'">
                                     <i class="fas fa-list-ol"></i> Laps
                                 </button>
                             </td>
@@ -331,7 +335,7 @@
         });
         
         // Function to toggle lap details visibility
-        function toggleLapDetails(td_lap, activityId) {
+        function toggleLapDetailsBut(td_lap, activityId) {
             
             // Check if a lap details row already exists and remove it
             const existingLapRow = document.getElementById("lap-details-row");
@@ -351,6 +355,71 @@
             lapDetailsCell.style.padding = "10px";
             lapDetailsRow.appendChild(lapDetailsCell);
             td_lap.parentNode.parentNode.parentNode.insertBefore(lapDetailsRow, td_lap.parentNode.parentNode.nextSibling);
+            
+        
+            // Fetch lap details
+            fetch(`/runner/activities/metrics?activityId=${activityId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    // Create lap details table
+                    let html = `<h4>Chi tiết Lap</h4>`;
+                    html += `<button onclick="closeLapDetails()" 
+                               style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                               <i class="fas fa-times"></i> Đóng
+                            </button>`;
+                    html += "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>";
+                    html += "<thead><tr><th>Lap</th><th>Km</th><th>Pace</th><th>Heart Rate</th><th>Vi phạm</th></tr></thead><tbody>";
+                    
+                    for (let i = 0; i < data.length; i++) {
+                        html += `<tr>
+                            <td>${i + 1}</td>
+                            <td>${data[i].distance}</td>
+                            <td>${data[i].formatPaced}</td>
+                            <td>${data[i].averageHeartRate == null ? "" : Math.round(data[i].averageHeartRate)}</td>
+                            <td>${data[i].violated == false ? "" : "Vi phạm"}</td>
+                            
+                        </tr>`;
+                    }
+                    
+                    html += "</tbody></table>";
+                    lapDetailsCell.innerHTML = html;
+                } else {
+                    lapDetailsCell.innerHTML = `<p>Không có thông tin Lap</p>
+                    <button onclick="closeLapDetails()" 
+                       style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                       <i class="fas fa-times"></i> Đóng
+                    </button>`;
+                }
+            })
+            .catch(error => {
+                lapDetailsCell.innerHTML = `<p>Không có thông tin Lap</p>
+                <button onclick="closeLapDetails()" 
+                   style="float: right; background: #ff8c00; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                   <i class="fas fa-times"></i> Đóng
+                </button>`;
+            });
+        }
+
+        function toggleLapDetails(td_lap, activityId) {
+            // Check if a lap details row already exists and remove it
+            const existingLapRow = document.getElementById("lap-details-row");
+            if (existingLapRow) {
+                existingLapRow.remove();
+                return;
+            }
+
+            // Create a new row for lap details
+            const lapDetailsRow = document.createElement("tr");
+            lapDetailsRow.id = "lap-details-row";
+            const lapDetailsCell = document.createElement("td");
+            lapDetailsCell.colSpan = 7; // Span across all columns
+            lapDetailsCell.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+            lapDetailsCell.style.color = "white";
+            lapDetailsCell.style.border = "1px solid #ccc";
+            lapDetailsCell.style.padding = "10px";
+            lapDetailsRow.appendChild(lapDetailsCell);
+            td_lap.parentNode.parentNode.insertBefore(lapDetailsRow, td_lap.parentNode.nextSibling);
             
         
             // Fetch lap details

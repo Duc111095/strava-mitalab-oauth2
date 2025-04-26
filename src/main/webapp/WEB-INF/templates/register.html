@@ -73,23 +73,13 @@
         /* Main content modifications for sidebar toggle */
         .main-content {
             margin-left: 250px;
-            padding: 20px;
             transition: margin-left 0.3s ease-in-out;
         }
         
         .main-content.full-width {
             margin-left: 0;
         }
-        
-        /* Container styling */
-        .container {
-            background-color: #2A2A2A;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        
+             
         /* Form styling */
         .registration-form {
             background-color: #2A2A2A;
@@ -106,6 +96,13 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
+            font-weight: 500;
+            color: #E0E0E0;
+        }
+
+        .form-group-filter label {
+            display: block;
+            margin: 8px;
             font-weight: 500;
             color: #E0E0E0;
         }
@@ -235,18 +232,6 @@
             to { opacity: 1; }
         }
         
-        /* Footer styling */
-        .footer-left, .footer-right {
-            margin-top: 30px;
-            padding: 15px 0;
-        }
-        
-        .footer-right {
-            text-align: right;
-            color: #888;
-            font-size: 14px;
-        }
-        
         /* Filter styling */
         .filter-container {
             margin-bottom: 20px;
@@ -257,6 +242,7 @@
             body {
                 flex-direction: column;
                 width: 100% !important;
+                font-size: 15px;
             }
 
             .container {
@@ -286,15 +272,14 @@
                 padding: 15px 20px; /* Center links on mobile */
             }
             
-            .footer-left, .footer-right {
+            .footer-right {
                 position: static;
                 margin: 10px 0;
                 text-align: center;
             }
             
             .footer-left {
-                display: flex;
-                justify-content: center;
+                display: none;
             }
             
             /* Move toggle button further right on mobile */
@@ -324,7 +309,6 @@
     
     <div class="main-content" id="mainContent">
         <h2 class="page-title"><i class="fas fa-users"></i> Đăng ký Team</h2>
-        
         <div class="registration-form" id="registration-form">
             <form th:action="@{/register}" th:object="${registerForm}" method="post">
                 <div class="form-group">
@@ -353,9 +337,8 @@
         
         <div class="container">
             <h2><i class="fas fa-list"></i> Danh sách VĐV đã tham gia</h2>
-            
             <div class="filter-container">
-                <div class="form-group">
+                <div class="form-group-filter">
                     <label for="teamIdFilter"><i class="fas fa-search"></i> Tìm kiếm theo tên đội</label>
                     <input type="text" id="teamIdFilter" placeholder="Nhập tên đội để lọc" onkeyup="filterByTeam()" class="form-control">
                 </div>
