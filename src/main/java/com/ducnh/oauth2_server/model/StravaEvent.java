@@ -100,7 +100,7 @@ public class StravaEvent {
 	}
 	
 	public String getEndDate() {
-		return this.endDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
+		return this.endDate.format(DateTimeFormatter.ofPattern("yyyy--MM-dd HH:mm"));
 	}
 	
 	public void setTeamCount(Integer teamCount) {

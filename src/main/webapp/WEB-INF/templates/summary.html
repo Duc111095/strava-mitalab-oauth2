@@ -303,6 +303,7 @@
                 return dateA - dateB;
             });
             const lastEvent = eventArr[eventArr.length - 1];
+            console.log(eventArr);
             event.value = lastEvent.value;
             fetchEventSummary();
         });
