@@ -109,7 +109,7 @@ public class StravaLap {
     }
 
     public void setViolated(StravaEvent event) {
-        if (event.getHighPace() < this.getPaced() || event.getLowPace() > this.getPaced()) {
+        if (this.getDistance() > 900 && (event.getHighPace() < this.getPaced() || event.getLowPace() > this.getPaced())) {
             this.isViolated = true;
         } else {
             this.isViolated = false;
