@@ -72,6 +72,11 @@
                     </tr>
                 </tbody>
             </table>
+            <div class="update-button">
+                <button id="update-activities" onclick="updateActivities()">
+                    <i class="fas fa-sync-alt"></i> Sync all activities
+                </button>
+            </div>
         </div>
     <div class="footer-left">
         <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
@@ -81,6 +86,17 @@
         <div class="footer-right">Developed by ERP</div>
     </div>
     <script>
+        function updateActivities() {
+            fetch('/runner/activities/updateAll', {
+                method: "PUT"
+            })
+            .then(result => {
+                showAlert(result);  
+            })
+            .catch(error => console.error("Error updating activities:", error))
+        }
+
+
         function acceptAthlete(button) {
             const athleteId = button.getAttribute("data-athlete-id");
             const eventId = button.getAttribute("data-event-id");
@@ -138,6 +154,8 @@
                 alertDiv.remove();
             }, 3000);
         }
+
+
 
         </script>
     </body>

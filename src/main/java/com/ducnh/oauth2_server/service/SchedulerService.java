@@ -34,7 +34,7 @@ public class SchedulerService {
     public String getDataActivity() {
         StravaEvent event = eventService.findExactCurrentEvent().orElse(null);
         if (event == null) {
-            return "No current event found.";   
+            return "Hiện tại không có sự kiện nào đang diễn ra.";   
         }
         AtomicInteger count = new AtomicInteger(0);
         Iterable<RegisterEvent> registerEvents = registerService.findAllByEventId(event.getId());

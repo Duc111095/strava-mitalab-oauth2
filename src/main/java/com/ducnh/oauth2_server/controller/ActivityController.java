@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,8 +25,8 @@ import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.model.StravaSplitMetrics;
 import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.EventService;
+import com.ducnh.oauth2_server.service.SchedulerService;
 import com.ducnh.oauth2_server.service.SplitMetricService;
-
 @Controller
 @RequestMapping("")
 public class ActivityController {
@@ -38,6 +39,9 @@ public class ActivityController {
 
 	@Autowired
 	private EventService eventService;
+
+	@Autowired
+	private SchedulerService schedulerService;
 
 	@Value("${strava.url.athlete.activities}")
 	private String activitiesStravaUrl;
@@ -70,6 +74,18 @@ public class ActivityController {
 			List<ActivitiesDTO> listActivitiesDTO = activityService.convertToActivitiesDTO(listExtendedActivities);
 			
 			return ResponseEntity.ok(listActivitiesDTO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body(null);
+		}
+	}
+
+	@PutMapping("/activities/updateAll")
+	@ResponseBody
+	public ResponseEntity<String> updateActivitesAll(@AuthenticationPrincipal OAuth2User principal) {
+		try {
+			String result = schedulerService.getDataActivity();
+			return ResponseEntity.ok(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(500).body(null);
