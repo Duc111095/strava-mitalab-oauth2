@@ -139,7 +139,7 @@
             const lapDetailsRow = document.createElement("tr");
             lapDetailsRow.id = "lap-details-row";
             const lapDetailsCell = document.createElement("td");
-            lapDetailsCell.colSpan = 7; // Span across all columns
+            lapDetailsCell.colSpan = 8; // Span across all columns
             lapDetailsCell.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
             lapDetailsCell.style.color = "white";
             lapDetailsCell.style.border = "1px solid #ccc";
@@ -149,7 +149,7 @@
             
         
             // Fetch lap details
-            fetch(`/runner/activities/metrics?activityId=${activityId}`)
+            fetch(`/activities/metrics?activityId=${activityId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
@@ -204,7 +204,7 @@
             const lapDetailsRow = document.createElement("tr");
             lapDetailsRow.id = "lap-details-row";
             const lapDetailsCell = document.createElement("td");
-            lapDetailsCell.colSpan = 7; // Span across all columns
+            lapDetailsCell.colSpan = 8; // Span across all columns
             lapDetailsCell.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
             lapDetailsCell.style.color = "white";
             lapDetailsCell.style.border = "1px solid #ccc";
@@ -214,7 +214,7 @@
             
         
             // Fetch lap details
-            fetch(`/runner/activities/metrics?activityId=${activityId}`)
+            fetch(`/activities/metrics?activityId=${activityId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
@@ -265,7 +265,7 @@
             button.disabled = true; // Disable the button to prevent multiple clicks
             const tbody = document.getElementById("athleteTableBody");
             const athleteId = getUrlParam("athleteId");
-            var endpoint = '/runner/activities/update';
+            var endpoint = '/activities/update';
             if (athleteId != null) {
                 endpoint += '?athleteId=' + athleteId; 
             }
