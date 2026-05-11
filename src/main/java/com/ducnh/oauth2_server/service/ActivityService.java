@@ -157,7 +157,7 @@ public class ActivityService {
 			activitiesDTO.setStartDateLocal(extendedActivity.get("start_date_local") != null ? ((Timestamp)extendedActivity.get("start_date_local")).toLocalDateTime() : null);
 			activitiesDTO.setActivityName(extendedActivity.get("name") != null ? extendedActivity.get("name").toString() : null);
 			activitiesDTO.setActivityID(extendedActivity.get("id") != null ? Long.parseLong(extendedActivity.get("id").toString()) : null);
-			
+			activitiesDTO.setType(extendedActivity.get("type") != null && extendedActivity.get("type") != "null" ? extendedActivity.get("type").toString() : "");
 			String mapId = extendedActivity.get("map_id") != null ? extendedActivity.get("map_id").toString() : null;
 			
 			if (mapId != null) {

@@ -41,6 +41,7 @@
                             <th>Tổng thời gian</th>
                             <th>Pace</th>
                             <th>Ngày hoạt động</th>
+                            <th>Type</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -56,6 +57,7 @@
                             <td th:text="${activity.formatMovingTime()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
                             <td th:text="${activity.getPaced()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
                             <td th:text="${activity.formatStartDate()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.getType()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
                             <td>
                                 <button class="action-button view-strava" th:onclick="'window.open(\'https://www.strava.com/activities/' + ${activity.getActivityID()} + '\', \'_blank\')'">
                                     <i class="fas fa-external-link-alt"></i> Strava
@@ -287,6 +289,7 @@
                         <td>${activity.movingTime}</td>
                         <td>${activity.paced}</td>
                         <td>${activity.startDateLocal}</td>
+                        <td>${activity.type}</td>
                         <td>
                             <button class="action-button view-strava" onclick="window.open('https://www.strava.com/activities/${activity.activityID}', '_blank')">
                                 <i class="fas fa-external-link-alt"></i> Strava

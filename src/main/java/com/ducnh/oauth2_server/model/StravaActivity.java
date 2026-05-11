@@ -62,6 +62,8 @@ public class StravaActivity {
 	private Double elevLow;
 	@Column(nullable = true)
 	private String sportType;
+	@Column(nullable = true, name = "type_s")
+	private String type;
 	
 	@Column(nullable = false)	
 	private LocalDateTime startDate;
@@ -222,6 +224,14 @@ public class StravaActivity {
 	
 	public void setSportType(String sportType) {
 		this.sportType = sportType;
+	}
+
+	public String getType() {
+		return this.type;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	public LocalDateTime getStartDate() {
@@ -490,6 +500,7 @@ public class StravaActivity {
 		activity.setStartDateLocal(root.get("start_date_local")== null ? null :root.get("start_date_local").asText());
 		activity.setStartDate(root.get("start_date")== null ? null :root.get("start_date").asText());
 		//activity.setSportType(root.get("sport_type")== null ? null :root.get("sport_type").asText());
+		activity.setType(root.get("type") == null ? null : root.get("type").asText());
 		activity.setTimezone(root.get("timezone")== null ? null :root.get("timezone").asText());
 		PolylineMap map = new PolylineMap();
 		map.setId(root.get("map").get("id")== null ? null :root.get("map").get("id").asText());

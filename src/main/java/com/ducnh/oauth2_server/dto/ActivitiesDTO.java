@@ -14,18 +14,20 @@ public class ActivitiesDTO {
     private Double distance;
     private Integer movingTime;
     private LocalDateTime startDateLocal;
+    private String type;
     private PolylineMap map;
 
     public ActivitiesDTO() {
     }
 
-    public ActivitiesDTO(Long athleteID, String athleteName, Long activityID, Double distance, Integer movingTime, LocalDateTime startDateLocal) {
+    public ActivitiesDTO(Long athleteID, String athleteName, Long activityID, Double distance, Integer movingTime, LocalDateTime startDateLocal, String type) {
         this.athleteID = athleteID;
         this.athleteName = athleteName;
         this.activityID = activityID;
         this.distance = distance;
         this.movingTime = movingTime;
         this.startDateLocal = startDateLocal;
+        this.type = type;
     }
 
     public Long getAthleteID() {
@@ -61,6 +63,12 @@ public class ActivitiesDTO {
     }
     public void setDistance(Double distance) {
         this.distance = distance;
+    }
+     public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
     }
     
     public PolylineMap getMap() {
