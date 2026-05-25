@@ -149,7 +149,7 @@
             
         
             // Fetch lap details
-            fetch(`/activities/metrics?activityId=${activityId}`)
+            fetch(`/runner/activities/metrics?activityId=${activityId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
