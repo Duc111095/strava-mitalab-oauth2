@@ -53,7 +53,7 @@ public class SummaryController {
         model.addAttribute("teamId", teamId);
 		model.addAttribute("currentDate", formattedDate);
 		model.addAttribute("teamId", teamId);
-
+		System.out.println(model);
 		if (results.isEmpty() || results == null || results.size() == 0) {
 			model.addAttribute("message", "Không có dữ liệu cho đội này");
 			return "detailsSummary";
@@ -77,6 +77,7 @@ public class SummaryController {
 			detailResult.setTeamName(teamName);
 			detailsSummary.add(detailResult);
 		}
+		model.addAttribute("detailsSummary", detailsSummary);
 
 		return "detailsSummary";
 	}
