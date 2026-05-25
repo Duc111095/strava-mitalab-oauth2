@@ -68,7 +68,7 @@ public class ActivityController {
 			
 			activityService.saveActivitiesFromStravaResponse(athleteId);
 			List<Map<String, Object>> listExtendedActivities = activityService.listExtendedActivities(athleteId);
-			listExtendedActivities.forEach( activity -> {
+			listExtendedActivities.forEach(activity -> {
 				System.out.println(activity.keySet());
 			});
 			List<ActivitiesDTO> listActivitiesDTO = activityService.convertToActivitiesDTO(listExtendedActivities);

@@ -47,7 +47,13 @@ public class SummaryController {
 	public String initSummary(Model model, @Param("teamId") int teamId, @Param("eventId") String eventId) {
 		List<DetailsResultDTO> detailsSummary = new ArrayList<>();
 		List<Object[]> results = activityService.getSummaryEvent(eventId, teamId, 1);
-		
+		ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+		LocalDateTime currentDate = LocalDateTime.now(zoneId);
+		String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
+        model.addAttribute("teamId", teamId);
+		model.addAttribute("currentDate", formattedDate);
+		model.addAttribute("teamId", teamId);
+
 		if (results.isEmpty() || results == null || results.size() == 0) {
 			model.addAttribute("message", "Không có dữ liệu cho đội này");
 			return "detailsSummary";
@@ -71,13 +77,7 @@ public class SummaryController {
 			detailResult.setTeamName(teamName);
 			detailsSummary.add(detailResult);
 		}
-		ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
-		LocalDateTime currentDate = LocalDateTime.now(zoneId);
-		String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
-        model.addAttribute("teamId", teamId);
-		model.addAttribute("currentDate", formattedDate);
-		model.addAttribute("detailsSummary", detailsSummary);
-		model.addAttribute("teamId", teamId);
+
 		return "detailsSummary";
 	}
 
