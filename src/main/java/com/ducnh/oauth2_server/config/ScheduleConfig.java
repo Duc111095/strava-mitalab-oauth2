@@ -49,8 +49,7 @@ public class ScheduleConfig {
     } 
 
     @CacheEvict(value = "results", allEntries = true)
-    @Scheduled(fixedRateString = "60000")
-    public void emptyHotelsCache() {
-        logger.info("emptying results cache");
+    @Scheduled(fixedRateString = "300000")
+    public void emptyResultsCache() {
     }
 }
