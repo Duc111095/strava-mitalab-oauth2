@@ -63,6 +63,7 @@ public class SecurityConfig {
 			.authorizeRequests(requests -> requests
                 .antMatchers("/",
 						"/summary-general",
+						"/runner/summary-general",
 						"/cuserror",
                         "/info",
                         "/error",
