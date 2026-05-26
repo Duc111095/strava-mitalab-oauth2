@@ -174,6 +174,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 updateGlobalStats(data);
                 renderTeamsLeaderboard(data);
                 renderTopRuners(data);
@@ -333,7 +334,7 @@
 
         // Tự động khởi chạy lần đầu tiên ngay khi trang được tải xong
         window.onload = function() {    
-            fetchEventSummaryGeneral();       
+            // fetchEventSummaryGeneral();       
         };
     </script>
 </body>
