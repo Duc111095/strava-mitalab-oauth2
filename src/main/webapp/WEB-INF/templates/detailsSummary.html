@@ -41,7 +41,7 @@
                             <td th:text="${ac.getAthleteName()}"></td>
                             <td id="distance" class="middle-grid" th:text="${ac.formatTotalCurrentDistance()}"></td>
                             <td id="distance" class="middle-grid" th:text="${ac.formatTotalDistance()}"></td>
-                            <td><a th:href="@{/runner/activities?(athleteId=${ac.getAthleteId()})}" class="btn btn-primary">Chi tiết</a></td>
+                            <td><a th:href="@{/activities?(athleteId=${ac.getAthleteId()})}" class="btn btn-primary">Chi tiết</a></td>
                         </tr>
                     </tbody>
                 </table>
