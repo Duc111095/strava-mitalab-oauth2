@@ -3,6 +3,7 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 @EnableWebMvc
 @ComponentScan
+@EnableCaching
 public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 	
 	public static final Logger logger = LoggerFactory.getLogger(AppConfig.class);

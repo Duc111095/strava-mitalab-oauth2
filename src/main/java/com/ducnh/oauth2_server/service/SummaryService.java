@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class SummaryService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Cacheable("results")
     public Map<Object, Object> getSummaryGeneralById(String eventId) throws SQLException {
         System.out.println(eventId);
         String produceCall = "{call rpt_event_totals(?)}";
