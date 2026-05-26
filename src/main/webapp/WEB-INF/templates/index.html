@@ -174,7 +174,6 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 updateGlobalStats(data);
                 renderTeamsLeaderboard(data);
                 renderTopRuners(data);
@@ -200,11 +199,9 @@
             // Sắp xếp các đội theo tổng quãng đường (Chạy + Đạp) giảm dần
             let sortedTeams = [...teamsData].sort((a, b) => (b.runKm) - (a.runKm));
             const container = document.getElementById('teams-leaderboard-container');
-        
                 container.innerHTML = sortedTeams.map((team, index) => {
                 let totalKm = team.runKm;
                 let percent = calcPercentage(totalKm, TARGET_KM_PER_TEAM);
-                
                 // Thiết lập biểu tượng huy chương vàng, bạc, đồng cho Top 3 đội dẫn đầu
                 let medalHtml = '';
                 if (index === 0) medalHtml = '<span class="text-amber-400 text-lg"><i class="fa-solid fa-medal"></i></span>';
@@ -227,7 +224,7 @@
                             <div class="flex flex-wrap gap-3 text-xs font-semibold text-slate-400">
                                 <span>Tổng cộng: <strong class="text-pink-400">${formatNum(team.runKm)} km</strong></span>
                                 <span class="text-slate-200 bg-slate-900 px-2 py-0.5 rounded border border-slate-800/80">
-                                    Tổng: <strong class="text-white">${formatNum(totalKm)} km</strong> (${formatNum(percent)}%)
+                                    Tổng: <strong class="text-white">${formatNum(totalKm)} km</strong> (${formatNum(percent * 1000)}%)
                                 </span>
                             </div>
                         </div>
