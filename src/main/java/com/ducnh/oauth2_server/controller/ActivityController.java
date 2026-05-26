@@ -95,7 +95,6 @@ public class ActivityController {
 	@GetMapping("/activities/metrics")
 	@ResponseBody
 	public ResponseEntity<List<MetricDTO>> getInformationLap(@Param("activityId") Long activityId) {
-		System.out.println("GeT Information Lap");
 		StravaEvent currentEvent = eventService.findExactCurrentEvent().get();
 		List<StravaSplitMetrics> listMetric = metricService.findByActivityId(activityId);
 		List<MetricDTO> metrics = listMetric.stream().map(metric -> {
@@ -103,7 +102,6 @@ public class ActivityController {
 			return metricDTO;
 		}).collect(Collectors.toList());
 
-		System.out.println(metrics);
 		metrics.sort((a, b) -> a.getSplitId().compareTo(b.getSplitId()));	
 		if (metrics.isEmpty() || metrics.size() == 0) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login with Strava</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/images/favicon.ico}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img th:src="@{/images/MRC.jpg}" alt="Mitalab Running" class="logo">
+        </div>
+        <div>
+            <a th:href="@{/oauth2/authorization/strava}" class="connect-button"><img th:src="@{/images/btn_strava_connect_with.png}"/></a>
+        </div>
+    </div>
+    <div class="footer-left">
+        <a href="https://www.strava.com" style="color: #005f73; text-decoration: none; display: flex; align-items: center;">
+            <img th:src="@{/images/api_logo_pwrdBy_strava_horiz_orange.png}" width=50% height=50%/>
+        </a>
+    </div>
+        <div class="footer-right">Developed by ERP</div>
+</body>
+</html>

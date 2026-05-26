@@ -1,10 +1,13 @@
 package com.ducnh.oauth2_server.controller;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +23,7 @@ import com.ducnh.oauth2_server.dto.SummaryEventDTO;
 import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.EventService;
+import com.ducnh.oauth2_server.service.SummaryService;
 
 @Controller
 @RequestMapping("")
@@ -31,6 +35,9 @@ public class SummaryController {
 	@Autowired
 	private EventService eventService;
 
+	@Autowired
+	private SummaryService summaryService;
+
 	@GetMapping("/summary")
 	public String getTeamSummary(Model model) {
 		Iterable<StravaEvent> events = eventService.findAll();
@@ -39,8 +46,17 @@ public class SummaryController {
         String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM"));
         model.addAttribute("currentDate", formattedDate);
 		model.addAttribute("events", events);
-		getEventSummary(events.iterator().next().getId());
+		String eventId = events.iterator().next().getId();
+		getEventSummary(eventId);
 		return "summary";
+	}
+
+	@GetMapping("/summary-general")
+	@ResponseBody
+	public ResponseEntity<Map<Object, Object>> getTeamSummaryGeneral(Model model) {
+		Iterable<StravaEvent> events = eventService.findCurrentEvent().get();
+		Map<Object, Object> result = getEventSummaryGeneral(events.iterator().next().getId());
+		return ResponseEntity.ok(result);
 	}
 	
 	@GetMapping("/summary/team")
@@ -119,4 +135,16 @@ public class SummaryController {
 		return summaryEvents;
 	}
 
+	private Map<Object, Object> getEventSummaryGeneral(String eventId) throws RuntimeException{
+		if (eventId == null || !eventService.existsById(eventId)) {
+			throw new RuntimeException("No event found with id: " + eventId);
+		}
+		Map<Object, Object> result;
+		try {
+			result = summaryService.getSummaryGeneralById(eventId);
+		} catch (SQLException e) {
+			result = new HashMap<>();
+		}
+		return result;
+	}
 }

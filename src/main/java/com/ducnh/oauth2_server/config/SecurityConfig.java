@@ -62,6 +62,7 @@ public class SecurityConfig {
         http.csrf(c -> c.disable())
 			.authorizeRequests(requests -> requests
                 .antMatchers("/",
+						"/summary-general",
 						"/cuserror",
                         "/info",
                         "/error",
