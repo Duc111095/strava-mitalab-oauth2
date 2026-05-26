@@ -26,7 +26,6 @@ public class SummaryService {
 
     @Cacheable("results")
     public Map<Object, Object> getSummaryGeneralById(String eventId) throws SQLException {
-        System.out.println(eventId);
         String produceCall = "{call rpt_event_totals(?)}";
         Map<Object, Object> result = new HashMap<>();
 
