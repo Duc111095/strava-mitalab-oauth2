@@ -95,6 +95,7 @@ public class SummaryService {
         if (cstmt.getMoreResults()) {
             ResultSet t5 = cstmt.getResultSet();
             List<TeamDTO> team_rank = new ArrayList<>();
+
             while (t5.next()) {
                 TeamDTO team = new TeamDTO();
                 team.setTeamId(t5.getInt("team_id"));
