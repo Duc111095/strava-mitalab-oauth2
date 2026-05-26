@@ -136,7 +136,7 @@
                     for (let i = 1; i <= maxTeams; i++) {
                         const option = document.createElement("option");
                         option.value = i;
-                        option.textContent = "Đội " + i;
+                        option.textContent = "Đội " + i >= 5 ? i + " (HCM)" : i;
                         teamIdInput.appendChild(option);
                     }
                 }
@@ -155,7 +155,7 @@
                     for (let i = 1; i <= maxTeams; i++) {
                         const option = document.createElement("option");
                         option.value = i;
-                        option.textContent = "Đội " + i;
+                        option.textContent = "Đội " + i >= 5 ? i + " (HCM)" : i;
                         teamIdInput.appendChild(option);
                     }
                 }
