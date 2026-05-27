@@ -1,15 +1,16 @@
 package com.ducnh.oauth2_server.config;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,9 @@ public class ScheduleConfig {
 
     @Autowired
 	private SchedulerService schedulerService;
+
+    @Autowired
+    private Map<Object, Object> generalInfo;
 
     @Value("${sync.time.hour}")
     private String syncTimeHour;
@@ -48,8 +52,15 @@ public class ScheduleConfig {
         }
     } 
     
-    @CacheEvict(value = "results", allEntries = true)
-    @Scheduled(fixedRateString = "1800000")
-    public void emptyResultsCache() {
+    //@CacheEvict(value = "results", allEntries = true)
+    @Scheduled(fixedRateString = "60000")
+    public void refreshGeneralInfoCache() {
+        try {
+            Map<Object, Object> temp = schedulerService.getSummaryCurrent();
+            generalInfo.clear();
+            generalInfo.putAll(temp);
+        } catch (SQLException e) {
+            logger.info("Error when refreshGeneralInfoCache ", e);
+        }
     }
 }

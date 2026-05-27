@@ -1,8 +1,15 @@
  package com.ducnh.oauth2_server.config;
 
+import java.beans.EventSetDescriptor;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -33,7 +40,7 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 	public static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 	
 	private ApplicationContext applicationContext;
-	
+
 	@Bean
 	ObjectMapper objectMapper() {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -73,6 +80,12 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 		templateResolver.setCacheable(true);
 		return templateResolver;
 	}
+
+	@Bean("generalInfo")
+	public Map<Object, Object> getGeneralInfo() {
+		return new ConcurrentHashMap<>(); 
+	}
+
 
 	@Override
     public void addCorsMappings(CorsRegistry registry) {

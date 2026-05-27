@@ -38,6 +38,9 @@ public class SummaryController {
 	@Autowired
 	private SummaryService summaryService;
 
+	@Autowired
+	private Map<Object, Object> generalInfo;
+
 	@GetMapping("/summary")
 	public String getTeamSummary(Model model) {
 		Iterable<StravaEvent> events = eventService.findAll();
@@ -54,9 +57,15 @@ public class SummaryController {
 	@GetMapping("/summary-general")
 	@ResponseBody
 	public ResponseEntity<Map<Object, Object>> getTeamSummaryGeneral(Model model) {
-		Iterable<StravaEvent> events = eventService.findCurrentEvent().get();
-		Map<Object, Object> result = getEventSummaryGeneral(events.iterator().next().getId());
-		return ResponseEntity.ok(result);
+		long startTime = System.currentTimeMillis();
+		while (generalInfo.isEmpty() && System.currentTimeMillis() - startTime < 10000) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException ignored) {
+
+			}
+		}
+		return ResponseEntity.ok(generalInfo);
 	}
 	
 	@GetMapping("/summary/team")
@@ -69,7 +78,6 @@ public class SummaryController {
         model.addAttribute("teamId", teamId);
 		model.addAttribute("currentDate", formattedDate);
 		model.addAttribute("teamId", teamId);
-		System.out.println(model);
 		if (results.isEmpty() || results == null || results.size() == 0) {
 			model.addAttribute("message", "Không có dữ liệu cho đội này");
 			return "detailsSummary";
@@ -133,18 +141,5 @@ public class SummaryController {
 			summaryEvents.add(summaryEvent);
 		}
 		return summaryEvents;
-	}
-
-	private Map<Object, Object> getEventSummaryGeneral(String eventId) throws RuntimeException{
-		if (eventId == null || !eventService.existsById(eventId)) {
-			throw new RuntimeException("No event found with id: " + eventId);
-		}
-		Map<Object, Object> result;
-		try {
-			result = summaryService.getSummaryGeneralById(eventId);
-		} catch (SQLException e) {
-			result = new HashMap<>();
-		}
-		return result;
 	}
 }

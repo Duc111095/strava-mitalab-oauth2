@@ -1,5 +1,7 @@
 package com.ducnh.oauth2_server.service;
 
+import java.sql.SQLException;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -30,6 +32,15 @@ public class SchedulerService {
 
     @Autowired
     private RegisterService registerService;
+
+    @Autowired
+    private SummaryService summaryService;
+
+    public Map<Object, Object> getSummaryCurrent() throws SQLException {
+        Iterable<StravaEvent> events = eventService.findCurrentEvent().get();
+        return summaryService.getSummaryGeneralById(events.iterator().next().getId());
+    }
+
 
     public String getDataActivity() {
         StravaEvent event = eventService.findExactCurrentEvent().orElse(null);
