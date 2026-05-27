@@ -311,30 +311,9 @@
             //femaleContainer.innerHTML = sortedFemale.slice(0, 3).map((u, i) => makeRow(u, i)).join('');
         }
 
-        // Hàm giả lập cộng dồn cự ly khi người dùng bấm nút (Mô phỏng thời gian thực)
-        function simulateActivity() {
-            // Tăng ngẫu nhiên cự ly của 6 đội để thay đổi vị trí và làm tròn số bằng parseFloat + toFixed
-            teamsData.forEach(team => {
-                team.runKm += parseFloat((Math.random() * 45).toFixed(1));
-                team.bikeKm += parseFloat((Math.random() * 110).toFixed(1));
-            });
-
-            // Tăng ngẫu nhiên thành tích cho các cá nhân tiêu biểu
-            runnersMale.forEach(u => u.km += parseFloat((Math.random() * 8).toFixed(1)));
-            runnersFemale.forEach(u => u.km += parseFloat((Math.random() * 8).toFixed(1)));
-            bikersMale.forEach(u => u.km += parseFloat((Math.random() * 22).toFixed(1)));
-            bikersFemale.forEach(u => u.km += parseFloat((Math.random() * 22).toFixed(1)));
-
-            // Tiến hành vẽ lại (Re-render) đồng loạt giao diện
-            updateGlobalStats();
-            renderTeamsLeaderboard();
-            renderTopRuners();
-            renderTopBikers();
-        }
-
         // Tự động khởi chạy lần đầu tiên ngay khi trang được tải xong
         window.onload = function() {    
-            //fetchEventSummaryGeneral();       
+            fetchEventSummaryGeneral();       
         };
     </script>
 </body>

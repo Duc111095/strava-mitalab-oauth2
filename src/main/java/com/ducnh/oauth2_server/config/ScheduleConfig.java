@@ -47,9 +47,9 @@ public class ScheduleConfig {
             logger.info(schedulerService.getDataActivity());
         }
     } 
-
+    
     @CacheEvict(value = "results", allEntries = true)
-    @Scheduled(fixedRateString = "300000")
+    @Scheduled(fixedRateString = "18000000")
     public void emptyResultsCache() {
     }
 }

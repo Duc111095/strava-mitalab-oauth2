@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ducnh.oauth2_server.dto.EventGeneralDTO;
-import com.ducnh.oauth2_server.dto.SummaryEventDTO;
 import com.ducnh.oauth2_server.dto.TeamDTO;
 import com.ducnh.oauth2_server.dto.UserRankDTO;
 
@@ -26,6 +25,7 @@ public class SummaryService {
 
     @Cacheable("results")
     public Map<Object, Object> getSummaryGeneralById(String eventId) throws SQLException {
+        System.out.println("call function");
         String produceCall = "{call rpt_event_totals(?)}";
         Map<Object, Object> result = new HashMap<>();
 
