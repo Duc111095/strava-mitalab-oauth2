@@ -49,7 +49,7 @@ public class ScheduleConfig {
     } 
     
     @CacheEvict(value = "results", allEntries = true)
-    @Scheduled(fixedRateString = "18000000")
+    @Scheduled(fixedRateString = "1800000")
     public void emptyResultsCache() {
     }
 }
