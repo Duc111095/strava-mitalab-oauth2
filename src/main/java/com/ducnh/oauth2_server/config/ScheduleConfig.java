@@ -53,7 +53,7 @@ public class ScheduleConfig {
     } 
     
     //@CacheEvict(value = "results", allEntries = true)
-    @Scheduled(fixedRateString = "60000")
+    @Scheduled(fixedRateString = "180000")
     public void refreshGeneralInfoCache() {
         try {
             Map<Object, Object> temp = schedulerService.getSummaryCurrent();
