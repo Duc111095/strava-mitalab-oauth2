@@ -10,30 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
-import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.stereotype.Service;
 
 import com.ducnh.oauth2_server.dto.EventGeneralDTO;
 import com.ducnh.oauth2_server.dto.TeamDTO;
 import com.ducnh.oauth2_server.dto.UserRankDTO;
-import com.ducnh.oauth2_server.model.StravaEvent;
 
 @Service
 public class SummaryService {
-    private final OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private EventService eventService;
-
-    SummaryService(OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient) {
-        this.accessTokenResponseClient = accessTokenResponseClient;
-    }
 
     //@Cacheable("results")
     public Map<Object, Object> getSummaryGeneralById(String eventId) throws SQLException {
@@ -69,6 +57,8 @@ public class SummaryService {
                 user.setName(t2.getString("athlete_name"));
                 user.setTeamId(t2.getInt("team_id_t")); 
                 user.setTotalDistance(t2.getDouble("total_distance"));
+                user.setTght(t2.getTimestamp("max_end_time").toLocalDateTime());
+                user.setTghtStr(user.getTght());
                 top_3_nam_run.add(user);
             }
             result.put("top_3_nam_run", top_3_nam_run);
@@ -84,6 +74,9 @@ public class SummaryService {
                 user.setName(t3.getString("athlete_name"));
                 user.setTeamId(t3.getInt("team_id_t")); 
                 user.setTotalDistance(t3.getDouble("total_distance"));
+                user.setTght(t3.getTimestamp("max_end_time").toLocalDateTime());
+                user.setTghtStr(user.getTght());
+
                 top_3_nu_run.add(user);
             }
 
@@ -99,6 +92,9 @@ public class SummaryService {
                 user.setName(t4.getString("athlete_name"));
                 user.setTeamId(t4.getInt("team_id_t")); 
                 user.setTotalDistance(t4.getDouble("total_distance"));
+                user.setTght(t4.getTimestamp("max_end_time").toLocalDateTime());
+                user.setTghtStr(user.getTght());
+
                 top_2_ride.add(user);
             }
             result.put("top_2_ride", top_2_ride);
@@ -117,7 +113,9 @@ public class SummaryService {
                 team_rank.add(team);
             }
             result.put("team_rank", team_rank);
+            
         }
+        System.out.println(result);
 
         return result;
     }
