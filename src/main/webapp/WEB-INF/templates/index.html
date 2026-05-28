@@ -228,22 +228,21 @@
 		function renderTeamsLeaderboard(data) {
             let teamsData = data.team_rank;
 
-            // Sắp xếp các đội theo tổng quãng đường (Chạy + Đạp) giảm dần
+            // Sắp xếp các đội theo tổng quãng đường (Chạy) giảm dần
             let sortedTeams = [...teamsData].sort((a, b) => (b.runKm) - (a.runKm));
             const container = document.getElementById('teams-leaderboard-container');
-                container.innerHTML = sortedTeams.map((team, index) => {
+            
+            container.innerHTML = sortedTeams.map((team, index) => {
                 let totalKm = team.runKm;
                 let percent = calcPercentage(totalKm, TARGET_KM_PER_TEAM);
-                // Thiết lập biểu tượng huy chương vàng, bạc, đồng cho Top 3 đội dẫn đầu
+                
+                // Thiết lập biểu tượng huy chương
                 let medalHtml = '';
                 if (index === 0) medalHtml = '<span class="text-amber-400 text-lg"><i class="fa-solid fa-medal"></i></span>';
                 else if (index === 1) medalHtml = '<span class="text-slate-300 text-lg"><i class="fa-solid fa-medal"></i></span>';
                 else if (index === 2) medalHtml = '<span class="text-amber-600 text-lg"><i class="fa-solid fa-medal"></i></span>';
                 else medalHtml = `<span class="text-slate-500 font-bold text-sm w-5 text-center">${index + 1}</span>`;
 
-                // CÔNG THỨC TÍNH SPEED THEO THỨ TỰ XẾP HẠNG:
-                // Top 1 (index = 0) -> speed = 2.0 (Chạy nhanh nhất)
-                // Top 6 (index = 5) -> speed = 0.75 (Chạy chậm nhất)
                 let lottieSpeed = 2.0 - (index * 0.25);
 
                 return `
@@ -256,15 +255,15 @@
                             <div class="flex flex-wrap gap-3 text-xs font-semibold text-slate-400">
                                 <span>Tổng cộng: <strong class="text-pink-400">${formatNum(team.runKm)} km</strong></span>
                                 <span class="text-slate-200 bg-slate-900 px-2 py-0.5 rounded border border-slate-800/80">
-                                    Tổng: <strong class="text-white">${formatNum(totalKm)} km</strong> (${formatNum(percent * 1000)}%)
+                                    Tổng: <strong class="text-white">${formatNum(totalKm)} km</strong> (${percent.toFixed(1)}%)
                                 </span>
                             </div>
                         </div>
 
                         <div class="relative w-full h-8 bg-slate-900 border border-slate-800/60 rounded-full shadow-inner overflow-visible">
-                            <div id="progress-${team.id}" class="progress-bar-transition absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full" style="width: ${percent}%;"></div>
+                            <div id="progress-${team.id}" class="progress-bar-transition absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full" style="width: 0%;" data-target="${percent}"></div>
                             
-                            <div id="runner-${team.id}" class="runner-transition absolute top-[-11px] w-[90px] h-[90px]" style="left: ${percent}%; transform: translateX(-50%); pointer-events: none;">
+                            <div id="runner-${team.id}" class="runner-transition absolute top-[-11px] w-[90px] h-[90px]" style="left: 0%; transform: translateX(-50%); pointer-events: none;" data-target="${percent}">
                                 <dotlottie-wc
                                     src="https://lottie.host/469e8a28-5869-4923-80ba-b80d4b434e16/JVzwSddgk9.lottie"
                                     autoplay
@@ -280,6 +279,20 @@
                     </div>
                 `;
             }).join('');
+
+            // BƯỚC 2: Sau khi vẽ xong HTML với 0%, kích hoạt animation bằng cách đọc data-target và gán lại style
+            setTimeout(() => {
+                sortedTeams.forEach(team => {
+                    const progressBar = document.getElementById(`progress-${team.id}`);
+                    const runner = document.getElementById(`runner-${team.id}`);
+                    
+                    if (progressBar && runner) {
+                        const targetPercent = progressBar.getAttribute('data-target');
+                        progressBar.style.width = targetPercent + '%';
+                        runner.style.left = targetPercent + '%';
+                    }
+                });
+            }, 50); // Chờ 50 milliseconds để trình duyệt kịp nhận diện trạng thái 0% trước đó
         }
 
         // Kết xuất bảng vinh danh Top 3 Chạy bộ
