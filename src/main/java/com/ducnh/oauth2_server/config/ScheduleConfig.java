@@ -59,6 +59,7 @@ public class ScheduleConfig {
             Map<Object, Object> temp = schedulerService.getSummaryCurrent();
             generalInfo.clear();
             generalInfo.putAll(temp);
+            logger.info("update GeneralInfo successfully!");
         } catch (SQLException e) {
             logger.error("Error when refreshGeneralInfoCache ", e);
         }
