@@ -32,6 +32,7 @@ public class SummaryService {
             throw new RuntimeException("Can't connect to the database");
         }
 
+        @SuppressWarnings("null")
         Connection con = jdbcTemplate.getDataSource().getConnection();
         CallableStatement cstmt = con.prepareCall(produceCall);
         cstmt.setString(1, eventId);

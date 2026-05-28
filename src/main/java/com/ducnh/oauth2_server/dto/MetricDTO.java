@@ -37,7 +37,7 @@ public class MetricDTO {
     }
 
     public String getDistance() {
-        if ( 0.95 <= (this.distance / 1000) && (this.distance / 1000) < 1.05) {
+        if (0.95 <= (this.distance / 1000) && (this.distance / 1000) < 1.05) {
             return "1";
         }
         return String.format("%.2f", this.distance / 1000);

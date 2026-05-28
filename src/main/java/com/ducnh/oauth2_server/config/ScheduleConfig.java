@@ -60,7 +60,7 @@ public class ScheduleConfig {
             generalInfo.clear();
             generalInfo.putAll(temp);
         } catch (SQLException e) {
-            logger.info("Error when refreshGeneralInfoCache ", e);
+            logger.error("Error when refreshGeneralInfoCache ", e);
         }
     }
 }

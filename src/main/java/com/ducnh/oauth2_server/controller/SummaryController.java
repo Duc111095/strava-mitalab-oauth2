@@ -23,7 +23,6 @@ import com.ducnh.oauth2_server.dto.SummaryEventDTO;
 import com.ducnh.oauth2_server.model.StravaEvent;
 import com.ducnh.oauth2_server.service.ActivityService;
 import com.ducnh.oauth2_server.service.EventService;
-import com.ducnh.oauth2_server.service.SummaryService;
 
 @Controller
 @RequestMapping("")
@@ -34,9 +33,6 @@ public class SummaryController {
 
 	@Autowired
 	private EventService eventService;
-
-	@Autowired
-	private SummaryService summaryService;
 
 	@Autowired
 	private Map<Object, Object> generalInfo;

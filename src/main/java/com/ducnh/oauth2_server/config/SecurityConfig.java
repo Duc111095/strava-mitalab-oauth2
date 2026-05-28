@@ -199,6 +199,7 @@ public class SecurityConfig {
 	private Converter<Map<String, String>, OAuth2AccessTokenResponse> customResponseConverter(){
 	    MapOAuth2AccessTokenResponseConverter mapOAuth2AccessTokenResponseConverter = new MapOAuth2AccessTokenResponseConverter();
 	    return tokenResponseParameters -> {
+			logger.info("GetToken " + tokenResponseParameters.toString());
 	    	OAuth2AccessTokenResponse original = mapOAuth2AccessTokenResponseConverter.convert(tokenResponseParameters);
 
 	    	String athlete = tokenResponseParameters.getOrDefault("athlete", "");
