@@ -53,13 +53,12 @@ public class ScheduleConfig {
     } 
     
     //@CacheEvict(value = "results", allEntries = true)
-    @Scheduled(fixedRateString = "60000")
+    @Scheduled(fixedRateString = "300000")
     public void refreshGeneralInfoCache() {
         try {
             Map<Object, Object> temp = schedulerService.getSummaryCurrent();
             generalInfo.clear();
             generalInfo.putAll(temp);
-            logger.info("update GeneralInfo successfully!");
         } catch (SQLException e) {
             logger.error("Error when refreshGeneralInfoCache ", e);
         }
