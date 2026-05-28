@@ -116,7 +116,7 @@ public class SummaryService {
             }
         } finally {
         }
-        
+
         return result;
     }
 }
