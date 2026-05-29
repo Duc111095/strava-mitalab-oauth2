@@ -135,7 +135,7 @@
                     <h2 class="text-lg font-bold tracking-wide">Đường đua 6 Đội thi đấu</h2>
                 </div>
                 <span class="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full">
-                    Mục tiêu chung: <strong class="text-slate-200">700 KM</strong> / Đội / Tháng
+                    Mục tiêu chung: <strong class="text-slate-200">833 KM</strong> / Đội / Tháng
                 </span>
             </div>
 
@@ -182,7 +182,7 @@
 
     <script>
         // Cự ly mục tiêu chung cho mỗi đội (Đo bằng Kilomet)
-        const TARGET_KM_PER_TEAM = 700000;
+        const TARGET_KM_PER_TEAM = 833000;
 
         // Hàm định dạng hiển thị số thực (VD: 4.250,5)
         function formatNum(value) {
@@ -218,6 +218,7 @@
             let totalRun = data.event.totalDistanceRun;
             let totalBike = data.event.totalDistanceRide;
             let totalOverall = data.event.totalDistance;
+            let description = data.event.description;
 
             document.getElementById('global-total-km').innerText = formatNum(totalOverall);
             document.getElementById('global-run-km').innerText = formatNum(totalRun);
@@ -305,14 +306,14 @@
 
             const makeRow = (user, index) => {
                 let badgeColor = index === 0 ? 'text-amber-400' : index === 1 ? 'text-slate-300' : 'text-amber-600';
-                let entropy = index < 3 ? `<i class="fa-solid fa-trophy ${badgeColor} text-sm"></i>` : ''; 
+                let entropy = index < 3 ? `<i class="fa-solid fa-trophy ${badgeColor} text-sm"></i>` : `<span class="text-slate-500 font-bold text-sm w-5 text-center">${index + 1}</span>`; 
                 return `
                     <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-3 flex justify-between items-center hover:border-pink-500/20 transition-all">
                         <div class="flex items-center gap-3">
                             ${entropy}
                             <div>
                                 <h4 class="font-bold text-sm text-slate-200">${user.name}</h4>
-                                <p class="text-[10px] text-slate-500">Đội: ${user.teamId}</p>
+                                <p class="text-[10px] text-slate-500">Đội: ${user.teamId} - Thời gian hoàn thành: ${user.tghtStr}</p>
                             </div>
                         </div>
                         <div class="text-right">
@@ -336,13 +337,15 @@
 
             const makeRow = (user, index) => {
                 let badgeColor = index === 0 ? 'text-amber-400' : index === 1 ? 'text-slate-300' : 'text-amber-600';
+                let entropy = index < 3 ? `<i class="fa-solid fa-trophy ${badgeColor} text-sm"></i>` : `<span class="text-slate-500 font-bold text-sm w-5 text-center">${index + 1}</span>`; 
+
                 return `
                     <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-3 flex justify-between items-center hover:border-amber-500/20 transition-all">
                         <div class="flex items-center gap-3">
-                            <i class="fa-solid fa-trophy ${badgeColor} text-sm"></i>
+                            ${entropy}
                             <div>
                                 <h4 class="font-bold text-sm text-slate-200">${user.name}</h4>
-                                <p class="text-[10px] text-slate-500">Đội: ${user.teamId} </p>
+                                <p class="text-[10px] text-slate-500">Đội: ${user.teamId} - Thời gian hoàn thành: ${user.tghtStr}</p>
                             </div>
                         </div>
                         <div class="text-right">

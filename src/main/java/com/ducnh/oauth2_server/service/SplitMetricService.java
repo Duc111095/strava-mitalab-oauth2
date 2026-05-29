@@ -61,10 +61,11 @@ public class SplitMetricService {
         }
     }
 
-    public MetricDTO convertMetricDTOFromSplitsMetric(StravaEvent event, StravaSplitMetrics splitMetric) {
+    public MetricDTO convertMetricDTOFromSplitsMetric(StravaEvent event, StravaSplitMetrics splitMetric, String type) {
         MetricDTO metricDTO = new MetricDTO();
         metricDTO.setActivityId(splitMetric.getSplitsMetricId().getActivityId());
         metricDTO.setSplitId(splitMetric.getSplitsMetricId().getSplitId());
+        metricDTO.setType(type);
         metricDTO.setDistance(splitMetric.getDistance());
         metricDTO.setElapsedTime(splitMetric.getElapsedTime());
         metricDTO.setMovingTime(splitMetric.getMovingTime());
@@ -72,6 +73,7 @@ public class SplitMetricService {
         if (event != null) {
             metricDTO.setViolated(event);
         }
+
         return metricDTO;
     }
 }

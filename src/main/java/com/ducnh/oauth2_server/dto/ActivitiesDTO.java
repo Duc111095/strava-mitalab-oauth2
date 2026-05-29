@@ -126,6 +126,6 @@ public class ActivitiesDTO {
     @Override  
     public String toString() {
         return "ActivitiesDTO [athleteID=" + athleteID + ", athleteName=" + athleteName + ", activityID=" + activityID
-                + ", distance=" + distance + ", movingTime=" + movingTime + ", startDateLocal=" + startDateLocal + "]";
+                + ", distance=" + distance + ", movingTime=" + movingTime + ", startDateLocal=" + startDateLocal + ", type="+type+"]";
     }
 }

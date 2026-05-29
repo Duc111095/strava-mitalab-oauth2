@@ -101,8 +101,6 @@
             const athleteId = button.getAttribute("data-athlete-id");
             const eventId = button.getAttribute("data-event-id");
 
-            console.log("Accepting athlete with ID:", athleteId, "for event ID:", eventId);
-
             fetch("/runner/register/accept", {
                 method: "POST",
                 headers: {

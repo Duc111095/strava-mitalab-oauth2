@@ -4,6 +4,7 @@ import com.ducnh.oauth2_server.model.StravaEvent;
 
 public class MetricDTO {
     private Long activityId;
+    private String type;
     private Integer splitId;
     private Double distance;
     private Double averageHeartRate;
@@ -22,6 +23,14 @@ public class MetricDTO {
 
     public Long activityId() {
         return this.activityId;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public void setSplitId(Integer splitId) {
@@ -93,14 +102,25 @@ public class MetricDTO {
     }
 
     public void setViolated(StravaEvent event) {
-        if (this.distance > 900 && (event.getHighPace() < this.getPaced() || event.getLowPace() > this.getPaced())) {
-            this.isViolated = true;
+        if (!type.equalsIgnoreCase("Ride")) {
+            if (this.distance > 900 && (event.getHighPace() < this.getPaced() || event.getLowPace() > this.getPaced())) {
+                this.isViolated = true;
+            }
         } else {
-            this.isViolated = false;
+            if (this.distance > 900 && (event.getHighPace() / 3 < this.getPaced())) {
+                this.isViolated = true;
+            } else {
+                this.isViolated = false;
+            }
         }
     }
 
     public boolean isViolated() {
         return this.isViolated;
+    }
+
+    @Override  
+    public String toString() {
+        return "MetricDTO [type=" + type + ", isViolated=" + isViolated +", pace = " + getFormatPaced() +"]";
     }
 }   

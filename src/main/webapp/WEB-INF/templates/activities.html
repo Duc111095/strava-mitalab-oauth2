@@ -47,17 +47,17 @@
                     </thead>
                     <tbody id="athleteTableBody">
                         <tr th:if="${#lists.isEmpty(allActivities)}">
-                            <td colspan="7" style="text-align: center;">Không có hoạt động nào</td>
+                            <td colspan="8" style="text-align: center;">Không có hoạt động nào</td>
                         </tr>
 
                         <tr th:each="activity : ${allActivities}" th:attr="activity-id=${activity.getActivityID()}" >
-                            <td th:text="${activity.getAthleteName()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.getActivityName()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.formatDistance()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.formatMovingTime()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.getPaced()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.formatStartDate()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
-                            <td th:text="${activity.getType()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\')'"></td>
+                            <td th:text="${activity.getAthleteName()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\',\'' + ${activity.getType()} + '\')'"></td>
+                            <td th:text="${activity.getActivityName()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\',\'' + ${activity.getType()} + '\')'"></td>
+                            <td th:text="${activity.formatDistance()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\',\'' + ${activity.getType()} + '\')'"></td>
+                            <td th:text="${activity.formatMovingTime()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\',\'' + ${activity.getType()} + '\')'"></td>
+                            <td th:text="${activity.getPaced()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\',\'' + ${activity.getType()} + '\')'"></td>
+                            <td th:text="${activity.formatStartDate()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\',\'' + ${activity.getType()} + '\')'"></td>
+                            <td th:text="${activity.getType()}" th:ondbclick="'toggleLapDetails(this,\'' + ${activity.getActivityID()} + '\',\'' + ${activity.getType()} + '\')'"></td>
                             <td>
                                 <button class="action-button view-strava" th:onclick="'window.open(\'https://www.strava.com/activities/' + ${activity.getActivityID()} + '\', \'_blank\')'">
                                     <i class="fas fa-external-link-alt"></i> Strava
@@ -65,7 +65,7 @@
                                 <button class="action-button view-map" th:onclick="'showActivityMap(this)'" th:attr="polyline-map=${activity.getMap().getSummaryPolyline()}">
                                     <i class="fas fa-map-marked-alt"></i> Map
                                 </button>
-                                <button class="action-button view-laps" th:onclick="'toggleLapDetailsBut(this,\'' + ${activity.getActivityID()} + '\')'">
+                                <button class="action-button view-laps" th:onclick="'toggleLapDetailsBut(this,\'' + ${activity.getActivityID()} + '\')'" th:attr="activity-type=${activity.getType()}">
                                     <i class="fas fa-list-ol"></i> Laps
                                 </button>
                             </td>
@@ -127,7 +127,8 @@
 
         // Function to toggle lap details visibility
         function toggleLapDetailsBut(td_lap, activityId) {
-            
+            const type = td_lap.getAttribute("activity-type");
+
             // Check if a lap details row already exists and remove it
             const existingLapRow = document.getElementById("lap-details-row");
             if (existingLapRow) {
@@ -149,7 +150,7 @@
             
         
             // Fetch lap details
-            fetch(`/runner/activities/metrics?activityId=${activityId}`)
+            fetch(`/runner/activities/metrics?activityId=${activityId}&type=${type}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
@@ -168,8 +169,7 @@
                             <td>${data[i].distance}</td>
                             <td>${data[i].formatPaced}</td>
                             <td>${data[i].averageHeartRate == null ? "" : Math.round(data[i].averageHeartRate)}</td>
-                            <td>${data[i].violated == false ? "" : "Vi phạm"}</td>
-                            
+                            <td>${data[i].violated == false ? "" : "Vi phạm"}</td>  
                         </tr>`;
                     }
                     
@@ -192,7 +192,7 @@
             });
         }
 
-        function toggleLapDetails(td_lap, activityId) {
+        function toggleLapDetails(td_lap, activityId, type) {
             // Check if a lap details row already exists and remove it
             const existingLapRow = document.getElementById("lap-details-row");
             if (existingLapRow) {
@@ -214,7 +214,7 @@
             
         
             // Fetch lap details
-            fetch(`/runner/activities/metrics?activityId=${activityId}`)
+            fetch(`/runner/activities/metrics?activityId=${activityId}&type=${type}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
@@ -297,7 +297,7 @@
                             <button class="action-button view-map" onclick="showActivityMap(this)" polyline-map="${activity.map.summaryPolyline}">
                                 <i class="fas fa-map-marked-alt"></i> Map
                             </button>
-                            <button class="action-button view-laps" onclick="toggleLapDetails(this,'${activity.activityID}')">
+                            <button class="action-button view-laps" onclick="toggleLapDetails(this,'${activity.activityID}','${activity.type}')">
                                 <i class="fas fa-list-ol"></i> Laps
                             </button>
                         </td>

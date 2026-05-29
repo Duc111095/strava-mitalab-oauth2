@@ -1,15 +1,11 @@
  package com.ducnh.oauth2_server.config;
 
-import java.beans.EventSetDescriptor;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -47,7 +43,6 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, false);
-		logger.info("Object mapper initializing....: " + objectMapper);
 		
 		return objectMapper;
 	}
@@ -75,8 +70,6 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 		templateResolver.setPrefix("/WEB-INF/templates/");
 		templateResolver.setSuffix(".html");
 		templateResolver.setTemplateMode(TemplateMode.HTML);
-		// Template cache is true by default. Set to false if you want
-		// templates to be automatically updated when modified.
 		templateResolver.setCacheable(true);
 		return templateResolver;
 	}
@@ -89,9 +82,9 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
 
 	@Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/strava-oauth/registered-athlete")
-                .allowedOrigins("**") // Adjust to match your frontend origin
-                .allowedMethods("POST");
+		registry.addMapping("/strava-oauth/registered-athlete")
+		.allowedOrigins("**") // Adjust to match your frontend origin
+		.allowedMethods("POST");
     }
 	
 	@Bean
