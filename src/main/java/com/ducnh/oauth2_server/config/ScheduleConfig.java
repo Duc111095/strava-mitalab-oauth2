@@ -35,7 +35,7 @@ public class ScheduleConfig {
     private int syncTimeMinute;
 
     // @Scheduled(fixedRate = 1000 * 60 * 15) //Fetch Data 15 minutes
-	@Scheduled(fixedRate = 1000 * 60 * 30)
+	@Scheduled(fixedRate = 1000 * 60 * 60)
 	public void scheduleTask() {
         List<Integer> listHour = new ArrayList<>();
         
