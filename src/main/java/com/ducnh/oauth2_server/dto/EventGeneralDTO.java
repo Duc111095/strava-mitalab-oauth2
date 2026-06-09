@@ -10,4 +10,13 @@ public class EventGeneralDTO {
     private double totalDistance;
     private double totalDistanceRun;
     private double totalDistanceRide;   
+    private int totalDate;
+
+    public void setTotalDate(int totalDate) {
+        this.totalDate = totalDate;
+    }
+
+    public int getTotalDate(){
+        return this.totalDate;
+    }
 }
