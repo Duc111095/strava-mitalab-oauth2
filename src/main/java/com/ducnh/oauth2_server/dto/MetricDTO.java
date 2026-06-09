@@ -107,7 +107,7 @@ public class MetricDTO {
                 this.isViolated = true;
             }
         } else {
-            if (this.distance > 900 && (event.getHighPace() / 3 < this.getPaced())) {
+            if (this.distance > 900 && (event.getLowPace() / 3 > this.getPaced())) {
                 this.isViolated = true;
             } else {
                 this.isViolated = false;

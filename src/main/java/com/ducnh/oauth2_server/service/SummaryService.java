@@ -44,6 +44,7 @@ public class SummaryService {
                 event.setTotalDistance(t1.getDouble("total_distance"));
                 event.setTotalDistanceRun(t1.getDouble("total_distance_run"));
                 event.setTotalDistanceRide(t1.getDouble("total_distance_ride"));
+                event.setTotalDate(t1.getInt("date_diff"));
                 result.put("event", event);
             }
 
