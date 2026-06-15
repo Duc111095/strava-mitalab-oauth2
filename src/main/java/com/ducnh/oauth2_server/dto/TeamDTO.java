@@ -8,4 +8,5 @@ public class TeamDTO {
     private String name;
     private Double runKm;
     private int id;
+    private Double total_cur_period;
 }

@@ -250,12 +250,13 @@
             let teamsData = data.team_rank;
 
             // Sắp xếp các đội theo tổng quãng đường (Chạy) giảm dần
-            let sortedTeams = [...teamsData].sort((a, b) => (b.runKm) - (a.runKm));
+            let sortedTeams = [...teamsData].sort((a, b) => (b.total_cur_period) - (a.total_cur_period));
             const container = document.getElementById('teams-leaderboard-container');
             
             container.innerHTML = sortedTeams.map((team, index) => {
                 let totalKm = team.runKm;
-                let percent = calcPercentage(totalKm, TARGET_KM_PER_TEAM);
+                let curMonthKm = team.total_cur_period;
+                let percent = calcPercentage(curMonthKm, TARGET_KM_PER_TEAM);
                 
                 // Thiết lập biểu tượng huy chương
                 let medalHtml = '';
@@ -274,9 +275,9 @@
                                 <span class="font-bold text-slate-200 group-hover:text-indigo-400 transition-colors">${team.name}</span>
                             </div>
                             <div class="flex flex-wrap gap-3 text-xs font-semibold text-slate-400">
-                                <span>Tổng cộng: <strong class="text-pink-400">${formatNum(team.runKm)} km</strong></span>
+                                <span>Tổng cộng: <strong class="text-pink-400">${formatNum(totalKm)} km</strong></span>
                                 <span class="text-slate-200 bg-slate-900 px-2 py-0.5 rounded border border-slate-800/80">
-                                    Tổng: <strong class="text-white">${formatNum(totalKm)} km</strong> (${percent.toFixed(1)}%)
+                                    Tổng: <strong class="text-white">${formatNum(curMonthKm)} km</strong> (${percent.toFixed(1)}%)
                                 </span>
                             </div>
                         </div>

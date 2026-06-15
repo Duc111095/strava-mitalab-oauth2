@@ -109,6 +109,7 @@ public class SummaryService {
                     team.setTeamId(t5.getInt("team_id"));
                     team.setName("Đội " + t5.getInt("team_id"));
                     team.setRunKm(t5.getDouble("total_distance_accepted"));
+                    team.setTotal_cur_period(t5.getDouble("total_distance_cur_month_accepted"));
                     team.setId(t5.getInt("stt"));
                     team_rank.add(team);
                 }
