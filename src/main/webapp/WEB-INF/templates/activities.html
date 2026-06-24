@@ -210,11 +210,8 @@
             lapDetailsCell.style.border = "1px solid #ccc";
             lapDetailsCell.style.padding = "10px";
             lapDetailsRow.appendChild(lapDetailsCell);
-            console.log(td_lap);
-            console.log(td_lap.parentNode.parentNode);
             td_lap.parentNode.parentNode.parentNode.insertBefore(lapDetailsRow, td_lap.parentNode.parentNode.nextSibling);
             
-        
             // Fetch lap details
             fetch(`/runner/activities/metrics?activityId=${activityId}&type=${type}`)
             .then(response => response.json())

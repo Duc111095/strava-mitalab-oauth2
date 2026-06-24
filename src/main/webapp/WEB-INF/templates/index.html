@@ -2,7 +2,10 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" type="image/x-icon" th:href="@{/images/favicon.ico}"/>
+
     <title>Dashboard</title>
     
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -277,7 +280,7 @@
                             <div class="flex flex-wrap gap-3 text-xs font-semibold text-slate-400">
                                 <span>Tổng cộng: <strong class="text-pink-400">${formatNum(totalKm)} km</strong></span>
                                 <span class="text-slate-200 bg-slate-900 px-2 py-0.5 rounded border border-slate-800/80">
-                                    Tổng: <strong class="text-white">${formatNum(curMonthKm)} km</strong> (${percent.toFixed(1)}%)
+                                    Tổng round: <strong class="text-white">${formatNum(curMonthKm)} km</strong> (${percent.toFixed(1)}%)
                                 </span>
                             </div>
                         </div>
