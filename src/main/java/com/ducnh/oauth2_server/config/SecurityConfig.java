@@ -63,6 +63,8 @@ public class SecurityConfig {
 			.authorizeRequests(requests -> requests
                 .antMatchers("/",
 						"/summary-general",
+						"/**/favicon.ico",
+						"/runner/**/favicon.ico",
 						"/runner/summary-general",
 						"/cuserror",
                         "/info",
