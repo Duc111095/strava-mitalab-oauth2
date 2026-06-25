@@ -62,7 +62,7 @@ public class SummaryService {
                     top_3_nam_run.add(user);
                 }
                 result.put("top_3_nam_run", top_3_nam_run);
-            }       
+            }
             
             if (cstmt.getMoreResults()) {
                 ResultSet t3 = cstmt.getResultSet();
@@ -102,20 +102,75 @@ public class SummaryService {
 
             if (cstmt.getMoreResults()) {
                 ResultSet t5 = cstmt.getResultSet();
+                List<UserRankDTO> top_3_nam_run_round = new ArrayList<>();
+                while (t5.next()) {
+                    UserRankDTO user = new UserRankDTO();
+                    user.setId(t5.getString("athlete_id"));
+                    user.setName(t5.getString("athlete_name"));
+                    user.setTeamId(t5.getInt("team_id_t")); 
+                    user.setTotalDistance(t5.getDouble("total_distance"));
+                    user.setTght(t5.getTimestamp("max_end_time").toLocalDateTime());
+                    user.setTghtStr(user.getTght());
+                    top_3_nam_run_round.add(user);
+                }
+                result.put("top_3_nam_run_round", top_3_nam_run_round);
+            }       
+            
+            if (cstmt.getMoreResults()) {
+                ResultSet t6 = cstmt.getResultSet();
+                List<UserRankDTO> top_3_nu_run_round = new ArrayList<>();
+
+                while (t6.next()) {
+                    UserRankDTO user = new UserRankDTO();
+                    user.setId(t6.getString("athlete_id"));
+                    user.setName(t6.getString("athlete_name"));
+                    user.setTeamId(t6.getInt("team_id_t")); 
+                    user.setTotalDistance(t6.getDouble("total_distance"));
+                    user.setTght(t6.getTimestamp("max_end_time").toLocalDateTime());
+                    user.setTghtStr(user.getTght());
+
+                    top_3_nu_run_round.add(user);
+                }
+
+                result.put("top_3_nu_run_round", top_3_nu_run_round);
+            }
+
+            if (cstmt.getMoreResults()) {
+                ResultSet t7 = cstmt.getResultSet();
+                List<UserRankDTO> top_2_ride_round = new ArrayList<>();
+                while (t7.next()) {
+                    UserRankDTO user = new UserRankDTO();
+                    user.setId(t7.getString("athlete_id"));
+                    user.setName(t7.getString("athlete_name"));
+                    user.setTeamId(t7.getInt("team_id_t")); 
+                    user.setTotalDistance(t7.getDouble("total_distance"));
+                    user.setTght(t7.getTimestamp("max_end_time").toLocalDateTime());
+                    user.setTghtStr(user.getTght());
+
+                    top_2_ride_round.add(user);
+                }
+                result.put("top_2_ride_round", top_2_ride_round);
+            }
+
+            if (cstmt.getMoreResults()) {
+                ResultSet t8 = cstmt.getResultSet();
                 List<TeamDTO> team_rank = new ArrayList<>();
 
-                while (t5.next()) {
+                while (t8.next()) {
                     TeamDTO team = new TeamDTO();
-                    team.setTeamId(t5.getInt("team_id"));
-                    team.setName("Đội " + t5.getInt("team_id"));
-                    team.setRunKm(t5.getDouble("total_distance_accepted"));
-                    team.setTotal_cur_period(t5.getDouble("total_distance_cur_month_accepted"));
-                    team.setId(t5.getInt("stt"));
+                    team.setTeamId(t8.getInt("team_id"));
+                    team.setName("Đội " + t8.getInt("team_id"));
+                    team.setRunKm(t8.getDouble("total_distance_accepted"));
+                    team.setTotal_cur_period(t8.getDouble("total_distance_cur_month_accepted"));
+                    team.setId(t8.getInt("stt"));
                     team_rank.add(team);
                 }
                 result.put("team_rank", team_rank);
                 
             }
+
+
+
         } finally {
         }
 
